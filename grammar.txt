@@ -16,7 +16,7 @@ grammar may also be replaced by any number (including zero) of spaces.
 <template>::='template { ' <statement>* ' } '
 <reference>::=<name>('.'name)*
 <addition>::=<term> ' + ' <term>
-<term>::=<expression>|<multiplication>|<division>
+<term>::=( '(' <expression> ')' )|<multiplication>|<division>
 <multiplication>::=<term> ' * ' <term>
 <division>::=<term> ' / ' <term>
 <subtraction>::=<term> ' / ' <term>
