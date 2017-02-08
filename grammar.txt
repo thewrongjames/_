@@ -8,7 +8,7 @@ replaced by any number (including zero) of spaces.
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
 <expression>::=(<object>|<addition>|<subtraction>)' ; '
-<object>::=<integer>|<float>|<bool>|<string>|<template>|<reference>
+<object>::=<integer>|<float>|<boolean>|<string>|<template>|<reference>
 <integer>::=[+-]?<digit>+
 <float>::=[+-]?<digit>+ '.' <digit>+
 <bool>::='true'|'false'
