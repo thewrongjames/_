@@ -3,7 +3,7 @@ All whitespace is ignored, meaning that any spaces in the grammar may also be
 replaced by any number (including zero) of spaces.
 
 <S>::=(<statement>|<expression>|<control>)*
-<statement>::=<name> ' = ' <expression> ' ; '
+<statement>::=<name> ' = ' <expression>
 <names>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
