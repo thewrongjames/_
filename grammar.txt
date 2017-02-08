@@ -9,8 +9,8 @@ replaced by any number (including zero) of spaces.
 <digit>::=[0-9]
 <expression>::=(<object>|<addition>|<subtraction>)' ; '
 <object>::=<integer>|<float>|<bool>|<string>|<template>|<reference>
-<integer>::=<digit>+
-<float>::=<digit>+ '.' <digit>+
+<integer>::=[+-]?<digit>+
+<float>::=[+-]?<digit>+ '.' <digit>+
 <bool>::='true'|'false'
 <string>::="'"<character>*"'"
 <template>::='template { ' <statement>* ' } '
