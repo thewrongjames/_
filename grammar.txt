@@ -1,6 +1,6 @@
 Sorry if you don't like my symbols (using some regex stuff because I am lazy).
-All whitespace except for spaces (' ') are ignored, and any spaces in the
-grammar may also be replaced by any number (including zero) of spaces.
+All whitespace is ignored, meaning that any spaces in the grammar may also be
+replaced by any number (including zero) of spaces.
 
 <S>::=(<statement>|<expression>|<control>)*
 <statement>::=<name> ' = ' <expression> ' ; '
