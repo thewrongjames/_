@@ -21,13 +21,42 @@ class TestAssignment(unittest.TestCase):
         self.assertEqual(memory_true['value'], True)
         self.assertEqual(memory_false['value'], False)
 
-    def test_string(self):
-        compiled = _.compile_underscore('value="sdfasdfasd"')
+    def test_string_double_quotes(self):
+        compiled = _.compile_underscore('      value="sdfasdfasd";')
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 'sdfasdfasd')
+
+    def test_string_single_quotes(self):
+        compiled = _.compile_underscore("value='smv lddfl sdf lfdg'     ;")
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 'smv lddfl sdf lfdg')
+
+    def test_string_triple_double_quotes(self):
+        compiled = _.compile_underscore(
+            'value="""ascv lclv ff4''6557646.n5  dj""";'
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 'ascv lclv ff46557646.n5  dj')
+
+    def test_string_triple_single_quotes(self):
+        compiled = _.compile_underscore(
+            """value='''`````dsfs lkf "" ''fgdsakl hd`````''';"""
+        )
+        memory = compiled.run()
+        self.assertEqual(
+            memory['value'], '''`````dsfs lkf "" ''fgdsakl hd`````'''
+        )
 
 class TestSyntaxErrors(unittest.TestCase):
     def test_closing_strings(self):
         with self.assertRaises(_.UnderscoreSyntaxError):
-            
-            
+            _.compile_underscore('"')
+        with self.assertRaises(_.UnderscoreSyntaxError):
+            _.compile_underscore("'")
+        with self.assertRaises(_.UnderscoreSyntaxError):
+            _.compile_underscore('"""')
+        with self.assertRaises(_.UnderscoreSyntaxError):
+            _.compile_underscore("'''")
+
 
 unittest.main()

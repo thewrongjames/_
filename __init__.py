@@ -16,28 +16,49 @@ class UnderscoreParser:
 
     def __init__(self, program):
         self.program = program
-        for whitespace in string.whitespace:
-            self.program = self.program.replace(whitespace, '')
         self.length_of_program = len(program)
         self.position_in_program = 0
 
-    def _peek(self):
+    def _peek(self, look_ahead_distance=1):
         if self.position_in_program < len(self.program):
-            return self.program[self.position_in_program]
+            return self.program[
+                self.position_in_program:
+                self.position_in_program+look_ahead_distance
+            ]
         # If you are at or past the end of the program, this will return none.
 
     def _next(self):
         self.position_in_program += 1
 
     def _try_consume(self, string_to_consume):
+        starting_position = self.position_in_program
         for character in string_to_consume:
             if self._peek() != character:
-                raise UnderscoreParserError(
+                self.position_in_program = starting_position
+                raise UnderscoreCouldNotConsumeError(
                     'could not consume',
                     string_to_consume
                 )
             self._next()
 
+    def surrounding_whitespace_removed(function):
+        def decorated(self, *args, **kwargs):
+            while (
+                    self._peek() is not None
+                    and self._peek() in string.whitespace
+            ):
+                self._next()
+            result = function(self, *args, **kwargs)
+            while (
+                    self._peek() is not None
+                    and self._peek() in string.whitespace
+            ):
+                self._next()
+            return result
+
+        return decorated
+
+    @surrounding_whitespace_removed
     def parse(self, memory_limit=None, time_limit=None):
         sections = []
 
@@ -51,26 +72,27 @@ class UnderscoreParser:
                 self._parse_expression,
                 self._parse_control,
             ]
-            error = UnderscoreSyntaxError(
-                'expected end of file, got {}'.format(self._peek())
+            none_worked_error = UnderscoreSyntaxError(
+                'expected end of file, got {}'.format(self._peek()),
+                starting_position
             )
             parsed_something = False
 
             for parser in valid_parsers:
                 try:
                     sections.append(parser())
-                except UnderscoreParserError as e:
-                    error = e
+                except UnderscoreIncorrectParserError:
                     self.position_in_program = starting_position
                 else:
                     parsed_something = True
                     break
 
             if not parsed_something:
-                raise error
+                raise none_worked_error
 
         return ProgramNode(sections, memory_limit, time_limit)
 
+    @surrounding_whitespace_removed
     def _parse_statement(self):
         name = self._parse_name()
         if self._peek() != '=':
@@ -85,6 +107,7 @@ class UnderscoreParser:
         expression = self._parse_expression()
         return StatementNode(name, expression)
 
+    @surrounding_whitespace_removed
     def _parse_name(self):
         name = ''
 
@@ -107,6 +130,7 @@ class UnderscoreParser:
             self._next()
         return name
 
+    @surrounding_whitespace_removed
     def _parse_expression(self):
         valid_parsers = [
             self._parse_object,
@@ -126,6 +150,7 @@ class UnderscoreParser:
         self._next()
         return expression
 
+    @surrounding_whitespace_removed
     def _parse_object(self):
         starting_position = self.position_in_program
         valid_parsers = [
@@ -149,7 +174,7 @@ class UnderscoreParser:
             string_of_integer += self._peek()
             self._next()
         if self._peek() not in string.digits:
-            raise UnderscoreSyntaxError(
+            raise UnderscoreIncorrectParserError(
                 'expected one of {}, got {}'.format(
                     string.digits,
                     self._peek() if self._peek() is not None else 'end of file',
@@ -161,10 +186,11 @@ class UnderscoreParser:
             self._next()
         return string_of_integer
 
-
+    @surrounding_whitespace_removed
     def _parse_integer(self):
         return ValueNode(int(self._parse_digits(consume_sign=True)))
 
+    @surrounding_whitespace_removed
     def _parse_float(self):
         string_of_float = self._parse_digits(consume_sign=True)
         if self._peek() == '.':
@@ -173,20 +199,22 @@ class UnderscoreParser:
             string_of_float += self._parse_digits(consume_sign=False)
         return ValueNode(float(string_of_float))
 
+    @surrounding_whitespace_removed
     def _parse_boolean(self):
         try:
             self._try_consume('true')
-        except UnderscoreParserError:
+        except UnderscoreCouldNotConsumeError:
             pass
         else:
             return ValueNode(True)
         try:
             self._try_consume('false')
-        except UnderscoreParserError:
-            raise UnderscoreSyntaxError('could not find boolean')
+        except UnderscoreCouldNotConsumeError:
+            raise UnderscoreIncorrectParserError()
         else:
             return ValueNode(False)
 
+    @surrounding_whitespace_removed
     def _parse_string(self):
         string_starters = ['"""', "'''", '"', "'"]
         string_starter_used = None
@@ -194,62 +222,64 @@ class UnderscoreParser:
         for string_starter in string_starters:
             try:
                 self._try_consume(string_starter)
-            except UnderscoreParserError:
+            except UnderscoreCouldNotConsumeError:
                 pass
             else:
                 string_starter_used = string_starter
         if string_starter_used is None:
-            raise UnderscoreSyntaxError(
-                'expected one of {}, got {}'.format(
-                    string_starters,
-                    first_character
-                )
-            )
+            raise UnderscoreIncorrectParserError()
         string = ''
-        while self._peek() != string_starter_used:
+        while self._peek(len(string_starter_used)) != string_starter_used:
             if self._peek() is None:
                 raise UnderscoreSyntaxError(
-                    'expected {}, got end of file'.format(string_starter_used)
+                    'expected {}, got end of file'.format(string_starter_used),
+                    self.position_in_program
                 )
             string += self._peek()
             self._next()
+        for _ in string_starter_used:
+            self._next()
         return ValueNode(string)
 
+    @surrounding_whitespace_removed
     def _parse_template(self):
-        raise UnderscoreParserError('Not Implemented', self.position_in_program)
+        raise UnderscoreNotImplementedError()
 
+    @surrounding_whitespace_removed
     def _parse_reference(self):
-        raise UnderscoreParserError('Not Implemented', self.position_in_program)
+        raise UnderscoreNotImplementedError()
 
+    @surrounding_whitespace_removed
     def _parse_addition(self):
-        raise UnderscoreParserError('Not Implemented', self.position_in_program)
+        raise UnderscoreNotImplementedError()
 
+    @surrounding_whitespace_removed
     def _parse_subtraction(self):
-        raise UnderscoreParserError('Not Implemented', self.position_in_program)
+        raise UnderscoreNotImplementedError()
 
+    @surrounding_whitespace_removed
     def _parse_control(self):
-        raise UnderscoreParserError('Not Implemented', self.position_in_program)
+        raise UnderscoreNotImplementedError()
 
-    def _try_parsers(self, parsers, expected=None):
+    def _try_parsers(self, parsers, expected=None, needed=False):
         # If there is no value given to expected, this can silently return None.
         starting_position = self.position_in_program
         one_worked = False
         if expected is not None:
-            none_worked_error = UnderscoreSyntaxError(
-                'expected {}'.format(expected),
-                starting_position
-            )
+            if needed:
+                none_worked_error = UnderscoreSyntaxError(
+                    'expected {}'.format(expected),
+                    starting_position
+                )
+            else:
+                none_worked_error = UnderscoreIncorrectParserError()
         else:
             none_worked_error = None
 
         for parser in parsers:
             try:
                 return parser()
-            except UnderscoreParserError as e:
-                error = e
-                # It is okay to reset this, even on the last one, because the
-                # error has already been constructed, and contains the position
-                # at which it occoured.
+            except UnderscoreIncorrectParserError:
                 self.position_in_program = starting_position
             else:
                 one_worked = True
@@ -301,16 +331,49 @@ class ValueNode:
         return self.value
 
 
-class UnderscoreParserError(Exception):
-    def __init__(self, message, character_number=None):
+class UnderscoreError(Exception):
+    """
+    Base language error, the super class for all other underscore errors, for
+    catching all of them.
+    """
+
+    def __init__(self, message='', character_number=None):
         if character_number is not None:
             character_message = ' at character {} (ignoring spaces)'.format(
                 character_number
             )
         else:
             character_message = ''
-        super(UnderscoreParserError, self).__init__(message+character_message)
+        super(UnderscoreError, self).__init__(message+character_message)
 
 
-class UnderscoreSyntaxError(UnderscoreParserError):
+class UnderscoreIncorrectParserError(UnderscoreError):
+    """
+    Raised by parser functions that know that they are not meant to parse what
+    they have been given.
+    """
+    pass
+
+
+class UnderscoreNotImplementedError(UnderscoreIncorrectParserError):
+    """
+    If the parser does not exist. Of course it is not meant to parse what it has
+    been given.
+    """
+    pass
+
+
+class UnderscoreSyntaxError(UnderscoreError):
+    """
+    UnderscoreSyntaxErrors should be raised if the parser cannot parse the
+    code, but it also cannot be anything else.
+    """
+    pass
+
+
+class UnderscoreCouldNotConsumeError(UnderscoreError):
+    """
+    The error raised if a method expects to be able to consume something but
+    can't.
+    """
     pass
