@@ -7,6 +7,9 @@ class TestAssignment(unittest.TestCase):
         compiled = _.compile_underscore('value=-13;')
         memory = compiled.run()
         self.assertEqual(memory['value'], -13)
+        compiled = _.compile_underscore('value=42;')
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 42)
 
     def test_float(self):
         compiled = _.compile_underscore('value=   234.234567;')
@@ -57,6 +60,8 @@ class TestSyntaxErrors(unittest.TestCase):
             _.compile_underscore('"""')
         with self.assertRaises(_.UnderscoreSyntaxError):
             _.compile_underscore("'''")
+        with self.assertRaises(_.UnderscoreSyntaxError):
+            _.compile_underscore('3.')
 
 
 unittest.main()

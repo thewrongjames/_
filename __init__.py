@@ -111,9 +111,9 @@ class UnderscoreParser:
     def _parse_name(self):
         name = ''
 
-        if self._peek() not in \
+        if self._peek() is None or self._peek() not in \
                 UnderscoreParser.VALID_NAME_FIRST_CHARACTER_CHARACTERS:
-            raise UnderscoreSyntaxError(
+            raise UnderscoreIncorrectParserError(
                 'expected one of {}, got {}'.format(
                     UnderscoreParser.VALID_NAME_FIRST_CHARACTER_CHARACTERS,
                     self._peek() if self._peek() is not None else 'end of file',
@@ -124,7 +124,7 @@ class UnderscoreParser:
         # of UnderscoreParser.VALID_NAME_NON_FIRST_CHARACTER_CHARACTERS, we can
         # now move straight on to taking any non first character character,
         # because that will also take the first character.
-        while self._peek() in \
+        while self._peek() is not None and self._peek() in \
                 UnderscoreParser.VALID_NAME_NON_FIRST_CHARACTER_CHARACTERS:
             name += self._peek()
             self._next()
@@ -170,6 +170,8 @@ class UnderscoreParser:
         it has consumed.
         """
         string_of_integer = ''
+        if self._peek() is None:
+            raise UnderscoreIncorrectParserError
         if self._peek() in ['+', '-'] and consume_sign:
             string_of_integer += self._peek()
             self._next()
