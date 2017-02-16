@@ -1,4 +1,4 @@
-import __init__ as _
+import _
 import unittest
 
 
@@ -52,15 +52,15 @@ class TestAssignment(unittest.TestCase):
 
 class TestSyntaxErrors(unittest.TestCase):
     def test_closing_strings(self):
-        with self.assertRaises(_.UnderscoreSyntaxError):
+        with self.assertRaises(_.exceptions.UnderscoreSyntaxError):
             _.compile_underscore('"')
-        with self.assertRaises(_.UnderscoreSyntaxError):
+        with self.assertRaises(_.exceptions.UnderscoreSyntaxError):
             _.compile_underscore("'")
-        with self.assertRaises(_.UnderscoreSyntaxError):
+        with self.assertRaises(_.exceptions.UnderscoreSyntaxError):
             _.compile_underscore('"""')
-        with self.assertRaises(_.UnderscoreSyntaxError):
+        with self.assertRaises(_.exceptions.UnderscoreSyntaxError):
             _.compile_underscore("'''")
-        with self.assertRaises(_.UnderscoreSyntaxError):
+        with self.assertRaises(_.exceptions.UnderscoreSyntaxError):
             _.compile_underscore('3.')
 
 
