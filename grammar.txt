@@ -7,19 +7,21 @@ replaced by any number (including zero) of spaces.
 <names>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
-<expression>::=(<object>|<addition>|<subtraction>)' ; '
+<expression>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
 <object>::=<integer>|<float>|<boolean>|<string>|<template>|<reference>
 <integer>::=[+-]?<digit>+
 <float>::=[+-]?<digit>+ '.' <digit>+
-<bool>::='true'|'false'
+<boolean>::='true'|'false'
 <string>::="'"<character>*"'"
 <template>::='template { ' <statement>* ' } '
 <reference>::=<name>('.'name)*
-<addition>::=<term> ' + ' <term>
-<term>::=( '(' <expression> ')' )|<multiplication>|<division>
+<addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
+<term>::=('(' <expression> ')')|<multiplication>|<division>
 <multiplication>::=<term> ' * ' <term>
 <division>::=<term> ' / ' <term>
-<subtraction>::=<term> ' / ' <term>
+<subtraction>::=<term> ' - ' (<term>|<addition>|<subtraction>)
+<boolean_expression>::=<boolean_statement>((' AND '|' OR ')<boolean_statement>)*
+<boolean_expression>::=<object>((' == '|' <= '|' >= '|' != ') <object)?
 <control>::=<if>|<while>
 <if>::='if (' <expression> ') {' <S> '}'
 <while>::='while (' <expression> ') {' <S> '}'
