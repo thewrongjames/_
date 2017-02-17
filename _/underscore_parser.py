@@ -1,5 +1,5 @@
 import string
-from .nodes import ProgramNode, StatementNode, ValueNode
+from .nodes import ProgramNode, StatementNode, ValueNode, ReferenceNode
 from .exceptions import UnderscoreError, UnderscoreIncorrectParserError, \
     UnderscoreNotImplementedError, UnderscoreSyntaxError, \
     UnderscoreCouldNotConsumeError
@@ -92,12 +92,7 @@ class UnderscoreParser:
     def _parse_statement(self):
         name = self._parse_name()
         if self._peek() != '=':
-            raise UnderscoreSyntaxError(
-                "expected '=', got {}".format(
-                    self._peek() if self._peek() is not None else 'end of file',
-                ),
-                self.position_in_program,
-            )
+            raise UnderscoreIncorrectParserError()
         # If we get to here, we know the next character is '='
         self._next()
         expression = self._parse_expression()
@@ -154,8 +149,8 @@ class UnderscoreParser:
             self._parse_integer,
             self._parse_boolean,
             self._parse_string,
-            self._parse_template,
             self._parse_reference,
+            self._parse_template,
         ]
         return self._try_parsers(valid_parsers, 'object')
 
@@ -240,11 +235,12 @@ class UnderscoreParser:
         return ValueNode(string)
 
     @surrounding_whitespace_removed
-    def _parse_template(self):
-        raise UnderscoreNotImplementedError()
+    def _parse_reference(self):
+        name = self._parse_name()
+        return ReferenceNode(name)
 
     @surrounding_whitespace_removed
-    def _parse_reference(self):
+    def _parse_template(self):
         raise UnderscoreNotImplementedError()
 
     @surrounding_whitespace_removed

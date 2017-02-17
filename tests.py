@@ -50,6 +50,15 @@ class TestAssignment(unittest.TestCase):
             memory['value'], '''`````dsfs lkf "" ''fgdsakl hd`````'''
         )
 
+    def test_reference(self):
+        compiled = _.compile_underscore(
+            '''
+            first_variable=5;second_variable=first_variable;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['second_variable'], 5)
+
 class TestSyntaxErrors(unittest.TestCase):
     def test_closing_strings(self):
         with self.assertRaises(_.exceptions.UnderscoreSyntaxError):

@@ -33,7 +33,7 @@ class StatementNode:
             time_limit=None,
             start_time=None
     ):
-        memory[self.name] = self.expression.run()
+        memory[self.name] = self.expression.run(memory)
 
 
 class ValueNode:
@@ -42,3 +42,11 @@ class ValueNode:
 
     def run(self, *args, **kwargs):
         return self.value
+
+
+class ReferenceNode:
+    def __init__(self, name):
+        self.name = name
+
+    def run(self, memory, *args, **kwargs):
+        return memory[self.name]

@@ -13,7 +13,7 @@ replaced by any number (including zero) of spaces.
 <float>::=[+-]?<digit>+ '.' <digit>+
 <boolean>::='true'|'false'
 <string>::="'"<character>*"'"
-<template>::='template ( ' <name> (', ' <name>)* ') { ' <S>* ' } '
+<template>::='template ' ( ' ( ' <name> (', ' <name>)* ') ' )? '{ ' <S> ' } '
 <reference>::=<name>('.'name)*
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=('(' <expression> ')')|<multiplication>|<division>
