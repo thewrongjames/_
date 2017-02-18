@@ -69,6 +69,8 @@ class TestSyntaxErrors(unittest.TestCase):
             _.compile_underscore('"""')
         with self.assertRaises(_.exceptions.UnderscoreSyntaxError):
             _.compile_underscore("'''")
+
+    def test_float(self):
         with self.assertRaises(_.exceptions.UnderscoreSyntaxError):
             _.compile_underscore('3.')
 
