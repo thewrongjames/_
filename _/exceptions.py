@@ -44,3 +44,9 @@ class UnderscoreCouldNotConsumeError(UnderscoreError):
     can't.
     """
     pass
+
+class UnderscoreNameError(UnderscoreError):
+    pass
+
+class UnderscoreValueError(UnderscoreError):
+    pass

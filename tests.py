@@ -59,6 +59,70 @@ class TestAssignment(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['second_variable'], 5)
 
+    def test_container(self):
+        with self.assertRaises(_.exceptions.UnderscoreSyntaxError):
+            _.compile_underscore('container=7;')
+
+
+class TestReference(unittest.TestCase):
+    def test_basics(self):
+        """
+        While this currently cannot possibly execute, it is still going to be
+        thought of as syntactically valid. For now at least.
+        """
+        _.compile_underscore('this.that.this.that.this.that;')
+
+
+class TestTemplates(unittest.TestCase):
+    def test_basics(self):
+        _.compile_underscore('template {   };')
+        _.compile_underscore('    template ( )   {};')
+
+    def test_internal_values(self):
+        compiled = _.compile_underscore('value=template(){value=18;}();')
+        memory = compiled.run()
+        self.assertEqual(memory['value']['value'], 18)
+
+    def test_return(self):
+        compiled = _.compile_underscore('value=template(){return(5;);}();')
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 5)
+
+    def test_container_access(self):
+        compiled = _.compile_underscore(
+            '''
+            value = -2.5;
+            template_ = template () {
+                value=container.value;
+            };
+            instance = template_();
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['instance']['value'], -2.5)
+
+    def test_external_access_to_template(self):
+        compiled = _.compile_underscore(
+            '''
+            instance = template(){value='foo';}();
+            value = instance.value;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 'foo')
+
+
+class TestNames(unittest.TestCase):
+    def test_reserved_words(self):
+        with self.assertRaises(_.exceptions.UnderscoreCouldNotConsumeError):
+            _.compile_underscore('return = 7;')
+
+    def test_name_error(self):
+        with self.assertRaises(_.exceptions.UnderscoreNameError):
+            compiled = _.compile_underscore('this=that;')
+            compiled.run()
+
+
 class TestSyntaxErrors(unittest.TestCase):
     def test_closing_strings(self):
         with self.assertRaises(_.exceptions.UnderscoreSyntaxError):

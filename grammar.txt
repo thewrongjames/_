@@ -8,13 +8,14 @@ replaced by any number (including zero) of spaces.
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
 <expression>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
-<object>::=<integer>|<float>|<boolean>|<string>|<template>|<reference>
+<object>::=<integer>|<float>|<boolean>|<string>|<template>|<reference>|<template_call>
 <integer>::=[+-]?<digit>+
 <float>::=[+-]?<digit>+ '.' <digit>+
 <boolean>::='true'|'false'
 <string>::="'"<character>*"'"
-<template>::='template ' ( ' ( ' <name> (', ' <name>)* ') ' )? '{ ' <S> ('return ' <name>)? ' } '
+<template>::='template ' ( ' ( ' <name> (', ' <name>)* ') ' )? '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
 <reference>::=<name>('.'name)*
+<template_call>::=(<template>|<reference)? ' ( ' <expression>* ' ) '
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=('(' <expression> ')')|<multiplication>|<division>
 <multiplication>::=<term> ' * ' <term>
@@ -31,5 +32,6 @@ Please note that there are reserved words that cannot be names'. These are:
     else
     while
     template
-    instance
     return
+
+The name 'container' is read-only, that is, it cannot be assigned to.
