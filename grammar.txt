@@ -23,5 +23,13 @@ replaced by any number (including zero) of spaces.
 <boolean_expression>::=<boolean_statement>((' AND '|' OR ')<boolean_statement>)*
 <boolean_expression>::=<object>((' == '|' <= '|' >= '|' != ') <object)?
 <control>::=<if>|<while>
-<if>::='if (' <expression> ') {' <S> '}'
+<if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else if ( ' <expression> ' ) { ' <S> ' }')* (' else ( ' <expression> ' ) { ' <S> ' }')?
 <while>::='while (' <expression> ') {' <S> '}'
+
+Please note that there are reserved words that cannot be names'. These are:
+    if
+    else
+    while
+    template
+    instance
+    return
