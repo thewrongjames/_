@@ -14,9 +14,10 @@ replaced by any number (including zero) of spaces.
 <float>::=[+-]?<digit>+ '.' <digit>+
 <boolean>::='true'|'false'
 <string>::="'"<character>*"'"
-<template>::='template ' ( ' ( ' <reference> (', ' <reference>)* ') ' )? '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
+<template>::='template ' <passable_expressions>? '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
+<passable_expressions>::= ' ( ' ( <reference> (', ' <reference>)* )? ' ) '
 <reference>::=(<single_name>|<template_call>)('.'(<single_name>|<template_call>))*
-<template_call>::=(<template>|<reference>)? ' ( ' <expression>* ' ) '
+<template_call>::=(<template>|<single_name>)? <passable_expressions>
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=('(' <expression> ')')|<multiplication>|<division>
 <multiplication>::=<term> ' * ' <term>

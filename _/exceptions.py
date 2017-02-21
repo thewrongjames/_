@@ -6,7 +6,7 @@ class UnderscoreError(Exception):
 
     def __init__(self, message='', character_number=None):
         if character_number is not None:
-            character_message = ' at character {} (ignoring spaces)'.format(
+            character_message = ' at character {} (including spaces)'.format(
                 character_number
             )
         else:

@@ -10,7 +10,15 @@ class UnderscoreParser:
     VALID_NAME_FIRST_CHARACTER_CHARACTERS = string.ascii_letters + '_-'
     VALID_NAME_NON_FIRST_CHARACTER_CHARACTERS = \
         VALID_NAME_FIRST_CHARACTER_CHARACTERS + string.digits
-    RESERVED_NAMES = ['if', 'else', 'while', 'template', 'return']
+    RESERVED_NAMES = [
+        'if',
+        'else',
+        'while',
+        'template',
+        'return',
+        'true',
+        'false'
+    ]
     READ_ONLY_NAMES = ['container']
 
     def __init__(self, program):
@@ -114,6 +122,14 @@ class UnderscoreParser:
 
     @surrounding_whitespace_removed
     def _parse_name(self):
+        name = self._parse_single_name()
+        while self._peek() == '.':
+            self._next()
+            name += '.' + self._parse_single_name()
+        return name
+
+    @surrounding_whitespace_removed
+    def _parse_single_name(self):
         name = ''
 
         if self._peek() is None or self._peek() not in \
@@ -165,7 +181,6 @@ class UnderscoreParser:
             self._parse_integer,
             self._parse_boolean,
             self._parse_string,
-            self._parse_template_call,
             self._parse_reference,
             self._parse_template,
         ]
@@ -258,34 +273,56 @@ class UnderscoreParser:
 
     @surrounding_whitespace_removed
     def _parse_reference(self):
-        name = self._parse_name()
+        starting_position = self.position_in_program
+        names = [self._parse_single_name_or_template_call()]
         while self._peek() == '.':
             self._next()
-            name += '.' + self._parse_name()
-        return ReferenceNode(name)
+            names.append(self._parse_single_name_or_template_call())
+        return ReferenceNode(names, starting_position)
 
-    @surrounding_whitespace_removed
-    def _parse_template_call(self):
+    def _parse_single_name_or_template_call(self):
         starting_position = self.position_in_program
         try:
-            template = self._parse_template()
-        except UnderscoreError:
-            # If there is any error doing that what-so-ever...
+            return self._parse_template_call()
+        except UnderscoreIncorrectParserError:
             self.position_in_program = starting_position
-            try:
-                template = self._parse_reference()
-            except UnderscoreError:
-                raise UnderscoreIncorrectParserError
+            return self._parse_single_name()
+
+    @surrounding_whitespace_removed
+    def _parse_passable_expressions(self):
         try:
             self._try_consume('(')
         except UnderscoreCouldNotConsumeError:
             raise UnderscoreIncorrectParserError
         self._consume_whitespace()
+        # More stuff should happen in here eventually.
         try:
             self._try_consume(')')
         except UnderscoreCouldNotConsumeError:
             raise UnderscoreIncorrectParserError
-        return TemplateCallNode(template, starting_position)
+        # This should return something eventually.
+
+    @surrounding_whitespace_removed
+    def _parse_template_call(self):
+        """
+        This will return either a reference node or a template.
+        """
+        starting_position = self.position_in_program
+        try:
+            template = self._parse_template()
+        except UnderscoreIncorrectParserError:
+            self.position_in_program = starting_position
+            template = ReferenceNode(
+                [self._parse_single_name()],
+                starting_position
+            )
+        # The below stuff should eventually be assigned to something.
+        try:
+            self._parse_passable_expressions()
+        except UnderscoreIncorrectParserError:
+            self.position_in_program = starting_position
+            raise
+        return template
 
     @surrounding_whitespace_removed
     def _parse_template(self):
@@ -293,24 +330,11 @@ class UnderscoreParser:
             self._try_consume('template')
         except UnderscoreCouldNotConsumeError:
             raise UnderscoreIncorrectParserError()
-        self._consume_whitespace()
-        try:
-            self._try_consume('(')
-        except UnderscoreCouldNotConsumeError:
-            pass
-        else:
-            self._consume_whitespace()
-            try:
-                self._try_consume(')')
-            except UnderscoreCouldNotConsumeError:
-                raise UnderscoreSyntaxError(
-                    "expected ')' got {}".format(
-                        self._peek() if self._peek() is not None else \
-                            'end of file',
-                        self.position_in_program
-                    )
-                )
-        self._consume_whitespace()
+        # The below stuff should eventually be assigned to something.
+        self._parse_passable_expressions()
+        # The above line may error, but, that is okay. Until you are past that
+        # line, you do not know that you are definately in a template, and not
+        # in, say, a name or reference that begins with 'template'
         try:
             self._try_consume('{')
         except UnderscoreCouldNotConsumeError:
@@ -318,8 +342,8 @@ class UnderscoreParser:
                 "expected '{{' got {}".format(
                     self._peek() if self._peek() is not None else \
                         'end of file',
-                    self.position_in_program
-                )
+                ),
+                self.position_in_program
             )
         self._consume_whitespace()
         sections = self._parse_sections(['}', 'return'])

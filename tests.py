@@ -66,16 +66,11 @@ class TestAssignment(unittest.TestCase):
 
 class TestReference(unittest.TestCase):
     def test_basics(self):
-        """
-        While this currently cannot possibly execute, it is still going to be
-        thought of as syntactically valid. For now at least.
-        """
         _.compile_underscore('this.that.this.that.this.that;')
 
 
 class TestTemplates(unittest.TestCase):
     def test_basics(self):
-        _.compile_underscore('template {   };')
         _.compile_underscore('    template ( )   {};')
 
     def test_internal_values(self):
@@ -110,6 +105,65 @@ class TestTemplates(unittest.TestCase):
         )
         memory = compiled.run()
         self.assertEqual(memory['value'], 'foo')
+
+    def test_python_callable(self):
+        compiled = _.compile_underscore(
+            '''
+            instance = template(){return('bar';);};
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['instance'](), 'bar')
+
+    def test_modifying_external_values(self):
+        compiled = _.compile_underscore(
+            '''
+            external_value = false;
+            instance = template(){
+                internal_value = container.external_value;
+            }();
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['instance']['internal_value'], False)
+
+    def test_nested_template_access(self):
+        compiled = _.compile_underscore(
+            '''
+            template_1 = template(){
+                value = 7;
+                template_2 = template(){
+                    container.value = 'bar';
+                };
+            };
+            instance = template_1();
+            first_value = instance.value;
+            instance.template_2();
+            second_value = instance.value;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['first_value'], 7)
+        self.assertEqual(memory['second_value'], 'bar')
+
+    def test_method_like_behaviour(self):
+        pass
+
+    def test_container_updates(self):
+        compiled = _.compile_underscore(
+            '''
+            external_value = -15.4;
+            template_ = template(){
+                internal_value = external_value;
+            };
+            first_value = template_().internal_value;
+            external_value = true;
+            second_value = template_().internal_value;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['first_value'], -15.4)
+        self.assertEqual(memory['second_value'], True)
 
 
 class TestNames(unittest.TestCase):

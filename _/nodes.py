@@ -1,4 +1,5 @@
 import time
+from copy import deepcopy
 from .exceptions import UnderscoreNameError, UnderscoreValueError
 from .utilities import add_dictionaries
 
@@ -34,7 +35,7 @@ class ProgramNode:
                 time_limit=self.time_limit,
                 start_time=time.time(),
             )
-        return self.memory
+        return add_dictionaries(self.templates, self.memory)
 
 
 class UnderscoreNode:
@@ -69,11 +70,13 @@ class StatementNode(UnderscoreNode):
         been run.
         """
         if not isinstance(self.expression, TemplateNode):
-            memory[self.name] = self.expression.run(
-                memory,
-                templates,
-                *args,
-                **kwargs,
+            memory[self.name] = deepcopy(
+                self.expression.run(
+                    memory,
+                    templates,
+                    *args,
+                    **kwargs
+                )
             )
             if self.name in templates:
                 del templates[self.name]
@@ -88,26 +91,109 @@ class ValueNode(UnderscoreNode):
 
 
 class ReferenceNode(UnderscoreNode):
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, names, character):
+        # Names should be a list containing either strings of TemplateNodes.
+        self.names = names
+        self.character = character
 
-    def run(self, memory=None, templates=None, all_memory=None, *args, **kwargs):
-        if all_memory is None:
-            all_memory = add_dictionaries(templates, memory)
+    def run(self, memory, templates, *args, **kwargs):
+        all_memory = add_dictionaries(templates, memory)
         error = UnderscoreNameError(
-            "the name '{}' is not defined".format(self.name)
+            "the name '{}' is not defined".format(
+                '.'.join([str(item) for item in self.names])
+            ),
+            self.character
         )
-        split_name = self.name.split('.')
-        if len(split_name) > 1:
-            new_node = ReferenceNode('.'.join(split_name[1:]))
+
+        current_name = self.names[0]
+        # Current name may be a TemplateNode or a ReferenceNode though.
+
+        template_call_value = None
+        if isinstance(current_name, (TemplateNode, ReferenceNode)):
+            template_call_value = TemplateCallNode(current_name, \
+                self.character).run(memory=memory, templates=templates)
+
+        if len(self.names) == 1:
+            if template_call_value is not None:
+                return template_call_value
             try:
-                return new_node.run(all_memory=all_memory[split_name[0]])
+                return all_memory[current_name]
             except KeyError:
                 raise error
+
+        # Otherwise, if there is more than one name...
+        new_node = ReferenceNode(
+            self.names[1:],
+            self.character + len(current_name) + 1 # +1 for the . between names.
+        )
+
+        if template_call_value is not None:
+            if not isinstance(template_call_value, dict):
+                raise UnderscoreNameError(
+                    '{} does not contain any names'.format(current_name),
+                    self.character
+                )
+            return new_node.run(memory=template_call_value, templates={})
+
+        #Or, if the current one is not a node
         try:
-            return all_memory[self.name]
+            next_memory = all_memory[current_name]
         except KeyError:
             raise error
+        try:
+            return new_node.run(memory=next_memory, templates={})
+        except UnderscoreNameError:
+            raise UnderscoreNameError(
+                '{} does not contain {}'.format(current_name, self.names[1]),
+                self.character
+            )
+
+
+
+
+
+        # split_name = self.names
+        # if len(split_name) > 1:
+        #     try:
+        #         next_memory = all_memory[split_name[0]]
+        #     except KeyError:
+        #         raise error
+        #
+        # if '(' in split_name[0]:
+        #     template_reference_node = ReferenceNode(
+        #         split_name[0].split('(')[0],
+        #         self.character
+        #     )
+        #     template_call_node = TemplateCallNode(
+        #         template_reference_node,
+        #         self.character
+        #     )
+        #     template_call_value = template_call_node.run(
+        #         memory=memory,
+        #         templates=templates
+        #     )
+        #     if len(split_name) == 1:
+        #         # This is the last single name
+        #         return template_call_value
+        #     # But, if this is not the last item...
+        #     if not isinstance(template_call_value, dict):
+        #         raise UnderscoreNameError(
+        #             '{} does not contain any names'.format(split_name[0])
+        #         )
+        #     next_memory = template_call_value
+        #
+        # if len(split_name) == 1:
+        #     try:
+        #         print(self.name)
+        #         return all_memory[self.name]
+        #     except KeyError:
+        #         raise error
+        #
+        # new_node = ReferenceNode(
+        #     '.'.join(split_name[1:]),
+        #     self.character + len(split_name[0]) + 1
+        # )
+        # return new_node.run(all_memory=next_memory)
 
 
 class TemplateNode(UnderscoreNode):
@@ -117,14 +203,8 @@ class TemplateNode(UnderscoreNode):
         self.internal_templates = {}
         self.returns = returns
 
-    def _internal_pre_run(self, *args, **kwargs):
-        for section in self.sections:
-            section.pre_run(
-                memory=self.internal_memory,
-                templates=self.internal_templates,
-                *args,
-                **kwargs,
-            )
+    def __str__(self):
+        return self.__repr__()
 
     def run(self, memory, templates, *args, **kwargs):
         def template():
@@ -133,18 +213,18 @@ class TemplateNode(UnderscoreNode):
                 'container': container_memory
             }
             for section in self.sections:
-                self.pre_run(
+                section.pre_run(
                     memory=self.internal_memory,
                     templates=self.internal_templates,
                     *args,
-                    **kwargs,
+                    **kwargs
                 )
             for section in self.sections:
                 section.run(
                     memory=self.internal_memory,
                     templates=self.internal_templates,
                     *args,
-                    **kwargs,
+                    **kwargs
                 )
             final_memory = add_dictionaries(
                 self.internal_templates,
@@ -156,7 +236,7 @@ class TemplateNode(UnderscoreNode):
                     memory=self.internal_memory,
                     templates=self.internal_templates,
                     *args,
-                    **kwargs,
+                    **kwargs
                 )
             return final_memory
         return template
@@ -170,13 +250,11 @@ class TemplateCallNode(UnderscoreNode):
 
     def run(self, memory, templates, *args, **kwargs):
         if isinstance(self.template, ReferenceNode):
-            template = self.template.run(
-                *args, memory=memory, templates=templates, **kwargs
-            )
+            template = self.template.run(memory, templates)
             if not callable(template):
                 raise UnderscoreValueError(
                     'reference is not callable',
-                    character
+                    self.character
                 )
         else:
             template = self.template.run(
