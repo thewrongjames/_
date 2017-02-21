@@ -4,18 +4,19 @@ replaced by any number (including zero) of spaces.
 
 <S>::=(<statement>|<expression>|<control>)*
 <statement>::=<name> ' = ' <expression>
-<names>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
+<name>::=<single_name>('.'<single_name>)*
+<single_name>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
 <expression>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
-<object>::=<integer>|<float>|<boolean>|<string>|<template>|<reference>|<template_call>
+<object>::=<integer>|<float>|<boolean>|<string>|<template>|<reference>
 <integer>::=[+-]?<digit>+
 <float>::=[+-]?<digit>+ '.' <digit>+
 <boolean>::='true'|'false'
 <string>::="'"<character>*"'"
-<template>::='template ' ( ' ( ' <name> (', ' <name>)* ') ' )? '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
-<reference>::=<name>('.'name)*
-<template_call>::=(<template>|<reference)? ' ( ' <expression>* ' ) '
+<template>::='template ' ( ' ( ' <reference> (', ' <reference>)* ') ' )? '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
+<reference>::=(<single_name>|<template_call>)('.'(<single_name>|<template_call>))*
+<template_call>::=(<template>|<reference>)? ' ( ' <expression>* ' ) '
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=('(' <expression> ')')|<multiplication>|<division>
 <multiplication>::=<term> ' * ' <term>
@@ -33,5 +34,7 @@ Please note that there are reserved words that cannot be names'. These are:
     while
     template
     return
+    true
+    false
 
 The name 'container' is read-only, that is, it cannot be assigned to.
