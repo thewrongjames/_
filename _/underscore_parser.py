@@ -107,10 +107,10 @@ class UnderscoreParser:
 
     @surrounding_whitespace_removed
     def _parse_statement(self):
-        name = self._parse_name()
-        if name in self.READ_ONLY_NAMES:
+        reference = self._parse_reference()
+        if reference.name in self.READ_ONLY_NAMES:
             raise UnderscoreSyntaxError(
-                "cannot assign to name '{}'".format(name),
+                "cannot assign to name '{}'".format(reference.name),
                 self.position_in_program
             )
         if self._peek() != '=':
@@ -118,15 +118,7 @@ class UnderscoreParser:
         # If we get to here, we know the next character is '='
         self._next()
         expression = self._parse_expression()
-        return StatementNode(name, expression)
-
-    @surrounding_whitespace_removed
-    def _parse_name(self):
-        name = self._parse_single_name()
-        while self._peek() == '.':
-            self._next()
-            name += '.' + self._parse_single_name()
-        return name
+        return StatementNode(reference, expression)
 
     @surrounding_whitespace_removed
     def _parse_single_name(self):

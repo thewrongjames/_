@@ -4,20 +4,19 @@ replaced by any number (including zero) of spaces.
 
 <S>::=(<statement>|<expression>|<control>)*
 <statement>::=<name> ' = ' <expression>
-<name>::=<single_name>('.'<single_name>)*
+<name>::=(<single_name>|<template_call>)('.'(<single_name>|<template_call>))*
 <single_name>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
+<template_call>::=(<template>|<single_name>)? <passable_expressions>
+<passable_expressions>::= ' ( ' ( <name> (', ' <name>)* )? ' ) '
 <expression>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
-<object>::=<integer>|<float>|<boolean>|<string>|<template>|<reference>
+<object>::=<integer>|<float>|<boolean>|<string>|<template>|<name>
 <integer>::=[+-]?<digit>+
 <float>::=[+-]?<digit>+ '.' <digit>+
 <boolean>::='true'|'false'
 <string>::="'"<character>*"'"
 <template>::='template ' <passable_expressions>? '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
-<passable_expressions>::= ' ( ' ( <reference> (', ' <reference>)* )? ' ) '
-<reference>::=(<single_name>|<template_call>)('.'(<single_name>|<template_call>))*
-<template_call>::=(<template>|<single_name>)? <passable_expressions>
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=('(' <expression> ')')|<multiplication>|<division>
 <multiplication>::=<term> ' * ' <term>
@@ -29,7 +28,7 @@ replaced by any number (including zero) of spaces.
 <if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else if ( ' <expression> ' ) { ' <S> ' }')* (' else ( ' <expression> ' ) { ' <S> ' }')?
 <while>::='while (' <expression> ') {' <S> '}'
 
-Please note that there are reserved words that cannot be names'. These are:
+Please note that there are reserved words that cannot be a single_name. These are:
     if
     else
     while

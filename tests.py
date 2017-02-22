@@ -115,7 +115,7 @@ class TestTemplates(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['instance'](), 'bar')
 
-    def test_modifying_external_values(self):
+    def test_modifying_from_external_values(self):
         compiled = _.compile_underscore(
             '''
             external_value = false;
@@ -126,6 +126,18 @@ class TestTemplates(unittest.TestCase):
         )
         memory = compiled.run()
         self.assertEqual(memory['instance']['internal_value'], False)
+
+    def test_modifying_external_values(self):
+        compiled = _.compile_underscore(
+            '''
+            external_value = -95.3;
+            instance = template(){
+                container.external_value = 8;
+            }();
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['external_value'], 8)
 
     def test_nested_template_access(self):
         compiled = _.compile_underscore(
@@ -154,7 +166,7 @@ class TestTemplates(unittest.TestCase):
             '''
             external_value = -15.4;
             template_ = template(){
-                internal_value = external_value;
+                internal_value = container.external_value;
             };
             first_value = template_().internal_value;
             external_value = true;
