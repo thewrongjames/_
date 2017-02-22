@@ -1,7 +1,6 @@
 import time
 from copy import deepcopy
 from .exceptions import UnderscoreNameError, UnderscoreValueError
-from .utilities import add_dictionaries
 
 
 class ProgramNode:
