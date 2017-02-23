@@ -4,26 +4,31 @@ replaced by any number (including zero) of spaces.
 
 <S>::=(<statement>|<expression>|<control>)*
 <statement>::=<name> ' = ' <expression>
-<name>::=(<single_name>|<template_call>)('.'(<single_name>|<template_call>))*
+<name>::=<single_name>('.'<single_name>)*
 <single_name>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
-<template_call>::=(<template>|<single_name>)? <passable_expressions>
-<passable_expressions>::= ' ( ' ( <name> (', ' <name>)* )? ' ) '
+<passable_expressions>::= ' ( ' ( <expression> (', ' <expression>)* )? ' ) '
 <expression>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
-<object>::=<integer>|<float>|<boolean>|<string>|<template>|<name>
+<object>::=<integer>|<float>|<boolean>|<string>|<none>|<template>|<reference>|<function>
 <integer>::=[+-]?<digit>+
 <float>::=[+-]?<digit>+ '.' <digit>+
 <boolean>::='true'|'false'
-<string>::="'"<character>*"'"
-<template>::='template ' <passable_expressions>? '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
+<string>::="'"<character>*"'"|'"'<character>*'"'|"'''"<character>*"'''"|'"""'<character>*'"""'
+<none>::='none'
+<template>::='template ' <passable_expressions>? '{ ' <S> ' } '
+<reference>::=(<single_name>|<template_instantiation>)('.'(<single_name>|<template_instantiation>))*
+<reference>::=((<single_name>|<template_instantiation>)'.')*<function_call>
+<template_instantiation>::=(<template>|<single_name>)? <passable_expressions>
+<function_call>::=(<function>|<single_name>)? <passable_expressions>
+<function>::='function ' <passable_expressions> '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=('(' <expression> ')')|<multiplication>|<division>
 <multiplication>::=<term> ' * ' <term>
 <division>::=<term> ' / ' <term>
 <subtraction>::=<term> ' - ' (<term>|<addition>|<subtraction>)
 <boolean_expression>::=<boolean_statement>((' AND '|' OR ')<boolean_statement>)*
-<boolean_expression>::=<object>((' == '|' <= '|' >= '|' != ') <object)?
+<boolean_statement>::=<object>((' == '|' <= '|' >= '|' != ') <object)?
 <control>::=<if>|<while>
 <if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else if ( ' <expression> ' ) { ' <S> ' }')* (' else ( ' <expression> ' ) { ' <S> ' }')?
 <while>::='while (' <expression> ') {' <S> '}'
@@ -36,5 +41,6 @@ Please note that there are reserved words that cannot be a single_name. These ar
     return
     true
     false
+    none
 
 The name 'container' is read-only, that is, it cannot be assigned to.

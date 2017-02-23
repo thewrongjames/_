@@ -62,7 +62,7 @@ class StatementNode(UnderscoreNode):
         Templates are assigned first.
         """
         memory_to_write_to = self.get_memory_to_write_to(memory)
-        if isinstance(self.expression, TemplateNode):
+        if isinstance(self.expression, TemplateFunctionNode):
             memory_to_write_to[self.last_name] = self.expression.run(
                 memory=memory,
                 *args,
@@ -71,7 +71,7 @@ class StatementNode(UnderscoreNode):
 
     def run(self, memory, *args, **kwargs):
         memory_to_write_to = self.get_memory_to_write_to(memory)
-        if not isinstance(self.expression, TemplateNode):
+        if not isinstance(self.expression, TemplateFunctionNode):
             memory_to_write_to[self.last_name] = self.expression.run(
                 memory,
                 *args,
@@ -89,13 +89,16 @@ class ValueNode(UnderscoreNode):
 
 class ReferenceNode(UnderscoreNode):
     def __init__(self, names, character):
-        # Names should be a list containing either strings of TemplateNodes.
+        # Names should be a list containing either strings of TemplateFunctionNodes.
         self.names = names
         self.character = character
 
     @property
     def name(self):
         return '.'.join([str(item) for item in self.names])
+
+    def __str__(self):
+        return self.name
 
     def run(self, memory, *args, **kwargs):
         error = UnderscoreNameError(
@@ -106,16 +109,17 @@ class ReferenceNode(UnderscoreNode):
         )
 
         current_name = self.names[0]
-        # Current name may be a TemplateNode or a ReferenceNode though.
+        # Current name may be a TemplateFunctionNode or a ReferenceNode though.
 
-        template_call_value = None
-        if isinstance(current_name, (TemplateNode, ReferenceNode)):
-            template_call_value = TemplateCallNode(current_name, \
-                self.character).run(memory=memory)
+        is_instantiation_or_call = False
+        if isinstance(current_name, (TemplateFunctionNode, ReferenceNode)):
+            is_instantiation_or_call = True
+            instance_or_call_value = TemplateInstantiateFunctionCallNode(\
+                current_name, self.character).run(memory=memory)
 
         if len(self.names) == 1:
-            if template_call_value is not None:
-                return template_call_value
+            if is_instantiation_or_call:
+                return instance_or_call_value
             try:
                 return memory[current_name]
             except KeyError:
@@ -127,13 +131,13 @@ class ReferenceNode(UnderscoreNode):
             self.character
         )
 
-        if template_call_value is not None:
-            if not isinstance(template_call_value, dict):
+        if is_instantiation_or_call:
+            if not isinstance(instance_or_call_value, dict):
                 raise UnderscoreNameError(
                     '{} does not contain any names'.format(current_name),
                     self.character
                 )
-            return new_node.run(memory=template_call_value)
+            return new_node.run(memory=instance_or_call_value)
 
         #Or, if the current one is not a node
         try:
@@ -149,7 +153,10 @@ class ReferenceNode(UnderscoreNode):
             )
 
 
-class TemplateNode(UnderscoreNode):
+class TemplateFunctionNode(UnderscoreNode):
+    """
+    A function has returns=something.
+    """
     def __init__(self, sections, returns=None):
         self.sections = sections
         self.internal_memory = {}
@@ -176,8 +183,7 @@ class TemplateNode(UnderscoreNode):
                     **kwargs
                 )
             if self.returns is not None:
-                node = self.returns
-                return node.run(
+                return self.returns.run(
                     memory=self.internal_memory,
                     *args,
                     **kwargs
@@ -186,9 +192,12 @@ class TemplateNode(UnderscoreNode):
         return template
 
 
-class TemplateCallNode(UnderscoreNode):
+class TemplateInstantiateFunctionCallNode(UnderscoreNode):
+    """
+    This is also used for function calls.
+    """
     def __init__(self, template, character):
-        # Template may be a TemplateNode or a ReferenceNode
+        # Template may be a TemplateFunctionNode or a ReferenceNode
         self.template = template
         self.character = character
 
