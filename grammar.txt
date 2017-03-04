@@ -23,9 +23,10 @@ replaced by any number (including zero) of spaces.
 <function_call>::=(<function>|<single_name>)? <passable_expressions>
 <function>::='function ' <passable_expressions> '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
-<term>::=('(' <expression> ')')|<multiplication>|<division>
-<multiplication>::=<term> ' * ' <term>
-<division>::=<term> ' / ' <term>
+<term>::=<multiplication>|<division>|<non_expandable_term>
+<multiplication>::=<non_expandable_term> ' * ' <term>
+<non_expandable_term>::=('(' <expression> ')')|<object>
+<division>::=<non_expandable_term> ' / ' <term>
 <subtraction>::=<term> ' - ' (<term>|<addition>|<subtraction>)
 <boolean_expression>::=<boolean_statement>((' AND '|' OR ')<boolean_statement>)*
 <boolean_statement>::=<object>((' == '|' <= '|' >= '|' != ') <object)?

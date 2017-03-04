@@ -167,9 +167,15 @@ class TestTemplates(unittest.TestCase):
 
 class TestFunctions(unittest.TestCase):
     def test_return(self):
-        compiled = _.compile_underscore('value=function(){return(5;);}();')
+        compiled = _.compile_underscore(
+            '''
+            value_one = function(){return(5;);}();
+            value_two = function(){return(5);}();
+            '''
+        )
         memory = compiled.run()
-        self.assertEqual(memory['value'], 5)
+        self.assertEqual(memory['value_one'], 5)
+        self.assertEqual(memory['value_two'], 5)
 
     def test_python_callable(self):
         compiled = _.compile_underscore(
@@ -226,55 +232,55 @@ class TestSyntaxErrors(unittest.TestCase):
             _.compile_underscore('3.')
 
 
-# class TestMath(unittest.TestCase):
-#     def test_addition(self):
-#         compiled = _.compile_underscore(
-#             '''
-#             value_1 = 3 + 4;
-#             value_2 = 12.5 + - 18;
-#             '''
-#         )
-#         memory = compiled.run()
-#         self.assertEqual(memory['value_1'], 7)
-#         self.assertEqual(memory['value_2'], 5.5)
+class TestMath(unittest.TestCase):
+    def test_addition(self):
+        compiled = _.compile_underscore(
+            '''
+            value_1 = 3 + 4;
+            value_2 = 12.5 + - 18;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value_1'], 7)
+        self.assertEqual(memory['value_2'], -5.5)
 
-#     def test_subtraction(self):
-#         compiled = _.compile_underscore(
-#             '''
-#             value_1 = 12.1 - 6;
-#             value_2 = -3 - -5;
-#             '''
-#         )
-#         memory = compiled.run()
-#         self.assertEqual(memory['value_1'], 6.1)
-#         self.assertEqual(memory['value_2'], 2)
+    def test_subtraction(self):
+        compiled = _.compile_underscore(
+            '''
+            value_1 = 12.1 - 6;
+            value_2 = -3 - -5;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value_1'], 6.1)
+        self.assertEqual(memory['value_2'], 2)
 
-#     def test_multiplication(self):
-#         compiled = _.compile_underscore(
-#             '''
-#             value = 6 * 9;
-#             '''
-#         )
-#         memory = compiled.run()
-#         self.assertEqual(memory['value'], 54)
+    def test_multiplication(self):
+        compiled = _.compile_underscore(
+            '''
+            value = 6 * 9;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 54)
 
-#     def test_division(self):
-#         compiled = _.compile_underscore(
-#             '''
-#             value = -6 / 0.2;
-#             '''
-#         )
-#         memory = compiled.run()
-#         self.assertEqual(memory['value'], -12)
+    def test_division(self):
+        compiled = _.compile_underscore(
+            '''
+            value = -6 / 0.2;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], -30)
 
-#     def test_brackets(self):
-#         compiled = _.compile_underscore(
-#             '''
-#             value = 6 * (9 - 2);
-#             '''
-#         )
-#         memory = compiled.run()
-#         self.assertEqual(memory['value'], 42)
+    def test_brackets(self):
+        compiled = _.compile_underscore(
+            '''
+            value = 6 * (9 - 2);
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 42)
 
 
 unittest.main()

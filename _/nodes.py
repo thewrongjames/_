@@ -214,3 +214,29 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
                 *args, memory=memory, **kwargs
             )
         return template()
+
+
+class MathNode(UnderscoreNode):
+    def __init__(self, first_term, second_term):
+        self.first_term = first_term
+        self.second_term = second_term
+
+
+class AdditionNode(MathNode):
+    def run(self, *args, **kwargs):
+        return self.first_term.run() + self.second_term.run()
+
+
+class SubtractionNode(MathNode):
+    def run(self, *args, **kwargs):
+        return self.first_term.run() - self.second_term.run()
+
+
+class MultiplicationNode(MathNode):
+    def run(self, *args, **kwargs):
+        return self.first_term.run() * self.second_term.run()
+
+
+class DivisionNode(MathNode):
+    def run(self, *args, **kwargs):
+        return self.first_term.run() / self.second_term.run()

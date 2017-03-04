@@ -1,6 +1,7 @@
 import string
 from .nodes import ProgramNode, StatementNode, ValueNode, ReferenceNode, \
-    TemplateFunctionNode
+    TemplateFunctionNode, AdditionNode, SubtractionNode, MultiplicationNode, \
+    DivisionNode
 from .exceptions import UnderscoreError, UnderscoreIncorrectParserError, \
     UnderscoreNotImplementedError, UnderscoreSyntaxError, \
     UnderscoreCouldNotConsumeError
@@ -38,7 +39,7 @@ class UnderscoreParser:
     def _next(self):
         self.position_in_program += 1
 
-    def _try_consume(self, string_to_consume, needed=False):
+    def _try_consume(self, string_to_consume, needed=False, needed_for_this=False):
         starting_position = self.position_in_program
         string_read = ''
         for character in string_to_consume:
@@ -54,6 +55,8 @@ class UnderscoreParser:
                         ),
                         starting_position
                     )
+                if needed_for_this:
+                    raise UnderscoreIncorrectParserError
                 raise UnderscoreCouldNotConsumeError(
                     'could not consume',
                     string_to_consume
@@ -157,28 +160,31 @@ class UnderscoreParser:
         return name
 
     @surrounding_whitespace_removed
-    def _parse_expression(self):
+    def _parse_expression(self, requires_semi_colon=True):
         valid_parsers = [
-            self._parse_object,
             self._parse_addition,
             self._parse_subtraction,
+            self._parse_term,
+            self._parse_boolean_expression,
+            self._parse_object,
         ]
 
         expression = self._try_parsers(valid_parsers, 'expression')
 
-        if self._peek() is not ';':
+        if self._peek() != ';' and requires_semi_colon:
             raise UnderscoreSyntaxError(
                 "expected ';', got {}".format(
                     self._peek() if self._peek() is not None else 'end of file',
                 ),
                 self.position_in_program,
             )
-        self._next()
+        # If requires_semi_colon is False, it still can end in a semi_colon.
+        if self._peek() == ';':
+            self._next()
         return expression
 
     @surrounding_whitespace_removed
     def _parse_object(self):
-        starting_position = self.position_in_program
         valid_parsers = [
             self._parse_float,
             self._parse_integer,
@@ -203,6 +209,7 @@ class UnderscoreParser:
         if self._peek() in ['+', '-'] and consume_sign:
             string_of_integer += self._peek()
             self._next()
+        self._consume_whitespace()
         if self._peek() not in string.digits:
             raise UnderscoreIncorrectParserError(
                 'expected one of {}, got {}'.format(
@@ -379,7 +386,7 @@ class UnderscoreParser:
         else:
             self._consume_whitespace()
             self._try_consume('(', needed=True)
-            returns = self._parse_expression()
+            returns = self._parse_expression(requires_semi_colon=False)
             self._try_consume(')', needed=True)
             self._consume_whitespace()
             self._try_consume(';', needed=True)
@@ -389,10 +396,64 @@ class UnderscoreParser:
 
     @surrounding_whitespace_removed
     def _parse_addition(self):
-        raise UnderscoreNotImplementedError
+        first_term = self._parse_term()
+        self._try_consume('+', needed_for_this=True)
+        second_term = self._parse_term()
+        return AdditionNode(first_term, second_term)
 
     @surrounding_whitespace_removed
     def _parse_subtraction(self):
+        first_term = self._parse_term()
+        self._try_consume('-', needed_for_this=True)
+        second_term = self._parse_term()
+        return SubtractionNode(first_term, second_term)
+
+    @surrounding_whitespace_removed
+    def _parse_bracketed_expression(self):
+        self._try_consume('(', needed_for_this=True)
+        self._consume_whitespace()
+        expression = self._parse_expression(requires_semi_colon=False)
+        self._consume_whitespace()
+        self._try_consume(')', needed_for_this=True)
+        return expression
+
+    @surrounding_whitespace_removed
+    def _parse_term(self):
+        valid_parsers = [
+            self._parse_multiplication,
+            self._parse_division,
+            self._parse_non_expandable_term,
+        ]
+        return self._try_parsers(valid_parsers, 'term')
+
+    @surrounding_whitespace_removed
+    def _parse_non_expandable_term(self):
+        valid_parsers = [
+            self._parse_object,
+            self._parse_bracketed_expression,
+        ]
+        return self._try_parsers(valid_parsers, 'non expandable term')
+
+    @surrounding_whitespace_removed
+    def _parse_multiplication(self):
+        first_term = self._parse_non_expandable_term()
+        self._consume_whitespace()
+        self._try_consume('*', needed_for_this=True)
+        self._consume_whitespace()
+        second_term = self._parse_term()
+        return MultiplicationNode(first_term, second_term)
+
+    @surrounding_whitespace_removed
+    def _parse_division(self):
+        first_term = self._parse_non_expandable_term()
+        self._consume_whitespace()
+        self._try_consume('/', needed_for_this=True)
+        self._consume_whitespace()
+        second_term = self._parse_term()
+        return DivisionNode(first_term, second_term)
+
+    @surrounding_whitespace_removed
+    def _parse_boolean_expression(self):
         raise UnderscoreNotImplementedError
 
     @surrounding_whitespace_removed
