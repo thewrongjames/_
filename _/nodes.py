@@ -160,37 +160,44 @@ class TemplateFunctionNode(UnderscoreNode):
     """
     def __init__(self, sections, returns=None):
         self.sections = sections
-        self.internal_memory = {}
         self.returns = returns
 
     def __str__(self):
         return self.__repr__()
 
     def run(self, memory, *args, **kwargs):
-        def template():
-            self.internal_memory = {
-                'container': memory
-            }
-            for section in self.sections:
-                section.pre_run(
-                    memory=self.internal_memory,
-                    *args,
-                    **kwargs
-                )
-            for section in self.sections:
-                section.run(
-                    memory=self.internal_memory,
-                    *args,
-                    **kwargs
-                )
-            if self.returns is not None:
-                return self.returns.run(
-                    memory=self.internal_memory,
-                    *args,
-                    **kwargs
-                )
-            return self.internal_memory
-        return template
+        class Template:
+            def __init__(self, sections, returns, memory, *args, **kwargs):
+                self.sections = sections
+                self.returns = returns
+                self.memory = memory
+                self.args = args
+                self.kwargs = kwargs
+
+            def __call__(self):
+                internal_memory = {
+                    'container': self.memory
+                }
+                for section in self.sections:
+                    section.pre_run(
+                        memory=internal_memory,
+                        *self.args,
+                        **self.kwargs
+                    )
+                for section in self.sections:
+                    section.run(
+                        memory=internal_memory,
+                        *self.args,
+                        **self.kwargs
+                    )
+                if self.returns is not None:
+                    return self.returns.run(
+                        memory=internal_memory,
+                        *self.args,
+                        **self.kwargs
+                    )
+                return internal_memory
+        return Template(self.sections, self.returns, memory, *args, **kwargs)
 
 
 class TemplateInstantiateFunctionCallNode(UnderscoreNode):
