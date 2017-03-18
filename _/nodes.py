@@ -1,6 +1,7 @@
 import time
 from copy import deepcopy
-from .exceptions import UnderscoreNameError, UnderscoreValueError
+from .exceptions import UnderscoreNameError, UnderscoreValueError, \
+    UnderscoreTypeError
 
 
 class ProgramNode:
@@ -223,20 +224,60 @@ class MathNode(UnderscoreNode):
 
 
 class AdditionNode(MathNode):
-    def run(self, *args, **kwargs):
-        return self.first_term.run() + self.second_term.run()
+    def run(self, memory, *args, **kwargs):
+        first_value = self.first_term.run(memory)
+        second_value = self.second_term.run(memory)
+        try:
+            return first_value + second_value
+        except TypeError:
+            raise UnderscoreTypeError(
+                'Could not add {} to {}.'.format(
+                    first_value,
+                    second_value
+                )
+            )
 
 
 class SubtractionNode(MathNode):
-    def run(self, *args, **kwargs):
-        return self.first_term.run() - self.second_term.run()
+    def run(self, memory, *args, **kwargs):
+        first_value = self.first_term.run(memory)
+        second_value = self.second_term.run(memory)
+        try:
+            return first_value - second_value
+        except TypeError:
+            raise UnderscoreTypeError(
+                'Could not subtract {} from {}.'.format(
+                    second_value,
+                    first_value
+                )
+            )
 
 
 class MultiplicationNode(MathNode):
-    def run(self, *args, **kwargs):
-        return self.first_term.run() * self.second_term.run()
+    def run(self, memory, *args, **kwargs):
+        first_value = self.first_term.run(memory)
+        second_value = self.second_term.run(memory)
+        try:
+            return first_value * second_value
+        except TypeError:
+            raise UnderscoreTypeError(
+                'Could not multiply {} by {}.'.format(
+                    first_value,
+                    second_value
+                )
+            )
 
 
 class DivisionNode(MathNode):
-    def run(self, *args, **kwargs):
-        return self.first_term.run() / self.second_term.run()
+    def run(self, memory, *args, **kwargs):
+        first_value = self.first_term.run(memory)
+        second_value = self.second_term.run(memory)
+        try:
+            return first_value / second_value
+        except TypeError:
+            raise UnderscoreTypeError(
+                'Could not divide {} by {}.'.format(
+                    first_value,
+                    second_value
+                )
+            )

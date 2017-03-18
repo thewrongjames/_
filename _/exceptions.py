@@ -45,8 +45,14 @@ class UnderscoreCouldNotConsumeError(UnderscoreError):
     """
     pass
 
+
 class UnderscoreNameError(UnderscoreError):
     pass
 
+
 class UnderscoreValueError(UnderscoreError):
+    pass
+
+
+class UnderscoreTypeError(UnderscoreError):
     pass

@@ -236,24 +236,24 @@ class TestMath(unittest.TestCase):
     def test_addition(self):
         compiled = _.compile_underscore(
             '''
-            value_1 = 3 + 4;
-            value_2 = 12.5 + - 18;
+            value_one = 3 + 4;
+            value_two = 12.5 + - 18;
             '''
         )
         memory = compiled.run()
-        self.assertEqual(memory['value_1'], 7)
-        self.assertEqual(memory['value_2'], -5.5)
+        self.assertEqual(memory['value_one'], 7)
+        self.assertEqual(memory['value_two'], -5.5)
 
     def test_subtraction(self):
         compiled = _.compile_underscore(
             '''
-            value_1 = 12.1 - 6;
-            value_2 = -3 - -5;
+            value_one = 12.1 - 6;
+            value_two = -3 - -5;
             '''
         )
         memory = compiled.run()
-        self.assertEqual(memory['value_1'], 6.1)
-        self.assertEqual(memory['value_2'], 2)
+        self.assertEqual(memory['value_one'], 6.1)
+        self.assertEqual(memory['value_two'], 2)
 
     def test_multiplication(self):
         compiled = _.compile_underscore(
@@ -282,5 +282,23 @@ class TestMath(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['value'], 42)
 
+    def test_reference(self):
+        compiled = _.compile_underscore(
+            '''
+            value_one = -1/2;
+            value_two = 3 * value_one;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value_two'], -1.5)
+
+    def test_type_error(self):
+        compiled = _.compile_underscore(
+            '''
+            function () {} - 5;
+            '''
+        )
+        with self.assertRaises(_.exceptions.UnderscoreTypeError):
+            compiled.run()
 
 unittest.main()
