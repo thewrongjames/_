@@ -1,10 +1,6 @@
 import string
-from .nodes import ProgramNode, StatementNode, ValueNode, ReferenceNode, \
-    TemplateFunctionNode, AdditionNode, SubtractionNode, MultiplicationNode, \
-    DivisionNode
-from .exceptions import UnderscoreError, UnderscoreIncorrectParserError, \
-    UnderscoreNotImplementedError, UnderscoreSyntaxError, \
-    UnderscoreCouldNotConsumeError
+from . import nodes
+from . import exceptions
 
 
 class UnderscoreParser:
@@ -47,7 +43,7 @@ class UnderscoreParser:
             if self._peek() != character:
                 self.position_in_program = starting_position
                 if needed:
-                    raise UnderscoreSyntaxError(
+                    raise exceptions.UnderscoreSyntaxError(
                         'expected {}, got {}'.format(
                             string_to_consume,
                             string_read if self._peek() is not None else \
@@ -56,8 +52,8 @@ class UnderscoreParser:
                         starting_position
                     )
                 if needed_for_this:
-                    raise UnderscoreIncorrectParserError
-                raise UnderscoreCouldNotConsumeError(
+                    raise exceptions.UnderscoreIncorrectParserError
+                raise exceptions.UnderscoreCouldNotConsumeError(
                     'could not consume',
                     string_to_consume
                 )
@@ -67,7 +63,7 @@ class UnderscoreParser:
         while (self._peek() is not None and self._peek() in string.whitespace):
             self._next()
 
-    def surrounding_whitespace_removed(function):
+    def _surrounding_whitespace_removed(function):
         def decorated(self, *args, **kwargs):
             self._consume_whitespace()
             result = function(self, *args, **kwargs)
@@ -95,7 +91,7 @@ class UnderscoreParser:
                 self._parse_expression,
                 self._parse_control,
             ]
-            none_worked_error = UnderscoreCouldNotConsumeError(
+            none_worked_error = exceptions.UnderscoreCouldNotConsumeError(
                 'found no parsable input'
             )
             parsed_something = False
@@ -103,7 +99,7 @@ class UnderscoreParser:
             for parser in valid_parsers:
                 try:
                     sections.append(parser())
-                except UnderscoreIncorrectParserError:
+                except exceptions.UnderscoreIncorrectParserError:
                     self.position_in_program = starting_position
                 else:
                     parsed_something = True
@@ -114,33 +110,33 @@ class UnderscoreParser:
 
         return sections
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def parse(self, memory_limit=None, time_limit=None):
         sections = self._parse_sections()
-        return ProgramNode(sections, memory_limit, time_limit)
+        return nodes.ProgramNode(sections, memory_limit, time_limit)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_statement(self):
         reference = self._parse_reference()
         if reference.name in self.READ_ONLY_NAMES:
-            raise UnderscoreSyntaxError(
+            raise exceptions.UnderscoreSyntaxError(
                 "cannot assign to name '{}'".format(reference.name),
                 self.position_in_program
             )
         if self._peek() != '=':
-            raise UnderscoreIncorrectParserError()
+            raise exceptions.UnderscoreIncorrectParserError()
         # If we get to here, we know the next character is '='
         self._next()
         expression = self._parse_expression()
-        return StatementNode(reference, expression)
+        return nodes.StatementNode(reference, expression)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_single_name(self):
         name = ''
 
         if self._peek() is None or self._peek() not in \
                 UnderscoreParser.VALID_NAME_FIRST_CHARACTER_CHARACTERS:
-            raise UnderscoreIncorrectParserError(
+            raise exceptions.UnderscoreIncorrectParserError(
                 'expected one of {}, got {}'.format(
                     UnderscoreParser.VALID_NAME_FIRST_CHARACTER_CHARACTERS,
                     self._peek() if self._peek() is not None else 'end of file',
@@ -156,10 +152,10 @@ class UnderscoreParser:
             name += self._peek()
             self._next()
         if name in self.RESERVED_NAMES:
-            raise UnderscoreIncorrectParserError('name was in reserved words')
+            raise exceptions.UnderscoreIncorrectParserError('name was in reserved words')
         return name
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_expression(self, requires_semi_colon=True):
         valid_parsers = [
             self._parse_addition,
@@ -172,7 +168,7 @@ class UnderscoreParser:
         expression = self._try_parsers(valid_parsers, 'expression')
 
         if self._peek() != ';' and requires_semi_colon:
-            raise UnderscoreSyntaxError(
+            raise exceptions.UnderscoreSyntaxError(
                 "expected ';', got {}".format(
                     self._peek() if self._peek() is not None else 'end of file',
                 ),
@@ -183,7 +179,7 @@ class UnderscoreParser:
             self._next()
         return expression
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_object(self):
         valid_parsers = [
             self._parse_float,
@@ -205,13 +201,13 @@ class UnderscoreParser:
         """
         string_of_integer = ''
         if self._peek() is None:
-            raise UnderscoreIncorrectParserError
+            raise exceptions.UnderscoreIncorrectParserError
         if self._peek() in ['+', '-'] and consume_sign:
             string_of_integer += self._peek()
             self._next()
         self._consume_whitespace()
         if self._peek() not in string.digits:
-            raise UnderscoreIncorrectParserError(
+            raise exceptions.UnderscoreIncorrectParserError(
                 'expected one of {}, got {}'.format(
                     string.digits,
                     self._peek() if self._peek() is not None else 'end of file',
@@ -223,11 +219,11 @@ class UnderscoreParser:
             self._next()
         return string_of_integer
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_integer(self):
-        return ValueNode(int(self._parse_digits(consume_sign=True)))
+        return nodes.ValueNode(int(self._parse_digits(consume_sign=True)))
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_float(self):
         string_of_float = self._parse_digits(consume_sign=True)
         if self._peek() == '.':
@@ -236,27 +232,27 @@ class UnderscoreParser:
             string_of_float += self._parse_digits(consume_sign=False)
         else:
             # It's an integer.
-            raise UnderscoreIncorrectParserError
+            raise exceptions.UnderscoreIncorrectParserError
         if string_of_float[-1] == '.':
-            raise UnderscoreIncorrectParserError
-        return ValueNode(float(string_of_float))
+            raise exceptions.UnderscoreIncorrectParserError
+        return nodes.ValueNode(float(string_of_float))
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_boolean(self):
         try:
             self._try_consume('true')
-        except UnderscoreCouldNotConsumeError:
+        except exceptions.UnderscoreCouldNotConsumeError:
             pass
         else:
-            return ValueNode(True)
+            return nodes.ValueNode(True)
         try:
             self._try_consume('false')
-        except UnderscoreCouldNotConsumeError:
-            raise UnderscoreIncorrectParserError()
+        except exceptions.UnderscoreCouldNotConsumeError:
+            raise exceptions.UnderscoreIncorrectParserError()
         else:
-            return ValueNode(False)
+            return nodes.ValueNode(False)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_string(self):
         string_starters = ['"""', "'''", '"', "'"]
         string_starter_used = None
@@ -264,16 +260,16 @@ class UnderscoreParser:
         for string_starter in string_starters:
             try:
                 self._try_consume(string_starter)
-            except UnderscoreCouldNotConsumeError:
+            except exceptions.UnderscoreCouldNotConsumeError:
                 pass
             else:
                 string_starter_used = string_starter
         if string_starter_used is None:
-            raise UnderscoreIncorrectParserError()
+            raise exceptions.UnderscoreIncorrectParserError()
         string = ''
         while self._peek(len(string_starter_used)) != string_starter_used:
             if self._peek() is None:
-                raise UnderscoreSyntaxError(
+                raise exceptions.UnderscoreSyntaxError(
                     'expected {}, got end of file'.format(string_starter_used),
                     self.position_in_program
                 )
@@ -281,17 +277,17 @@ class UnderscoreParser:
             self._next()
         for _ in string_starter_used:
             self._next()
-        return ValueNode(string)
+        return nodes.ValueNode(string)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_none(self):
         try:
             self._try_consume('none')
-        except UnderscoreCouldNotConsumeError:
-            raise UnderscoreIncorrectParserError
-        return ValueNode(None)
+        except exceptions.UnderscoreCouldNotConsumeError:
+            raise exceptions.UnderscoreIncorrectParserError
+        return nodes.ValueNode(None)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_reference(self):
         starting_position = self.position_in_program
         names = [self._parse_single_name_or_instantiation_or_call()]
@@ -300,31 +296,31 @@ class UnderscoreParser:
             # It is possible that a function is added and is not at the end.
             # The error for that will be raised by the ReferenceNode.
             names.append(self._parse_single_name_or_instantiation_or_call())
-        return ReferenceNode(names, starting_position)
+        return nodes.ReferenceNode(names, starting_position)
 
     def _parse_single_name_or_instantiation_or_call(self):
         starting_position = self.position_in_program
         try:
             return self._parse_instantiation_or_call()
-        except UnderscoreIncorrectParserError:
+        except exceptions.UnderscoreIncorrectParserError:
             self.position_in_program = starting_position
             return self._parse_single_name()
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_passable_expressions(self):
         try:
             self._try_consume('(')
-        except UnderscoreCouldNotConsumeError:
-            raise UnderscoreIncorrectParserError
+        except exceptions.UnderscoreCouldNotConsumeError:
+            raise exceptions.UnderscoreIncorrectParserError
         self._consume_whitespace()
         # More stuff should happen in here eventually.
         try:
             self._try_consume(')')
-        except UnderscoreCouldNotConsumeError:
-            raise UnderscoreIncorrectParserError
+        except exceptions.UnderscoreCouldNotConsumeError:
+            raise exceptions.UnderscoreIncorrectParserError
         # This should return something eventually.
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_instantiation_or_call(self):
         """
         This will return either a reference node a template, or a function.
@@ -334,29 +330,29 @@ class UnderscoreParser:
         starting_position = self.position_in_program
         try:
             instantiation_or_call = self._parse_template()
-        except UnderscoreIncorrectParserError:
+        except exceptions.UnderscoreIncorrectParserError:
             try:
                 instantiation_or_call = self._parse_function()
-            except UnderscoreIncorrectParserError:
+            except exceptions.UnderscoreIncorrectParserError:
                 self.position_in_program = starting_position
-                instantiation_or_call = ReferenceNode(
+                instantiation_or_call = nodes.ReferenceNode(
                     [self._parse_single_name()],
                     starting_position
                 )
         # The below stuff should eventually be assigned to something.
         try:
             self._parse_passable_expressions()
-        except UnderscoreIncorrectParserError:
+        except exceptions.UnderscoreIncorrectParserError:
             self.position_in_program = starting_position
             raise
         return instantiation_or_call
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_template(self):
         try:
             self._try_consume('template')
-        except UnderscoreCouldNotConsumeError:
-            raise UnderscoreIncorrectParserError()
+        except exceptions.UnderscoreCouldNotConsumeError:
+            raise exceptions.UnderscoreIncorrectParserError()
         # The below stuff should eventually be assigned to something.
         self._parse_passable_expressions()
         # The above line may error, but, that is okay. Until you are past that
@@ -366,22 +362,22 @@ class UnderscoreParser:
         self._consume_whitespace()
         sections = self._parse_sections(['}'])
         self._try_consume('}', needed=True)
-        return TemplateFunctionNode(sections, None)
+        return nodes.TemplateFunctionNode(sections, None)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_function(self):
         try:
             self._try_consume('function')
-        except UnderscoreCouldNotConsumeError:
-            raise UnderscoreIncorrectParserError()
+        except exceptions.UnderscoreCouldNotConsumeError:
+            raise exceptions.UnderscoreIncorrectParserError()
         self._parse_passable_expressions()
         self._try_consume('{', needed=True)
         self._consume_whitespace()
         sections = self._parse_sections(['}', 'return'])
-        returns = ValueNode(None)
+        returns = nodes.ValueNode(None)
         try:
             self._try_consume('return')
-        except UnderscoreCouldNotConsumeError:
+        except exceptions.UnderscoreCouldNotConsumeError:
             pass
         else:
             self._consume_whitespace()
@@ -392,23 +388,23 @@ class UnderscoreParser:
             self._try_consume(';', needed=True)
             self._consume_whitespace()
         self._try_consume('}', needed=True)
-        return TemplateFunctionNode(sections, returns)
+        return nodes.TemplateFunctionNode(sections, returns)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_addition(self):
         first_term = self._parse_term()
         self._try_consume('+', needed_for_this=True)
         second_term = self._parse_term()
-        return AdditionNode(first_term, second_term)
+        return nodes.AdditionNode(first_term, second_term)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_subtraction(self):
         first_term = self._parse_term()
         self._try_consume('-', needed_for_this=True)
         second_term = self._parse_term()
-        return SubtractionNode(first_term, second_term)
+        return nodes.SubtractionNode(first_term, second_term)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_bracketed_expression(self):
         self._try_consume('(', needed_for_this=True)
         self._consume_whitespace()
@@ -417,7 +413,7 @@ class UnderscoreParser:
         self._try_consume(')', needed_for_this=True)
         return expression
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_term(self):
         valid_parsers = [
             self._parse_multiplication,
@@ -426,7 +422,7 @@ class UnderscoreParser:
         ]
         return self._try_parsers(valid_parsers, 'term')
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_non_expandable_term(self):
         valid_parsers = [
             self._parse_object,
@@ -434,31 +430,31 @@ class UnderscoreParser:
         ]
         return self._try_parsers(valid_parsers, 'non expandable term')
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_multiplication(self):
         first_term = self._parse_non_expandable_term()
         self._consume_whitespace()
         self._try_consume('*', needed_for_this=True)
         self._consume_whitespace()
         second_term = self._parse_term()
-        return MultiplicationNode(first_term, second_term)
+        return nodes.MultiplicationNode(first_term, second_term)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_division(self):
         first_term = self._parse_non_expandable_term()
         self._consume_whitespace()
         self._try_consume('/', needed_for_this=True)
         self._consume_whitespace()
         second_term = self._parse_term()
-        return DivisionNode(first_term, second_term)
+        return nodes.DivisionNode(first_term, second_term)
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_boolean_expression(self):
-        raise UnderscoreNotImplementedError
+        raise exceptions.UnderscoreNotImplementedError
 
-    @surrounding_whitespace_removed
+    @_surrounding_whitespace_removed
     def _parse_control(self):
-        raise UnderscoreNotImplementedError
+        raise exceptions.UnderscoreNotImplementedError
 
     def _try_parsers(self, parsers, expected=None, needed=False):
         # If there is no value given to expected, this can silently return None.
@@ -466,19 +462,19 @@ class UnderscoreParser:
         one_worked = False
         if expected is not None:
             if needed:
-                none_worked_error = UnderscoreSyntaxError(
+                none_worked_error = exceptions.UnderscoreSyntaxError(
                     'expected {}'.format(expected),
                     starting_position
                 )
             else:
-                none_worked_error = UnderscoreIncorrectParserError()
+                none_worked_error = exceptions.UnderscoreIncorrectParserError()
         else:
             none_worked_error = None
 
         for parser in parsers:
             try:
                 return parser()
-            except UnderscoreIncorrectParserError:
+            except exceptions.UnderscoreIncorrectParserError:
                 self.position_in_program = starting_position
             else:
                 one_worked = True

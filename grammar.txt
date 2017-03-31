@@ -29,7 +29,7 @@ replaced by any number (including zero) of spaces.
 <division>::=<non_expandable_term> ' / ' <term>
 <subtraction>::=<term> ' - ' (<term>|<addition>|<subtraction>)
 <boolean_expression>::=<boolean_statement>((' AND '|' OR ')<boolean_statement>)*
-<boolean_statement>::=<object>((' == '|' <= '|' >= '|' != ') <object)?
+<boolean_statement>::=<object>((' == '|' <= '|' < '|' >= '|' > '|' != ') <object>)?
 <control>::=<if>|<while>
 <if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else if ( ' <expression> ' ) { ' <S> ' }')* (' else ( ' <expression> ' ) { ' <S> ' }')?
 <while>::='while (' <expression> ') {' <S> '}'

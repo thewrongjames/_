@@ -1,5 +1,4 @@
 import time
-from copy import deepcopy
 from .exceptions import UnderscoreNameError, UnderscoreValueError, \
     UnderscoreTypeError
 
