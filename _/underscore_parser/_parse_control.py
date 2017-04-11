@@ -1,3 +1,4 @@
+from _ import exceptions
 from ._surrounding_whitespace_removed import _surrounding_whitespace_removed
 
 @_surrounding_whitespace_removed
