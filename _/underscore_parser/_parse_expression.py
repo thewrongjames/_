@@ -1,6 +1,6 @@
 from _ import nodes
 from _ import exceptions
-from ._surrounding_whitespace_removed import _surrounding_whitespace_removed
+from .whitespace import _surrounding_whitespace_removed
 
 @_surrounding_whitespace_removed
 def _parse_expression(
@@ -45,5 +45,5 @@ def _parse_expression(
         )
     # If it should have a semi colon, it is consumed here.
     if self._peek() == ';' and has_semi_colon:
-        self._next()
+        self.position_in_program += 1
     return expression

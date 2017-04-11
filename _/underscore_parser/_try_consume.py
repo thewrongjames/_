@@ -27,4 +27,4 @@ def _try_consume(
                 'could not consume',
                 string_to_consume
             )
-        self._next()
+        self.position_in_program += 1

@@ -1,6 +1,28 @@
 from _ import nodes
 from _ import exceptions
-from ._surrounding_whitespace_removed import _surrounding_whitespace_removed
+from .whitespace import _surrounding_whitespace_removed
+
+
+@_surrounding_whitespace_removed
+def _parse_reference(self):
+    starting_position = self.position_in_program
+    names = [self._parse_single_name_or_instantiation_or_call()]
+    while self._peek() == '.':
+        self.position_in_program += 1
+        # It is possible that a function is added and is not at the end.
+        # The error for that will be raised by the ReferenceNode.
+        names.append(self._parse_single_name_or_instantiation_or_call())
+    return nodes.ReferenceNode(names, starting_position)
+
+
+def _parse_single_name_or_instantiation_or_call(self):
+    starting_position = self.position_in_program
+    try:
+        return self._parse_instantiation_or_call()
+    except exceptions.UnderscoreIncorrectParserError:
+        self.position_in_program = starting_position
+        return self._parse_single_name()
+
 
 @_surrounding_whitespace_removed
 def _parse_instantiation_or_call(self):

@@ -1,6 +1,6 @@
 from _ import nodes
 from _ import exceptions
-from ._surrounding_whitespace_removed import _surrounding_whitespace_removed
+from .whitespace import _surrounding_whitespace_removed
 
 @_surrounding_whitespace_removed
 def _parse_template(self):
