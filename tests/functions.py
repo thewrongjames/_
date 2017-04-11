@@ -6,18 +6,16 @@ class TestFunctions(unittest.TestCase):
     def test_return(self):
         compiled = _.compile_underscore(
             '''
-            value_one = function(){return(5;);}();
-            value_two = function(){return(5);}();
+            value = function(){return(5);}();
             '''
         )
         memory = compiled.run()
-        self.assertEqual(memory['value_one'], 5)
-        self.assertEqual(memory['value_two'], 5)
+        self.assertEqual(memory['value'], 5)
 
     def test_python_callable(self):
         compiled = _.compile_underscore(
             '''
-            instance = function(){return('bar';);};
+            instance = function(){return('bar');};
             '''
         )
         memory = compiled.run()

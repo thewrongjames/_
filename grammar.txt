@@ -21,15 +21,17 @@ replaced by any number (including zero) of spaces.
 <reference>::=((<single_name>|<template_instantiation>)'.')*<function_call>
 <template_instantiation>::=(<template>|<single_name>)? <passable_expressions>
 <function_call>::=(<function>|<single_name>)? <passable_expressions>
-<function>::='function ' <passable_expressions> '{ ' <S> ('return ( ' <expression> ' ) ; ')? ' } '
+<function>::='function ' <passable_expressions> '{ ' <S> ('return ( ' <expression_without_semi_colon> ' ) ; ')? ' } '
+<expression_without_semi_colon>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=<multiplication>|<division>|<non_expandable_term>
 <multiplication>::=<non_expandable_term> ' * ' <term>
-<non_expandable_term>::=('(' <expression> ')')|<object>
+<non_expandable_term>::=('(' <expression_without_semi_colon> ')')|<object>
 <division>::=<non_expandable_term> ' / ' <term>
 <subtraction>::=<term> ' - ' (<term>|<addition>|<subtraction>)
-<boolean_expression>::=<boolean_statement>((' AND '|' OR ')<boolean_statement>)*
-<boolean_statement>::=<object>((' == '|' <= '|' < '|' >= '|' > '|' != ') <object>)?
+<boolean_expression>::=(' NOT ')?<boolean_statement>((' AND '|' OR ')(' NOT ')?<boolean_statement>)*
+<boolean_statement>::=<non_boolean_expression>(' == '|' <= '|' < '|' >= '|' > '|' != ')<non_boolean_expression>
+<non_boolean_expression>::=(<object>|<addition>|<subtraction>|<term>|)
 <control>::=<if>|<while>
 <if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else if ( ' <expression> ' ) { ' <S> ' }')* (' else ( ' <expression> ' ) { ' <S> ' }')?
 <while>::='while (' <expression> ') {' <S> '}'
@@ -39,6 +41,7 @@ Please note that there are reserved words that cannot be a single_name. These ar
     else
     while
     template
+    function
     return
     true
     false

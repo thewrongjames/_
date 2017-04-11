@@ -5,10 +5,10 @@ import unittest
 class TestBooleanStatements(unittest.TestCase):
     def test_equality(self):
         compiled = _.compile_underscore(
-            '''
-            value_one = 5 == 5;
-            value_two = 6 == 9;
-            '''
+        '''
+        value_one = 5 == 5;
+        value_two = 6 == 9;
+        '''
         )
         memory = compiled.run()
         self.assertEqual(memory['value_one'], True)
@@ -16,11 +16,11 @@ class TestBooleanStatements(unittest.TestCase):
 
     def test_smaller_than_or_equal_to(self):
         compiled = _.compile_underscore(
-            '''
-            value_one = 5 <= 5;
-            value_two = -3.2 <= -85/6;
-            value_three = 1 <= 2;
-            '''
+        '''
+        value_one = 5 <= 5;
+        value_two = -3.2 <= -85/6;
+        value_three = 1 <= 2;
+        '''
         )
         memory = compiled.run()
         self.assertEqual(memory['value_one'], True)
@@ -49,7 +49,7 @@ class TestBooleanStatements(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['value_one'], True)
         self.assertEqual(memory['value_two'], False)
-        self.assertEqual(memory['value_three'], False)
+        self.assertEqual(memory['value_three'], True)
 
     def test_greater_than(self):
         compiled = _.compile_underscore(
@@ -59,8 +59,8 @@ class TestBooleanStatements(unittest.TestCase):
             '''
         )
         memory = compiled.run()
-        self.assertEqual(memory['value_one'], True)
-        self.assertEqual(memory['value_two'], False)
+        self.assertEqual(memory['value_one'], False)
+        self.assertEqual(memory['value_two'], True)
 
     def test_inequality(self):
         compiled = _.compile_underscore(
