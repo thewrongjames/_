@@ -1,5 +1,6 @@
 from _ import exceptions
 
+
 def _try_consume(
         self,
         string_to_consume,

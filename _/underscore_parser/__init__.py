@@ -21,7 +21,6 @@ class UnderscoreParser:
 
     def __init__(self, program):
         self.program = program
-        self.length_of_program = len(program)
         self.position_in_program = 0
 
     def _peek(self, look_ahead_distance=1):
