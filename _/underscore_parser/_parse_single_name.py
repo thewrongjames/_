@@ -15,10 +15,10 @@ def parse_single_name(self):
             ),
             self.position_in_program,
         )
-    # As self.VALID_NAME_FIRST_CHARACTER_CHARACTERS is a subset
-    # of self.VALID_NAME_NON_FIRST_CHARACTER_CHARACTERS, we can
-    # now move straight on to taking any non first character character,
-    # because that will also take the first character.
+    # As self.VALID_NAME_FIRST_CHARACTER_CHARACTERS is a subset of
+    # self.VALID_NAME_NON_FIRST_CHARACTER_CHARACTERS, we can now move straight
+    # on to taking any non first character character, because that will also
+    # take the first character.
     while self._peek() is not None and self._peek() in \
             self.VALID_NAME_NON_FIRST_CHARACTER_CHARACTERS:
         name += self._peek()

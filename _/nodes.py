@@ -157,9 +157,10 @@ class TemplateFunctionNode(UnderscoreNode):
     """
     A function has returns=something.
     """
-    def __init__(self, sections, returns=None):
+    def __init__(self, sections, returns, names):
         self.sections = sections
         self.returns = returns
+        self.names = names
 
     def __str__(self):
         return self.__repr__()
@@ -204,7 +205,9 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
     This is also used for function calls.
     """
     def __init__(self, template, character):
-        # Template may be a TemplateFunctionNode or a ReferenceNode
+        # Template may be a TemplateFunctionNode or a ReferenceNode. character
+        # refers to the character that the program was up to when this was
+        # parsed.
         self.template = template
         self.character = character
 

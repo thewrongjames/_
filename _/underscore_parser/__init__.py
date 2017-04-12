@@ -44,10 +44,11 @@ class UnderscoreParser:
     from ._references import parse_reference as _parse_reference, \
         parse_single_name_or_instantiation_or_call as \
         _parse_single_name_or_instantiation_or_call, \
-        parse_instantiation_or_call as _parse_instantiation_or_call
+        parse_instantiation_or_call as _parse_instantiation_or_call, \
+        parse_passable_expressions as _parse_passable_expressions
     from ._functions_and_templates import parse_template as _parse_template, \
-        parse_function as _parse_function, parse_passable_expressions as \
-            _parse_passable_expressions
+        parse_function as _parse_function, parse_passable_names as \
+            _parse_passable_names
     from ._maths import parse_addition as _parse_addition, parse_subtraction \
         as _parse_subtraction, parse_bracketed_expression as \
         _parse_bracketed_expression, parse_term as _parse_term, \

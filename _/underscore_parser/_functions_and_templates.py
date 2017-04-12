@@ -9,7 +9,10 @@ def parse_function(self):
         self._try_consume('function')
     except exceptions.UnderscoreCouldNotConsumeError:
         raise exceptions.UnderscoreIncorrectParserError()
-    self._parse_passable_expressions()
+    names = self._parse_passable_names()
+    # The above line may error, but, that is okay. Until you are past that line,
+    # you do not know that you are definately in a template, and not in, say, a
+    # name or reference that begins with 'template'
     self._try_consume('{', needed=True)
     self._consume_whitespace()
     sections = self._parse_sections(['}', 'return'])
@@ -27,7 +30,7 @@ def parse_function(self):
         self._try_consume(';', needed=True)
         self._consume_whitespace()
     self._try_consume('}', needed=True)
-    return nodes.TemplateFunctionNode(sections, returns)
+    return nodes.TemplateFunctionNode(sections, returns, names)
 
 
 @surrounding_whitespace_removed
@@ -36,28 +39,46 @@ def parse_template(self):
         self._try_consume('template')
     except exceptions.UnderscoreCouldNotConsumeError:
         raise exceptions.UnderscoreIncorrectParserError()
-    # The below stuff should eventually be assigned to something.
-    self._parse_passable_expressions()
-    # The above line may error, but, that is okay. Until you are past that
-    # line, you do not know that you are definately in a template, and not
-    # in, say, a name or reference that begins with 'template'
+    names = self._parse_passable_names()
+    # The above line may error, but, that is okay. Until you are past that line,
+    # you do not know that you are definately in a template, and not in, say, a
+    # name or reference that begins with 'template'
     self._try_consume('{', needed=True)
     self._consume_whitespace()
     sections = self._parse_sections(['}'])
     self._try_consume('}', needed=True)
-    return nodes.TemplateFunctionNode(sections, None)
+    return nodes.TemplateFunctionNode(sections, None, names)
 
 
 @surrounding_whitespace_removed
-def parse_passable_expressions(self):
+def parse_passable_names(self):
     try:
         self._try_consume('(')
     except exceptions.UnderscoreCouldNotConsumeError:
         raise exceptions.UnderscoreIncorrectParserError
-    self._consume_whitespace()
-    # More stuff should happen in here eventually.
-    try:
-        self._try_consume(')')
-    except exceptions.UnderscoreCouldNotConsumeError:
-        raise exceptions.UnderscoreIncorrectParserError
-    # This should return something eventually.
+    names = []
+    while self._peek() is not None:
+        self._consume_whitespace()
+
+        try:
+            self._try_consume(')')
+        except exceptions.UnderscoreCouldNotConsumeError:
+            pass
+        else:
+            break
+
+        try:
+            names.append(self._parse_single_name())
+        except exceptions.UnderscoreIncorrectParserError:
+            raise exceptions.UnderscoreSyntaxError(
+                'Expected name, got {}'.format(self.peek())
+            )
+        else:
+            self._consume_whitespace()
+            if self._peek != ')':
+                self._try_consume(',', needed=True)
+
+    if self._peek() is None:
+        raise exceptions.UnderscoreSyntaxError('Expected \')\' got end of file')
+
+    return names

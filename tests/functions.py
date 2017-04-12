@@ -38,3 +38,13 @@ class TestFunctions(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['first_value'], 7)
         self.assertEqual(memory['second_value'], 'bar')
+
+    def test_passing_in(self):
+        compiled = _.compile_underscore(
+            '''
+            add = function(this, that) {
+                return (this + that);
+            }
+            eight = add(3, 5);
+            '''
+        )
