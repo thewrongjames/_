@@ -3,12 +3,10 @@ All whitespace is ignored, meaning that any spaces in the grammar may also be
 replaced by any number (including zero) of spaces.
 
 <S>::=(<statement>|<expression>|<control>)*
-<statement>::=<name> ' = ' <expression>
-<name>::=<single_name>('.'<single_name>)*
+<statement>::=<reference> ' = ' <expression>
 <single_name>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
-<passable_expressions>::= ' ( ' ( <expression> (', ' <expression>)* )? ' ) '
 <expression>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
 <object>::=<integer>|<float>|<boolean>|<string>|<none>|<template>|<reference>|<function>
 <integer>::=[+-]?<digit>+
@@ -16,12 +14,13 @@ replaced by any number (including zero) of spaces.
 <boolean>::='true'|'false'
 <string>::="'"<character>*"'"|'"'<character>*'"'|"'''"<character>*"'''"|'"""'<character>*'"""'
 <none>::='none'
-<template>::='template ' <passable_expressions>? '{ ' <S> ' } '
-<reference>::=(<single_name>|<template_instantiation>)('.'(<single_name>|<template_instantiation>))*
-<reference>::=((<single_name>|<template_instantiation>)'.')*<function_call>
+<template>::='template ' <passable_names>? '{ ' <S> ' } '
+<passable_names>::= ' ( ' ( <single_name> (', ' <single_name>)* )? ' ) '
+<reference>::=(<single_name>|<template_instantiation>|<function_call>)('.'(<single_name>|<template_instantiation>|<function_call>))*
 <template_instantiation>::=(<template>|<single_name>)? <passable_expressions>
+<passable_expressions>::= ' ( ' ( <expression> (', ' <expression>)* )? ' ) '
 <function_call>::=(<function>|<single_name>)? <passable_expressions>
-<function>::='function ' <passable_expressions> '{ ' <S> ('return ( ' <expression_without_semi_colon> ' ) ; ')? ' } '
+<function>::='function ' <passable_names> '{ ' <S> ('return ( ' <expression_without_semi_colon> ' ) ; ')? ' } '
 <expression_without_semi_colon>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=<multiplication>|<division>|<non_expandable_term>
@@ -32,7 +31,7 @@ replaced by any number (including zero) of spaces.
 <boolean_expression>::=(' NOT ')?<boolean_statement>((' AND '|' OR ')(' NOT ')?<boolean_statement>)*
 <boolean_statement>::=<non_boolean_expression>(' == '|' <= '|' < '|' >= '|' > '|' != ')<non_boolean_expression>
 <non_boolean_expression>::=(<object>|<addition>|<subtraction>|<term>|)
-<control>::=<if>|<while>
+<control>::=(<if>|<while>)' ; '
 <if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else if ( ' <expression> ' ) { ' <S> ' }')* (' else ( ' <expression> ' ) { ' <S> ' }')?
 <while>::='while (' <expression> ') {' <S> '}'
 

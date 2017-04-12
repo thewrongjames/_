@@ -75,7 +75,7 @@ def parse_passable_expressions(self):
             )
         else:
             self._consume_whitespace()
-            if self._peek != ')':
+            if self._peek() != ')':
                 self._try_consume(',', needed=True)
 
     if self._peek() is None:
