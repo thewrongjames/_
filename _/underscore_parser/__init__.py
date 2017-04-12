@@ -41,22 +41,22 @@ class UnderscoreParser:
         parse_digits as _parse_digits, parse_integer as _parse_integer, \
         parse_float as _parse_float, parse_boolean as _parse_boolean, \
         parse_string as _parse_string, parse_none as _parse_none
-    from ._parse_references import parse_reference as _parse_reference, \
+    from ._references import parse_reference as _parse_reference, \
         parse_single_name_or_instantiation_or_call as \
         _parse_single_name_or_instantiation_or_call, \
         parse_instantiation_or_call as _parse_instantiation_or_call
     from ._parse_passable_expressions import parse_passable_expressions as \
         _parse_passable_expressions
-    from ._parse_template import parse_template as _parse_template
-    from ._parse_function import parse_function as _parse_function
-    from ._parse_maths import parse_addition as _parse_addition, \
-        parse_subtraction as _parse_subtraction, parse_bracketed_expression as \
+    from ._functions_and_templates import parse_template as _parse_template, \
+        parse_function as _parse_function
+    from ._maths import parse_addition as _parse_addition, parse_subtraction \
+        as _parse_subtraction, parse_bracketed_expression as \
         _parse_bracketed_expression, parse_term as _parse_term, \
         parse_non_expandable_term as _parse_non_expandable_term, \
         parse_multiplication as _parse_multiplication, parse_division as \
         _parse_division
-    from ._parse_boolean_expressions import parse_boolean_expression as \
+    from ._boolean_expressions import parse_boolean_expression as \
         _parse_boolean_expression, parse_boolean_statement as \
         _parse_boolean_statement
-    from ._parse_control import parse_control as _parse_control
+    from ._controls import parse_control as _parse_control
     from ._try_parsers import try_parsers as _try_parsers
