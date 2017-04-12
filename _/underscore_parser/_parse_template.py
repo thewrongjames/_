@@ -1,10 +1,10 @@
 from _ import nodes
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_template(self):
+@surrounding_whitespace_removed
+def parse_template(self):
     try:
         self._try_consume('template')
     except exceptions.UnderscoreCouldNotConsumeError:

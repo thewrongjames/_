@@ -1,7 +1,7 @@
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_control(self):
+@surrounding_whitespace_removed
+def parse_control(self):
     raise exceptions.UnderscoreNotImplementedError

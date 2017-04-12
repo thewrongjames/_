@@ -1,15 +1,15 @@
 from _ import nodes
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_boolean_expression(self):
+@surrounding_whitespace_removed
+def parse_boolean_expression(self):
     return self._parse_boolean_statement()
 
 
-@_surrounding_whitespace_removed
-def _parse_boolean_statement(self):
+@surrounding_whitespace_removed
+def parse_boolean_statement(self):
     first_expression = self._parse_expression(
         has_semi_colon=False,
         parsers_to_not_allow=[self._parse_boolean_expression]

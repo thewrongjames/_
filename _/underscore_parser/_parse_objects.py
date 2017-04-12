@@ -1,11 +1,11 @@
 import string
 from _ import nodes
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_object(self):
+@surrounding_whitespace_removed
+def parse_object(self):
     valid_parsers = [
         self._parse_float,
         self._parse_integer,
@@ -19,8 +19,8 @@ def _parse_object(self):
     return self._try_parsers(valid_parsers, 'object')
 
 
-@_surrounding_whitespace_removed
-def _parse_float(self):
+@surrounding_whitespace_removed
+def parse_float(self):
     string_of_float = self._parse_digits(consume_sign=True)
     if self._peek() == '.':
         string_of_float += '.'
@@ -34,7 +34,7 @@ def _parse_float(self):
     return nodes.ValueNode(float(string_of_float))
 
 
-def _parse_digits(self, consume_sign):
+def parse_digits(self, consume_sign):
     """
     Consumes as many digits as it can, but, may also first consume a single
     '+' or '-' if consume sign is True. It then returns the string of what
@@ -61,13 +61,13 @@ def _parse_digits(self, consume_sign):
     return string_of_integer
 
 
-@_surrounding_whitespace_removed
-def _parse_integer(self):
+@surrounding_whitespace_removed
+def parse_integer(self):
     return nodes.ValueNode(int(self._parse_digits(consume_sign=True)))
 
 
-@_surrounding_whitespace_removed
-def _parse_boolean(self):
+@surrounding_whitespace_removed
+def parse_boolean(self):
     try:
         self._try_consume('true')
     except exceptions.UnderscoreCouldNotConsumeError:
@@ -82,8 +82,8 @@ def _parse_boolean(self):
         return nodes.ValueNode(False)
 
 
-@_surrounding_whitespace_removed
-def _parse_string(self):
+@surrounding_whitespace_removed
+def parse_string(self):
     string_starters = ['"""', "'''", '"', "'"]
     string_starter_used = None
     first_character = self._peek()
@@ -110,8 +110,8 @@ def _parse_string(self):
     return nodes.ValueNode(string)
 
 
-@_surrounding_whitespace_removed
-def _parse_none(self):
+@surrounding_whitespace_removed
+def parse_none(self):
     try:
         self._try_consume('none')
     except exceptions.UnderscoreCouldNotConsumeError:

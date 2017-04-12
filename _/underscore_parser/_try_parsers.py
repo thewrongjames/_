@@ -1,7 +1,7 @@
 from _ import exceptions
 
 
-def _try_parsers(self, parsers, expected=None, needed=False):
+def try_parsers(self, parsers, expected=None, needed=False):
     # If there is no value given to expected, this can silently return None.
     starting_position = self.position_in_program
     one_worked = False

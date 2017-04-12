@@ -1,9 +1,9 @@
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_passable_expressions(self):
+@surrounding_whitespace_removed
+def parse_passable_expressions(self):
     try:
         self._try_consume('(')
     except exceptions.UnderscoreCouldNotConsumeError:

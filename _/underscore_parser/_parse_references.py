@@ -1,10 +1,10 @@
 from _ import nodes
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_reference(self):
+@surrounding_whitespace_removed
+def parse_reference(self):
     starting_position = self.position_in_program
     names = [self._parse_single_name_or_instantiation_or_call()]
     while self._peek() == '.':
@@ -15,7 +15,7 @@ def _parse_reference(self):
     return nodes.ReferenceNode(names, starting_position)
 
 
-def _parse_single_name_or_instantiation_or_call(self):
+def parse_single_name_or_instantiation_or_call(self):
     starting_position = self.position_in_program
     try:
         return self._parse_instantiation_or_call()
@@ -24,8 +24,8 @@ def _parse_single_name_or_instantiation_or_call(self):
         return self._parse_single_name()
 
 
-@_surrounding_whitespace_removed
-def _parse_instantiation_or_call(self):
+@surrounding_whitespace_removed
+def parse_instantiation_or_call(self):
     """
     This will return either a reference node a template, or a function.
     These will be fed to a reference node which will work out what to do

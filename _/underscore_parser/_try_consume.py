@@ -1,7 +1,7 @@
 from _ import exceptions
 
 
-def _try_consume(
+def try_consume(
         self,
         string_to_consume,
         needed=False,

@@ -1,10 +1,10 @@
 from _ import nodes
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_expression(
+@surrounding_whitespace_removed
+def parse_expression(
         self,
         has_semi_colon=True,
         parsers_to_not_allow=[]

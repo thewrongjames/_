@@ -1,15 +1,15 @@
 from _ import nodes
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
+@surrounding_whitespace_removed
 def parse(self, memory_limit=None, time_limit=None):
     sections = self._parse_sections()
     return nodes.ProgramNode(sections, memory_limit, time_limit)
 
 
-def _parse_sections(self, break_at=[]):
+def parse_sections(self, break_at=[]):
     sections = []
 
     while True:

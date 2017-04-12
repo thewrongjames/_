@@ -1,9 +1,9 @@
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_single_name(self):
+@surrounding_whitespace_removed
+def parse_single_name(self):
     name = ''
 
     if self._peek() is None or self._peek() not in \

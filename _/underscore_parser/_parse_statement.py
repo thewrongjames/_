@@ -1,10 +1,10 @@
 from _ import nodes
 from _ import exceptions
-from .whitespace import _surrounding_whitespace_removed
+from ._whitespace import surrounding_whitespace_removed
 
 
-@_surrounding_whitespace_removed
-def _parse_statement(self):
+@surrounding_whitespace_removed
+def parse_statement(self):
     reference = self._parse_reference()
     if reference.name in self.READ_ONLY_NAMES:
         raise exceptions.UnderscoreSyntaxError(
