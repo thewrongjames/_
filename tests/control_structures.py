@@ -5,7 +5,7 @@ import unittest
 class TestControlStructures(unittest.TestCase):
     def test_if(self):
         return
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
             value_one = 5;
             if (false) {
@@ -22,7 +22,7 @@ class TestControlStructures(unittest.TestCase):
 
     def test_else(self):
         return
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
             if (2 >= -0.3) {
                 value = none;
@@ -36,7 +36,7 @@ class TestControlStructures(unittest.TestCase):
 
     def test_else_if(self):
         return
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
 
             '''

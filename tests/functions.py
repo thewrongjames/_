@@ -4,7 +4,7 @@ import unittest
 
 class TestFunctions(unittest.TestCase):
     def test_return(self):
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
             value = function(){return(5);}();
             '''
@@ -13,7 +13,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['value'], 5)
 
     def test_python_callable(self):
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
             instance = function(){return('bar');};
             '''
@@ -22,7 +22,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['instance'](), 'bar')
 
     def test_method_like_behaviour(self):
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
             instance = template(){
                 value = 7;
@@ -40,7 +40,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['second_value'], 'bar')
 
     def test_passing_in(self):
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
             add = function(this, that) {
                 return (this + that);
@@ -52,7 +52,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['eight'], 8)
 
     def test_name_expression_mismatch(self):
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
             function_ = function(this, that) {};
             call = function_(1);
@@ -66,7 +66,7 @@ class TestFunctions(unittest.TestCase):
         # Quite a bit needs to be done before this will work.
         # Perhaps I need to make a return node? Something that when run errors
         # in a way that the function catches? And returns what it needs to.
-        compiled = _.compile_underscore(
+        compiled = _.compile_(
             '''
             factorial = function(number) {
                 if (number <= 1) {
