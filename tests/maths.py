@@ -2,7 +2,7 @@ import _
 import unittest
 
 
-class TestMath(unittest.TestCase):
+class TestMaths(unittest.TestCase):
     def test_addition(self):
         compiled = _.compile_underscore(
             '''
