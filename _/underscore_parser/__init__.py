@@ -58,5 +58,6 @@ class UnderscoreParser:
     from ._boolean_expressions import parse_boolean_expression as \
         _parse_boolean_expression, parse_boolean_statement as \
         _parse_boolean_statement
-    from ._controls import parse_control as _parse_control
+    from ._controls import parse_control as _parse_control, parse_if as \
+        _parse_if, parse_while as _parse_while
     from ._try_parsers import try_parsers as _try_parsers
