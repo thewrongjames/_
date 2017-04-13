@@ -61,8 +61,8 @@ class StatementNode(UnderscoreNode):
         """
         Templates are assigned first.
         """
-        memory_to_write_to = self.get_memory_to_write_to(memory)
         if isinstance(self.expression, TemplateFunctionNode):
+            memory_to_write_to = self.get_memory_to_write_to(memory)
             memory_to_write_to[self.last_name] = self.expression.run(
                 memory=memory,
                 *args,
@@ -70,8 +70,8 @@ class StatementNode(UnderscoreNode):
             )
 
     def run(self, memory, *args, **kwargs):
-        memory_to_write_to = self.get_memory_to_write_to(memory)
         if not isinstance(self.expression, TemplateFunctionNode):
+            memory_to_write_to = self.get_memory_to_write_to(memory)
             memory_to_write_to[self.last_name] = self.expression.run(
                 memory,
                 *args,
@@ -89,7 +89,8 @@ class ValueNode(UnderscoreNode):
 
 class ReferenceNode(UnderscoreNode):
     def __init__(self, names, character):
-        # Names should be a list containing either strings of TemplateFunctionNodes.
+        # Names should be a list containing either strings or tuples containing
+        # TemplateFunctionNodes and any expressions passed to them.
         self.names = names
         self.character = character
 
@@ -112,10 +113,11 @@ class ReferenceNode(UnderscoreNode):
         # Current name may be a TemplateFunctionNode or a ReferenceNode though.
 
         is_instantiation_or_call = False
-        if isinstance(current_name, (TemplateFunctionNode, ReferenceNode)):
+        if isinstance(current_name, tuple):
             is_instantiation_or_call = True
             instance_or_call_value = TemplateInstantiateFunctionCallNode(\
-                current_name, self.character).run(memory=memory)
+                current_name[0], self.character, current_name[1]).run(memory=\
+                memory)
 
         if len(self.names) == 1:
             if is_instantiation_or_call:
@@ -166,18 +168,36 @@ class TemplateFunctionNode(UnderscoreNode):
         return self.__repr__()
 
     def run(self, memory, *args, **kwargs):
-        class Template:
-            def __init__(self, sections, returns, memory, *args, **kwargs):
+        class TemplateOrFunction:
+            def __init__(
+                    self,
+                    sections,
+                    returns,
+                    names,
+                    memory,
+                    *args,
+                    **kwargs
+            ):
                 self.sections = sections
                 self.returns = returns
+                self.names = names
                 self.memory = memory
                 self.args = args
                 self.kwargs = kwargs
 
-            def __call__(self):
+            def __call__(self, expressions=[]):
+                if len(expressions) != len(self.names):
+                    raise UnderscoreTypeError(
+                        'number of expressions passed does not match number '
+                        'required'
+
+                    )
                 internal_memory = {
                     'container': self.memory
                 }
+                values = [expression.run() for expression in expressions]
+                for name, value in zip(self.names, values):
+                    internal_memory[name] = value
                 for section in self.sections:
                     section.pre_run(
                         memory=internal_memory,
@@ -197,33 +217,41 @@ class TemplateFunctionNode(UnderscoreNode):
                         **self.kwargs
                     )
                 return internal_memory
-        return Template(self.sections, self.returns, memory, *args, **kwargs)
+        return TemplateOrFunction(
+            self.sections,
+            self.returns,
+            self.names,
+            memory,
+            *args,
+            **kwargs
+        )
 
 
 class TemplateInstantiateFunctionCallNode(UnderscoreNode):
     """
     This is also used for function calls.
     """
-    def __init__(self, template, character):
-        # Template may be a TemplateFunctionNode or a ReferenceNode. character
-        # refers to the character that the program was up to when this was
-        # parsed.
-        self.template = template
+    def __init__(self, template_or_function, character, expressions):
+        # template_of_function may be a TemplateFunctionNode or a ReferenceNode.
+        # character refers to the character that the program was up to when this
+        # was parsed.
+        self.template_or_function = template_or_function
         self.character = character
+        self.expressions = expressions
 
     def run(self, memory, *args, **kwargs):
-        if isinstance(self.template, ReferenceNode):
-            template = self.template.run(memory)
-            if not callable(template):
+        if isinstance(self.template_or_function, ReferenceNode):
+            template_or_function = self.template_or_function.run(memory)
+            if not callable(template_or_function):
                 raise UnderscoreValueError(
                     'reference is not callable',
                     self.character
                 )
         else:
-            template = self.template.run(
+            template_or_function = self.template_or_function.run(
                 *args, memory=memory, **kwargs
             )
-        return template()
+        return template_or_function(self.expressions)
 
 
 class MathNode(UnderscoreNode):
@@ -231,11 +259,14 @@ class MathNode(UnderscoreNode):
         self.first_term = first_term
         self.second_term = second_term
 
-
-class AdditionNode(MathNode):
     def run(self, memory, *args, **kwargs):
         first_value = self.first_term.run(memory)
         second_value = self.second_term.run(memory)
+        return self.specific_maths(first_value, second_value)
+
+
+class AdditionNode(MathNode):
+    def specific_maths(self, first_value, second_value):
         try:
             return first_value + second_value
         except TypeError:
@@ -248,9 +279,7 @@ class AdditionNode(MathNode):
 
 
 class SubtractionNode(MathNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_term.run(memory)
-        second_value = self.second_term.run(memory)
+    def specific_maths(self, first_value, second_value):
         try:
             return first_value - second_value
         except TypeError:
@@ -263,9 +292,7 @@ class SubtractionNode(MathNode):
 
 
 class MultiplicationNode(MathNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_term.run(memory)
-        second_value = self.second_term.run(memory)
+    def specific_maths(self, first_value, second_value):
         try:
             return first_value * second_value
         except TypeError:
@@ -278,9 +305,7 @@ class MultiplicationNode(MathNode):
 
 
 class DivisionNode(MathNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_term.run(memory)
-        second_value = self.second_term.run(memory)
+    def specific_maths(self, first_value, second_value):
         try:
             return first_value / second_value
         except TypeError:

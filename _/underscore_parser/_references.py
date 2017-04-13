@@ -47,7 +47,7 @@ def parse_instantiation_or_call(self):
     except exceptions.UnderscoreIncorrectParserError:
         self.position_in_program = starting_position
         raise
-    return instantiation_or_call
+    return (instantiation_or_call, expressions)
 
 
 @surrounding_whitespace_removed

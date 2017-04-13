@@ -92,3 +92,19 @@ class TestTemplates(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['first_value'], -15.4)
         self.assertEqual(memory['second_value'], True)
+
+    def test_passing_in(self):
+        compiled = _.compile_underscore(
+            '''
+            template_ = template(thing_one, thing_two) {
+                this = thing_one;
+            };
+            instance_one = template_(1, 2);
+            instance_two = template_('false', none);
+            value_one = instance_one.this;
+            value_two = instance_two.thing_two;
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value_one'], 1)
+        self.assertEqual(memory['value_two'], None)

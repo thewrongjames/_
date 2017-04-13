@@ -40,7 +40,6 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['second_value'], 'bar')
 
     def test_passing_in(self):
-        return
         compiled = _.compile_underscore(
             '''
             add = function(this, that) {
@@ -52,17 +51,27 @@ class TestFunctions(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['eight'], 8)
 
+    def test_name_expression_mismatch(self):
+        compiled = _.compile_underscore(
+            '''
+            function_ = function(this, that) {};
+            call = function_(1);
+            '''
+        )
+        with self.assertRaises(_.exceptions.UnderscoreTypeError):
+            compiled.run()
+
     def test_recursion(self):
         return
         # Quite a bit needs to be done before this will work.
         # Perhaps I need to make a return node? Something that when run errors
         # in a way that the function catches? And returns what it needs to.
-        compiled = _compile_underscore(
+        compiled = _.compile_underscore(
             '''
             factorial = function(number) {
                 if (number <= 1) {
                     return (1);
-                }
+                };
                 return (number * factorial(number-1));
             };
             '''
