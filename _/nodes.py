@@ -254,7 +254,7 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
         return template_or_function(self.expressions)
 
 
-class MathNode(UnderscoreNode):
+class MathsNode(UnderscoreNode):
     def __init__(self, first_term, second_term):
         self.first_term = first_term
         self.second_term = second_term
@@ -265,7 +265,7 @@ class MathNode(UnderscoreNode):
         return self.specific_maths(first_value, second_value)
 
 
-class AdditionNode(MathNode):
+class AdditionNode(MathsNode):
     def specific_maths(self, first_value, second_value):
         try:
             return first_value + second_value
@@ -278,7 +278,7 @@ class AdditionNode(MathNode):
             )
 
 
-class SubtractionNode(MathNode):
+class SubtractionNode(MathsNode):
     def specific_maths(self, first_value, second_value):
         try:
             return first_value - second_value
@@ -291,7 +291,7 @@ class SubtractionNode(MathNode):
             )
 
 
-class MultiplicationNode(MathNode):
+class MultiplicationNode(MathsNode):
     def specific_maths(self, first_value, second_value):
         try:
             return first_value * second_value
@@ -304,7 +304,7 @@ class MultiplicationNode(MathNode):
             )
 
 
-class DivisionNode(MathNode):
+class DivisionNode(MathsNode):
     def specific_maths(self, first_value, second_value):
         try:
             return first_value / second_value
