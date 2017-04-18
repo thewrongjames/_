@@ -8,7 +8,7 @@ from .maths import AdditionNode, SubtractionNode, MultiplicationNode, \
     DivisionNode
 from .boolean_statements import EqualityNode, SmallerThanOrEqualToNode, \
     SmallerThanNode, GreaterThanNode, GreaterThanOrEqualToNode, InequalityNode
-from .controls import IfNode
+from .controls import IfNode, WhileNode
 
 class ProgramNode:
     def __init__(self, sections, memory_limit=None, time_limit=None):

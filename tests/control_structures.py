@@ -46,3 +46,15 @@ class TestControlStructures(unittest.TestCase):
         )
         memory = compiled.run()
         self.assertEqual(memory['value'], 'foo')
+
+    def test_while(self):
+        compiled = _.compile_(
+            '''
+            iterator = 0;
+            value = 2;
+            while (iterator < 3) {
+                value = value * 2;
+                iterator = iterator + 1;
+            };
+            '''
+        )

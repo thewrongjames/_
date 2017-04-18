@@ -33,3 +33,24 @@ class IfNode(UnderscoreNode):
                     *args,
                     **kwargs
                 )
+
+
+class WhileNode(UnderscoreNode):
+    def __init__(self, expression, sections):
+        self.expression = expression
+        self.sections = sections
+
+    def run(self, memory, *args, **kwargs):
+        while self.expression.run(memory, *args, **kwargs):
+            for section in self.if_sections:
+                section.pre_run(
+                    memory=memory,
+                    *args,
+                    **kwargs
+                )
+            for section in self.if_sections:
+                section.run(
+                    memory=memory,
+                    *args,
+                    **kwargs
+                )

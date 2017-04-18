@@ -52,4 +52,14 @@ def parse_if(self):
 
 
 def parse_while(self):
-    raise exceptions.UnderscoreNotImplementedError
+    self._try_consume('while', needed_for_this=True)
+    self._consume_whitespace()
+
+    expression = self._parse_passable_expressions(only_one_expression=True)[0]
+
+    self._try_consume('{', needed=True)
+    self._consume_whitespace()
+    sections = self._parse_sections(['}'])
+    self._try_consume('}', needed=True)
+
+    return nodes.WhileNode(expression, sections)
