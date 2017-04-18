@@ -51,6 +51,22 @@ class TestFunctions(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['eight'], 8)
 
+    def test_passing_in_more_complex_expressions(self):
+        compiled = _.compile_(
+            '''
+            add = function(this, that) {
+                return (this + that);
+            };
+            two_point_five = 2.5;
+            negative_fifty_four = -54;
+            value = add(
+                (two_point_five * 2) - 1, negative_fifty_four / (1.5 * 4)
+            );
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], -5)
+
     def test_name_expression_mismatch(self):
         compiled = _.compile_(
             '''
