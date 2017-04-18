@@ -1,3 +1,4 @@
+from _ import nodes
 from _ import exceptions
 from ._whitespace import surrounding_whitespace_removed
 
@@ -8,6 +9,7 @@ def parse_control(self):
     valid_parsers = [self._parse_if, self._parse_while]
 
     control = self._try_parsers(valid_parsers, 'control')
+    self._consume_whitespace()
 
     if self._peek() != ';':
         # The control must be followed by a semi colon.
@@ -24,7 +26,29 @@ def parse_control(self):
 
 
 def parse_if(self):
-    raise exceptions.UnderscoreNotImplementedError
+    self._try_consume('if', needed_for_this=True)
+    self._consume_whitespace()
+
+    expression = self._parse_passable_expressions(only_one_expression=True)[0]
+
+    self._try_consume('{', needed=True)
+    self._consume_whitespace()
+    if_sections = self._parse_sections(['}'])
+    self._try_consume('}', needed=True)
+
+    self._consume_whitespace()
+    try:
+        self._try_consume('else')
+    except exceptions.UnderscoreCouldNotConsumeError:
+        else_sections = []
+    else:
+        self._consume_whitespace()
+        self._try_consume('{', needed=True)
+        self._consume_whitespace()
+        else_sections = self._parse_sections(['}'])
+        self._try_consume('}', needed=True)
+
+    return nodes.IfNode(expression, if_sections, else_sections)
 
 
 def parse_while(self):

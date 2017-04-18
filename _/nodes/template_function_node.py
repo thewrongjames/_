@@ -42,7 +42,9 @@ class TemplateFunctionNode(UnderscoreNode):
                 internal_memory = {
                     'container': self.memory
                 }
-                values = [expression.run() for expression in expressions]
+                values = [
+                    expression.run(self.memory) for expression in expressions
+                ]
                 for name, value in zip(self.names, values):
                     internal_memory[name] = value
                 for section in self.sections:

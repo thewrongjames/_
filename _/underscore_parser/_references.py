@@ -51,19 +51,32 @@ def parse_instantiation_or_call(self):
 
 
 @surrounding_whitespace_removed
-def parse_passable_expressions(self):
+def parse_passable_expressions(self, only_one_expression=False):
     try:
         self._try_consume('(')
     except exceptions.UnderscoreCouldNotConsumeError:
         raise exceptions.UnderscoreIncorrectParserError
     expressions = []
-    while self._peek() is not None:
+    # The while loop has to run twice even if only_one_expression == False, so
+    # that the closing ')' is consumed. The case in which there is not closing
+    # ')' will be handled in the try/except statement handling its consumption.
+    while (
+            self._peek() is not None
+            and (
+                only_one_expression == False
+                or len(expressions) <= 1
+            )
+    ):
         self._consume_whitespace()
 
         try:
             self._try_consume(')')
         except exceptions.UnderscoreCouldNotConsumeError:
-            pass
+            if only_one_expression and len(expressions) >= 1:
+                raise exceptions.UnderscoreSyntaxError(
+                    'Expected \')\', got {}'.format(self._peek()),
+                    self.position_in_program
+                )
         else:
             break
 
@@ -71,7 +84,8 @@ def parse_passable_expressions(self):
             expressions.append(self._parse_expression(has_semi_colon=False))
         except exceptions.UnderscoreIncorrectParserError:
             raise exceptions.UnderscoreSyntaxError(
-                'Expected name, got {}'.format(self.peek())
+                'Expected name, got {}'.format(self._peek()),
+                self.position_in_program
             )
         else:
             self._consume_whitespace()
