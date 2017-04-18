@@ -42,13 +42,13 @@ class WhileNode(UnderscoreNode):
 
     def run(self, memory, *args, **kwargs):
         while self.expression.run(memory, *args, **kwargs):
-            for section in self.if_sections:
+            for section in self.sections:
                 section.pre_run(
                     memory=memory,
                     *args,
                     **kwargs
                 )
-            for section in self.if_sections:
+            for section in self.sections:
                 section.run(
                     memory=memory,
                     *args,

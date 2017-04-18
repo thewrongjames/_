@@ -58,3 +58,5 @@ class TestControlStructures(unittest.TestCase):
             };
             '''
         )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 16)
