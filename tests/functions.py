@@ -78,7 +78,6 @@ class TestFunctions(unittest.TestCase):
             compiled.run()
 
     def test_recursion(self):
-        return
         # Quite a bit needs to be done before this will work.
         # Perhaps I need to make a return node? Something that when run errors
         # in a way that the function catches? And returns what it needs to.

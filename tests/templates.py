@@ -108,3 +108,11 @@ class TestTemplates(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['value_one'], 1)
         self.assertEqual(memory['value_two'], None)
+
+    def test_key_value_assignment(self):
+        raise Exception
+        compiled = _.compile_(
+            '''
+
+            '''
+        )

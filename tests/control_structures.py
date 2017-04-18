@@ -5,15 +5,15 @@ import unittest
 class TestControlStructures(unittest.TestCase):
     def test_if(self):
         compiled = _.compile_(
-        '''
-        value_one = 5;
-        if (false) {
-            value_one = 7;
-        };
-        if (5 > 2) {
-            value_two = value_one - 2.3;
-        };
-        '''
+            '''
+            value_one = 5;
+            if (false) {
+                value_one = 7;
+            };
+            if (5 > 2) {
+                value_two = value_one - 2.3;
+            };
+            '''
         )
         memory = compiled.run()
         self.assertEqual(memory['value_one'], 5)
