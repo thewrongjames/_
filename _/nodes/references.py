@@ -18,14 +18,14 @@ class ReferenceNode(UnderscoreNode):
 
     def run(self, memory, *args, **kwargs):
         error = _.exceptions.UnderscoreNameError(
-            "the name '{}' is not defined".format(
+            "'{}' is not defined in this context".format(
                 '.'.join([str(item) for item in self.names])
             ),
             self.character
         )
 
         current_name = self.names[0]
-        # Current name may be a TemplateFunctionNode or a ReferenceNode though.
+        # Current name may not be a name.
 
         is_instantiation_or_call = False
         if isinstance(current_name, tuple):
@@ -40,6 +40,7 @@ class ReferenceNode(UnderscoreNode):
             try:
                 return memory[current_name]
             except KeyError:
+                print(memory)
                 raise error
 
         # Otherwise, if there is more than one name...
@@ -94,4 +95,6 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
             template_or_function = self.template_or_function.run(
                 *args, memory=memory, **kwargs
             )
+        print(template_or_function)
+        print(dir(template_or_function))
         return template_or_function(self.expressions)

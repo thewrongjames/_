@@ -17,6 +17,7 @@ replaced by any number (including zero) of spaces.
 <template>::='template ' <passable_names>? '{ ' <S> ' } '
 <passable_names>::= ' ( ' ( <single_name> (', ' <single_name>)* )? ' ) '
 <reference>::=(<single_name>|<template_instantiation>|<function_call>)('.'(<single_name>|<template_instantiation>|<function_call>))*
+<reference>::=(<single_name>|<template_instantiation>|<function_call>)('['<expression>']')*
 <template_instantiation>::=(<template>|<single_name>)? <passable_expressions>
 <passable_expressions>::= ' ( ' ( <expression> (', ' <expression>)* )? ' ) '
 <function_call>::=(<function>|<single_name>)? <passable_expressions>
@@ -46,4 +47,8 @@ Please note that there are reserved words that cannot be a single_name. These ar
     false
     none
 
-The name 'container' is read-only, that is, it cannot be assigned to.
+There are also read-only names, that cannot be assigned to:
+    container
+    set
+    get
+    delete

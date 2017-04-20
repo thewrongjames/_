@@ -2,6 +2,7 @@ import time
 import _
 from .underscore_node import UnderscoreNode
 from .statement_node import StatementNode
+from .value_node import ValueNode
 from .references import ReferenceNode, TemplateInstantiateFunctionCallNode
 from .template_function_node import TemplateFunctionNode
 from .maths import AdditionNode, SubtractionNode, MultiplicationNode, \
@@ -39,11 +40,3 @@ class ProgramNode:
                 start_time=time.time(),
             )
         return self.memory
-
-
-class ValueNode(UnderscoreNode):
-    def __init__(self, value):
-        self.value = value
-
-    def run(self, *args, **kwargs):
-        return self.value

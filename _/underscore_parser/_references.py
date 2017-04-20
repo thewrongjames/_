@@ -7,11 +7,18 @@ from ._whitespace import surrounding_whitespace_removed
 def parse_reference(self):
     starting_position = self.position_in_program
     names = [self._parse_single_name_or_instantiation_or_call()]
-    while self._peek() == '.':
-        self.position_in_program += 1
-        # It is possible that a function is added and is not at the end.
-        # The error for that will be raised by the ReferenceNode.
-        names.append(self._parse_single_name_or_instantiation_or_call())
+    while True:
+        if self._peek() == '.':
+            self.position_in_program += 1
+            # It is possible that a function is added and is not at the end.
+            # The error for that will be raised by the ReferenceNode.
+            names.append(self._parse_single_name_or_instantiation_or_call())
+        elif self._peek() == '[':
+            self.position_in_program += 1
+            names.append(self._parse_expression(has_semi_colon=False))
+            self._try_consume(']', needed=True)
+        else:
+            break
     return nodes.ReferenceNode(names, starting_position)
 
 
@@ -31,17 +38,15 @@ def parse_instantiation_or_call(self):
     will be fed to a reference node which will work out what to do with them.
     """
     starting_position = self.position_in_program
-    try:
+    if self._peek() == 't':
         instantiation_or_call = self._parse_template()
-    except exceptions.UnderscoreIncorrectParserError:
-        try:
-            instantiation_or_call = self._parse_function()
-        except exceptions.UnderscoreIncorrectParserError:
-            self.position_in_program = starting_position
-            instantiation_or_call = nodes.ReferenceNode(
-                [self._parse_single_name()],
-                starting_position
-            )
+    elif self._peek() == 'f':
+        instantiation_or_call = self._parse_function()
+    else:
+        instantiation_or_call = nodes.ReferenceNode(
+            [self._parse_single_name()],
+            starting_position
+        )
     try:
         expressions = self._parse_passable_expressions()
     except exceptions.UnderscoreIncorrectParserError:

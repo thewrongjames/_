@@ -1,10 +1,11 @@
 import _
 from .underscore_node import UnderscoreNode
+from .standard_methods import Set, Get, Delete
 
 
 class TemplateFunctionNode(UnderscoreNode):
     """
-    A function has returns=something.
+    A function has returns is not None.
     """
     def __init__(self, sections, returns, names):
         self.sections = sections
@@ -37,11 +38,18 @@ class TemplateFunctionNode(UnderscoreNode):
                     raise _.exceptions.UnderscoreTypeError(
                         'number of expressions passed does not match number '
                         'required'
-
                     )
                 internal_memory = {
                     'container': self.memory
                 }
+
+                # If this is a template, the standard methods must be added to
+                # the internal memory.
+                if self.returns is None:
+                    internal_memory['set'] = Set
+                    internal_memory['get'] = Get
+                    internal_memory['delete'] = Delete
+
                 values = [
                     expression.run(self.memory) for expression in expressions
                 ]
