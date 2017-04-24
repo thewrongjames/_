@@ -46,9 +46,9 @@ class TemplateFunctionNode(UnderscoreNode):
                 # If this is a template, the standard methods must be added to
                 # the internal memory.
                 if self.returns is None:
-                    internal_memory['set'] = Set
-                    internal_memory['get'] = Get
-                    internal_memory['delete'] = Delete
+                    internal_memory['set'] = Set(internal_memory)
+                    internal_memory['get'] = Get(internal_memory)
+                    internal_memory['delete'] = Delete(internal_memory)
 
                 values = [
                     expression.run(self.memory) for expression in expressions

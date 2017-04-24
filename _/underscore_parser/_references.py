@@ -6,20 +6,20 @@ from ._whitespace import surrounding_whitespace_removed
 @surrounding_whitespace_removed
 def parse_reference(self):
     starting_position = self.position_in_program
-    names = [self._parse_single_name_or_instantiation_or_call()]
+    components = [self._parse_single_name_or_instantiation_or_call()]
     while True:
         if self._peek() == '.':
             self.position_in_program += 1
             # It is possible that a function is added and is not at the end.
             # The error for that will be raised by the ReferenceNode.
-            names.append(self._parse_single_name_or_instantiation_or_call())
+            components.append(self._parse_single_name_or_instantiation_or_call())
         elif self._peek() == '[':
             self.position_in_program += 1
-            names.append(self._parse_expression(has_semi_colon=False))
+            components.append(self._parse_expression(has_semi_colon=False))
             self._try_consume(']', needed=True)
         else:
             break
-    return nodes.ReferenceNode(names, starting_position)
+    return nodes.ReferenceNode(components, starting_position)
 
 
 def parse_single_name_or_instantiation_or_call(self):

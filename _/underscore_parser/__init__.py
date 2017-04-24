@@ -33,6 +33,9 @@ class UnderscoreParser:
 
     def _is_before(self, items_to_check_for, items_to_check_is_before):
         """
+        This function is currently unused. It may later have uses in parser
+        optimisation.
+
         Reads from self.position_in_program, and returns True any of
         items_to_check_for appear before the first items_to_check_is_before
         appear.
@@ -79,3 +82,4 @@ class UnderscoreParser:
     from ._controls import parse_control as _parse_control, parse_if as \
         _parse_if, parse_while as _parse_while
     from ._try_parsers import try_parsers as _try_parsers
+    from ._parse_return import parse_return as _parse_retrun

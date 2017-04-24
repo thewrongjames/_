@@ -9,7 +9,7 @@ def parse(self, memory_limit=None, time_limit=None):
     return nodes.ProgramNode(sections, memory_limit, time_limit)
 
 
-def parse_sections(self, break_at=[]):
+def parse_sections(self, break_at=[], parse_return=False):
     sections = []
 
     while True:
@@ -28,6 +28,8 @@ def parse_sections(self, break_at=[]):
             self._parse_expression,
             self._parse_control,
         ]
+        if parse_return:
+            value_parser.append(self._parse_return)
         none_worked_error = exceptions.UnderscoreCouldNotConsumeError(
             'found no parsable input'
         )

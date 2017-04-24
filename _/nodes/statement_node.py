@@ -8,10 +8,10 @@ class StatementNode(UnderscoreNode):
         self.expression = expression
         # Take of the last item such that running it gives you the memory
         # location you want to put the thing in.
-        self.last_name = self.reference.names.pop(-1)
+        self.last_name = self.reference.components.pop(-1)
 
     def get_memory_to_write_to(self, memory):
-        if self.reference.names == []:
+        if self.reference.components == []:
             return memory
         memory_to_write_to = self.reference.run(memory)
         if not isinstance(memory_to_write_to, dict):

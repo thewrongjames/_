@@ -116,7 +116,7 @@ class TestTemplates(unittest.TestCase):
                 length = 0;
 
                 append = function(item) {
-                    container.set('length', item);
+                    container.set(length, item);
                     container.length = container.length + 1;
                 };
 
@@ -132,14 +132,20 @@ class TestTemplates(unittest.TestCase):
             };
 
             list_instance = list();
+            list_instance.append('this');
+            list_instance.append(-7.2);
+            list_instance.append(false);
+
+            value_one = list_instance.pop(1);
+            value_two = list_instance[0 / 9];
             '''
         )
         print('Compiled')
         memory = compiled.run()
         print(memory)
         print('Run')
-        # self.assertEqual(memory['value'], -7.2)
-        # self.assertEqual(memory['list_instance'][1], False)
+        self.assertEqual(memory['value'], -7.2)
+        self.assertEqual(memory['list_instance'][1], False)
 
 compiled = (#_.compile_(
     '''
@@ -147,7 +153,7 @@ compiled = (#_.compile_(
         length = 0;
 
         append = function(item) {
-            container.set('length', item);
+            container.set(length, item);
             container.length = container.length + 1;
         };
 
