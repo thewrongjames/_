@@ -2,7 +2,7 @@ Sorry if you don't like my symbols (using some regex stuff because I am lazy).
 All whitespace is ignored, meaning that any spaces in the grammar may also be
 replaced by any number (including zero) of spaces.
 
-<S>::=(<statement>|<expression>|<control>)*
+<S>::=(<statement>|<expression>|<control>|comment)*
 <statement>::=<reference> ' = ' <expression>
 <single_name>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
 <letter>::=[a-z][A-Z]
@@ -22,7 +22,7 @@ replaced by any number (including zero) of spaces.
 <passable_expressions>::= ' ( ' ( <expression> (', ' <expression>)* )? ' ) '
 <function_call>::=(<function>|<single_name>)? <passable_expressions>
 <function>::='function ' <passable_names> '{ ' <S> ('return ( ' <expression_without_semi_colon> ' ) ; ')? ' } '
-<expression_without_semi_colon>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)
+<expression_without_semi_colon>::=<object>|<addition>|<subtraction>|<term>|<boolean_expression>
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=<multiplication>|<division>|<non_expandable_term>
 <multiplication>::=<non_expandable_term> ' * ' <term>
@@ -33,8 +33,9 @@ replaced by any number (including zero) of spaces.
 <boolean_statement>::=<non_boolean_expression>(' == '|' <= '|' < '|' >= '|' > '|' != ')<non_boolean_expression>
 <non_boolean_expression>::=(<object>|<addition>|<subtraction>|<term>|)
 <control>::=(<if>|<while>)' ; '
-<if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else if ( ' <expression> ' ) { ' <S> ' }')* (' else ( ' <expression> ' ) { ' <S> ' }')?
+<if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else ( ' <expression> ' ) { ' <S> ' }')?
 <while>::='while (' <expression> ') {' <S> '}'
+<comment>::=' #' .* '# '
 
 Please note that there are reserved words that cannot be a single_name. These are:
     if
@@ -46,6 +47,8 @@ Please note that there are reserved words that cannot be a single_name. These ar
     true
     false
     none
+    break
+    continue
 
 There are also read-only names, that cannot be assigned to:
     container
