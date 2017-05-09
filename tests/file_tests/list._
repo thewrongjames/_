@@ -1,0 +1,25 @@
+list_instance = template() {
+    length = 0;
+
+    append = function(item) {
+        container.set(container.length, item);
+        container.length = container.length + 1;
+    };
+
+    pop = function(index) {
+        value = container.get(index);
+        while (index < container.length - 1) {
+            container.set(index, container.get(index + 1));
+            index = index + 1;
+        };
+        container.delete(container.length - 1);
+        container.length = container.length - 1;
+        return (value);
+    };
+}();
+
+list_instance.append('this');
+list_instance.append(-7.2);
+
+value_one = list_instance.pop(0);
+value_two = list_instance[0 / 9];

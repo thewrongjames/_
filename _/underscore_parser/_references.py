@@ -15,7 +15,9 @@ def parse_reference(self):
             components.append(self._parse_single_name_or_instantiation_or_call())
         elif self._peek() == '[':
             self.position_in_program += 1
-            components.append(self._parse_expression(has_semi_colon=False))
+            components.append(
+                self._parse_expression(has_semi_colon=False)
+            )
             self._try_consume(']', needed=True)
         else:
             break

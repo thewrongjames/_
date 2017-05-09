@@ -12,9 +12,9 @@ class ReferenceNode(UnderscoreNode):
     @property
     def name(self):
         def make_nice(item):
-            if not isinstance(item, tuple):
-                return item
-            return str(item[0]) + '({})'.format(*item[1])
+            if isinstance(item, tuple):
+                return str(item[0]) + '({})'.format(*item[1])
+            return str(item)
         return '.'.join([make_nice(item) for item in self.components])
 
     def __str__(self):
@@ -39,21 +39,30 @@ class ReferenceNode(UnderscoreNode):
 
         current_component = self.components[0]
 
-        is_instantiation_or_call = False
+        requires_running, is_instantiation_or_call = False, False
         if isinstance(current_component, tuple):
             # current_component[0] will be the actual TemplateFunctionNode,
             # as parsed by the parser, and current_component[1] will be a list
             # of expressions to be passed to it.
+            requires_running = True
             is_instantiation_or_call = True
-            instance_or_call_value = TemplateInstantiateFunctionCallNode(
+            run_value = TemplateInstantiateFunctionCallNode(
                 current_component[0],
                 self.character,
                 current_component[1]
             ).run(memory=memory, call_memory=call_memory)
+        elif not isinstance(current_component, str):
+            # If the item is both not a tuple and not a string, it has come from
+            # square bracket indexing, and is an expression that must be run
+            # in order to find the value that is the key. It must be run using
+            # call_memory as that is from the scope that the actual reference
+            # is in.
+            requires_running = True
+            run_value = current_component.run(memory=call_memory)
 
         if len(self.components) == 1:
-            if is_instantiation_or_call:
-                return instance_or_call_value
+            if requires_running and is_instantiation_or_call:
+                return run_value
             try:
                 return memory[current_component]
             except KeyError:
@@ -65,14 +74,14 @@ class ReferenceNode(UnderscoreNode):
             self.character
         )
 
-        if is_instantiation_or_call:
-            if not isinstance(instance_or_call_value, dict):
+        if requires_running:
+            if not isinstance(run_value, dict):
                 raise _.exceptions.UnderscoreNameError(
                     '{} does not contain any names'.format(current_component),
                     self.character
                 )
             return new_node.run(
-                memory=instance_or_call_value,
+                memory=run_value,
                 call_memory=memory
             )
 
