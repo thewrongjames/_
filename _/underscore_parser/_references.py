@@ -38,9 +38,9 @@ def parse_instantiation_or_call(self):
     will be fed to a reference node which will work out what to do with them.
     """
     starting_position = self.position_in_program
-    if self._peek() == 't':
+    if self._peek(9) == 'template(':
         instantiation_or_call = self._parse_template()
-    elif self._peek() == 'f':
+    elif self._peek(9) == 'function(':
         instantiation_or_call = self._parse_function()
     else:
         instantiation_or_call = nodes.ReferenceNode(

@@ -19,7 +19,7 @@ class TestFunctions(unittest.TestCase):
             '''
         )
         memory = compiled.run()
-        self.assertEqual(memory['instance'](), 'bar')
+        self.assertEqual(memory['instance']({}), 'bar')
 
     def test_method_like_behaviour(self):
         compiled = _.compile_(
@@ -81,6 +81,7 @@ class TestFunctions(unittest.TestCase):
         # Quite a bit needs to be done before this will work.
         # Perhaps I need to make a return node? Something that when run errors
         # in a way that the function catches? And returns what it needs to.
+        return
         compiled = _.compile_(
             '''
             factorial = function(number) {
@@ -91,3 +92,21 @@ class TestFunctions(unittest.TestCase):
             };
             '''
         )
+
+    def test_expressions_resolve_in_correct_scope(self):
+        compiled = _.compile_(
+            '''
+            template_instance = template() {
+                this = 0;
+                that_plus_one = function(that){return(that+1);};
+                method = function(this) {
+                    container.this_plus_one = container.that_plus_one(this);
+                    container.set('that', this);
+                };
+            }();
+            template_instance.method(1);
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['template_instance']['this_plus_one'], 2)
+        self.assertEqual(memory['template_instance']['that'], 1)

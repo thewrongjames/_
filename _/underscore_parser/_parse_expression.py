@@ -21,7 +21,6 @@ def parse_expression(
         self._parse_subtraction,
         self._parse_boolean_expression,
         self._parse_term,
-        self._parse_object,
     ]
 
     # Remove any parsers not to be included...

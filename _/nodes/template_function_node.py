@@ -33,7 +33,7 @@ class TemplateFunctionNode(UnderscoreNode):
                 self.args = args
                 self.kwargs = kwargs
 
-            def __call__(self, expressions=[]):
+            def __call__(self, memory_from_call_location, expressions=[]):
                 if len(expressions) != len(self.names):
                     raise _.exceptions.UnderscoreTypeError(
                         'number of expressions passed does not match number '
@@ -49,9 +49,8 @@ class TemplateFunctionNode(UnderscoreNode):
                     internal_memory['set'] = Set(internal_memory)
                     internal_memory['get'] = Get(internal_memory)
                     internal_memory['delete'] = Delete(internal_memory)
-
                 values = [
-                    expression.run(self.memory) for expression in expressions
+                    expression.run(memory_from_call_location) for expression in expressions
                 ]
                 for name, value in zip(self.names, values):
                     internal_memory[name] = value

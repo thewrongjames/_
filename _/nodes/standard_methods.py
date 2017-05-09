@@ -9,7 +9,7 @@ class Set:
     def __init__(self, memory):
         self.memory = memory
 
-    def __call__(self, expressions=[]):
+    def __call__(self, memory_from_call_location, expressions=[]):
         if len(expressions) != 2:
             raise exceptions.UnderscoreTypeError(
                 '{} expressions passed, {} required'.format(
@@ -17,8 +17,8 @@ class Set:
                     2
                 )
             )
-        value_to_assign_to = expressions[0].run(self.memory)
-        value_to_assign = expressions[1].run(self.memory)
+        value_to_assign_to = expressions[0].run(memory_from_call_location)
+        value_to_assign = expressions[1].run(memory_from_call_location)
         if type(value_to_assign_to) not in BASIC_TYPES:
             raise exceptions.UnderscoreTypeError(
                 'cannot set to non-basic type'
@@ -32,7 +32,7 @@ class Get:
     def __init__(self, memory):
         self.memory = memory
 
-    def __call__(self, expressions=[]):
+    def __call__(self, memory_from_call_location, expressions=[]):
         if len(expressions) != 1:
             raise exceptions.UnderscoreTypeError(
                 '{} expressions passed, {} required'.format(
@@ -40,7 +40,7 @@ class Get:
                     2
                 )
             )
-        value_to_get_from = expressions[0].run(self.memory)
+        value_to_get_from = expressions[0].run(memory_from_call_location)
         if type(value_to_get_from) not in BASIC_TYPES:
             raise exceptions.UnderscoreTypeError(
                 'cannot get from non-basic type'
@@ -60,7 +60,7 @@ class Delete:
     def __init__(self, memory):
         self.memory = memory
 
-    def __call__(self, expressions=[]):
+    def __call__(self, memory_from_call_location, expressions=[]):
         if len(expressions) != 1:
             raise exceptions.UnderscoreTypeError(
                 '{} expressions passed, {} required'.format(
@@ -68,7 +68,7 @@ class Delete:
                     2
                 )
             )
-        value_to_get_from = expressions[0].run(self.memory)
+        value_to_get_from = expressions[0].run(memory_from_call_location)
         if type(value_to_get_from) not in BASIC_TYPES:
             raise exceptions.UnderscoreTypeError(
                 'cannot get from non-basic type'

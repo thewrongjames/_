@@ -7,7 +7,7 @@ replaced by any number (including zero) of spaces.
 <single_name>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
-<expression>::=(<object>|<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
+<expression>::=(<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
 <object>::=<integer>|<float>|<boolean>|<string>|<none>|<template>|<reference>|<function>
 <integer>::=[+-]?<digit>+
 <float>::=[+-]?<digit>+ '.' <digit>+

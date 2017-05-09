@@ -11,12 +11,25 @@ class ReferenceNode(UnderscoreNode):
 
     @property
     def name(self):
-        return '.'.join([str(item) for item in self.components])
+        def make_nice(item):
+            if not isinstance(item, tuple):
+                return item
+            return str(item[0]) + '({})'.format(*item[1])
+        return '.'.join([make_nice(item) for item in self.components])
 
     def __str__(self):
         return self.name
 
-    def run(self, memory, *args, **kwargs):
+    def run(self, memory, *args, call_memory=None, **kwargs):
+        # call_memory is the original memory from the top of the chain of
+        # reference nodes (if there is one), this is the memory that should be
+        # passed into any TemplateInstantiateFunctionCallNode created for it to
+        # evaluate the expressions in its call in. If it has not been assigned,
+        # this node was not created by another ReferenceNode, and, as such,
+        # call_memory should just be the memory that this node is in.
+        if call_memory is None:
+            call_memory = memory
+
         error = _.exceptions.UnderscoreNameError(
             "'{}' is not defined in this context".format(
                 '.'.join([str(item) for item in self.components])
@@ -28,12 +41,15 @@ class ReferenceNode(UnderscoreNode):
 
         is_instantiation_or_call = False
         if isinstance(current_component, tuple):
+            # current_component[0] will be the actual TemplateFunctionNode,
+            # as parsed by the parser, and current_component[1] will be a list
+            # of expressions to be passed to it.
             is_instantiation_or_call = True
             instance_or_call_value = TemplateInstantiateFunctionCallNode(
                 current_component[0],
                 self.character,
                 current_component[1]
-            ).run(memory=memory)
+            ).run(memory=memory, call_memory=call_memory)
 
         if len(self.components) == 1:
             if is_instantiation_or_call:
@@ -55,7 +71,10 @@ class ReferenceNode(UnderscoreNode):
                     '{} does not contain any names'.format(current_component),
                     self.character
                 )
-            return new_node.run(memory=instance_or_call_value)
+            return new_node.run(
+                memory=instance_or_call_value,
+                call_memory=memory
+            )
 
         #Or, if the current one is not a node
         try:
@@ -63,7 +82,7 @@ class ReferenceNode(UnderscoreNode):
         except KeyError:
             raise error
         try:
-            return new_node.run(memory=next_memory)
+            return new_node.run(memory=next_memory, call_memory=memory)
         except _.exceptions.UnderscoreNameError:
             raise _.exceptions.UnderscoreNameError(
                 '{} does not contain {}'.format(
@@ -86,7 +105,11 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
         self.character = character
         self.expressions = expressions
 
-    def run(self, memory, *args, **kwargs):
+    def run(self, memory, call_memory, *args, **kwargs):
+        # memory is the memory location in which the most recent reference was,
+        # where the template_or_function must be found if it is a ReferenceNode.
+        # call_memory is the memory location in which the reference originated,
+        # i.e. where the expressions that are passed need to be run.
         if isinstance(self.template_or_function, ReferenceNode):
             template_or_function = self.template_or_function.run(memory)
             if not callable(template_or_function):
@@ -98,7 +121,4 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
             template_or_function = self.template_or_function.run(
                 *args, memory=memory, **kwargs
             )
-        print(isinstance(self.template_or_function, ReferenceNode))
-        print(template_or_function)
-        print(dir(template_or_function))
-        return template_or_function(self.expressions)
+        return template_or_function(call_memory, self.expressions)
