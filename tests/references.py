@@ -17,4 +17,4 @@ class TestReferences(unittest.TestCase):
             '''
         )
         memory = compiled.run()
-        self.assertEqual(value, 42)
+        self.assertEqual(memory['value'], 42)
