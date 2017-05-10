@@ -61,8 +61,13 @@ class ReferenceNode(UnderscoreNode):
             run_value = current_component.run(memory=call_memory)
 
         if len(self.components) == 1:
-            if requires_running and is_instantiation_or_call:
-                return run_value
+            if requires_running:
+                if is_instantiation_or_call:
+                    return run_value
+                try:
+                    return memory[run_value]
+                except KeyError:
+                    raise error
             try:
                 return memory[current_component]
             except KeyError:
