@@ -4,7 +4,7 @@ replaced by any number (including zero) of spaces.
 
 An underscore program obeys the rules for <sections>.
 
-<sections>::=(<statement>|<expression>|<control>|<comment>)*
+<sections>::=(<statement>|<expression>|<control>|<comment>|<return>)*
 <statement>::=<reference> ' = ' <expression>
 <single_name>::=(<letter>|'_') (<letter>|<digit>|'_')*
 <letter>::=[a-z][A-Z]
@@ -23,8 +23,8 @@ An underscore program obeys the rules for <sections>.
 <template_instantiation>::=(<template>|<single_name>)? <passable_expressions>
 <passable_expressions>::= ' ( ' ( <expression> (', ' <expression>)* )? ' ) '
 <function_call>::=(<function>|<single_name>)? <passable_expressions>
-<function>::='function ' <passable_names> '{ ' <sections_with_return> ' } '
-<sections_with_return>::=(<statement>|<expression>|<control>|<comment>|<return>)*
+<function>::='function ' <passable_names> '{ ' <sections> ' } '
+(<statement>|<expression>|<control>|<comment>|<return>)*
 <return>::='return ( ' <expression_without_semi_colon> ' ) ; '
 <expression_without_semi_colon>::=<object>|<addition>|<subtraction>|<term>|<boolean_expression>
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
