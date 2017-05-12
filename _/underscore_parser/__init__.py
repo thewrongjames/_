@@ -12,10 +12,17 @@ class UnderscoreParser:
         'else',
         'while',
         'template',
+        'function',
         'return',
         'true',
         'false',
-        'function'
+        'none',
+        'break',
+        'continue',
+        'float',
+        'integer',
+        'boolean',
+        'string'
     ]
     READ_ONLY_NAMES = ['container', 'set', 'get', 'delete']
 
@@ -83,3 +90,4 @@ class UnderscoreParser:
         _parse_if, parse_while as _parse_while
     from ._try_parsers import try_parsers as _try_parsers
     from ._parse_return import parse_return as _parse_return
+    from ._parse_comment import parse_comment as _parse_comment

@@ -16,12 +16,12 @@ def parse_sections(self, stop_parsing_section_at=[]):
         if self._peek() is None:
             break
 
+        # This is currently only used for '}' at the end of controls, functions
+        # and templates, but could potentially have more uses.
         should_stop_parsing_sections_now = False
-
         for item in stop_parsing_section_at:
             if self._peek(len(item)) == item:
                 should_stop_parsing_sections_now = True
-
         if should_stop_parsing_sections_now:
             break
 
@@ -31,11 +31,12 @@ def parse_sections(self, stop_parsing_section_at=[]):
             self._parse_statement,
             self._parse_expression,
             self._parse_control,
-            self._parse_return
+            self._parse_return,
+            self._parse_comment
         ]
 
         none_worked_error = exceptions.UnderscoreCouldNotConsumeError(
-            'found no parsable input'
+            'encountered unparsable input'
         )
         parsed_something = False
 

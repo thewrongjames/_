@@ -32,6 +32,15 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['value_one'], 'this')
         self.assertEqual(memory['value_two'], 'that')
 
+    def test_return_outside_of_function_raises_error(self):
+        compiled = _.compile_(
+            '''
+            return(5);
+            '''
+        )
+        with self.assertRaises(_.exceptions.UnderscoreReturnError):
+            compiled.run()
+
     def test_python_callable(self):
         compiled = _.compile_(
             '''

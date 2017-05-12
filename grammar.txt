@@ -54,6 +54,10 @@ are:
     none
     break
     continue
+    float
+    integer
+    boolean
+    string
 
 There are also read-only names, that cannot be assigned to:
     container

@@ -10,6 +10,7 @@ from .maths import AdditionNode, SubtractionNode, MultiplicationNode, \
 from .boolean_statements import EqualityNode, SmallerThanOrEqualToNode, \
     SmallerThanNode, GreaterThanNode, GreaterThanOrEqualToNode, InequalityNode
 from .controls import IfNode, WhileNode
+from .comment_node import CommentNode
 
 class ProgramNode:
     def __init__(self, sections, memory_limit=None, time_limit=None):
