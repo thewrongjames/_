@@ -3,7 +3,7 @@ RUN_FILE_TESTS = False
 
 if RUN_STRING_TESTS:
     from .assignment import TestAssignment
-    from .boolean_statements import TestBooleanStatements
+    from .boolean_logic import TestBooleanStatement, TestBooleanExpressions
     from .control_structures import TestControlStructures
     from .functions import TestFunctions
     from .maths import TestMaths

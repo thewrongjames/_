@@ -83,7 +83,7 @@ class UnderscoreParser:
         parse_non_expandable_term as _parse_non_expandable_term, \
         parse_multiplication as _parse_multiplication, parse_division as \
         _parse_division
-    from ._boolean_expressions import parse_boolean_expression as \
+    from ._boolean_logic import parse_boolean_expression as \
         _parse_boolean_expression, parse_boolean_statement as \
         _parse_boolean_statement
     from ._controls import parse_control as _parse_control, parse_if as \

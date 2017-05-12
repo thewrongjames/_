@@ -33,7 +33,7 @@ An underscore program obeys the rules for <sections>.
 <non_expandable_term>::=('(' <expression_without_semi_colon> ')')|<object>
 <division>::=<non_expandable_term> ' / ' <term>
 <subtraction>::=<term> ' - ' (<term>|<addition>|<subtraction>)
-<boolean_expression>::=(' NOT ')?<boolean_statement>((' AND '|' OR ')(' NOT ')?<boolean_statement>)*
+<boolean_expression>::=((' NOT ')?<boolean_statement>((' AND '|' OR ')(' NOT ')?<boolean_statement>)|' ( '<boolean_expression>' ) ')*
 <boolean_statement>::=<non_boolean_expression>(' == '|' <= '|' < '|' >= '|' > '|' != ')<non_boolean_expression>
 <non_boolean_expression>::=(<object>|<addition>|<subtraction>|<term>|)
 <control>::=(<if>|<while>)' ; '
