@@ -13,3 +13,12 @@ def parse_return(self):
     self._consume_whitespace()
     self._try_consume(';', needed=True)
     return nodes.ReturnNode(expression_to_return, self.position_in_program)
+
+@surrounding_whitespace_removed
+def parse_break_or_continue(self):
+    try:
+        self._try_consume('break;')
+    except exceptions.UnderscoreCouldNotConsumeError:
+        self._try_consume('continue;', needed_for_this=True)
+        return nodes.ContinueNode(self.position_in_program)
+    return nodes.BreakNode(self.position_in_program)

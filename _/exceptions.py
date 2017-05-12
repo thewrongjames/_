@@ -60,11 +60,29 @@ class UnderscoreTypeError(UnderscoreError):
 
 class UnderscoreReturnError(UnderscoreError):
     """
-    UnderscoreReturnErrors are raised when a return statement is run, any
-    containing functions will catch it, but, if it is not caught, the user will
-    see it (they placed a return outside of a function).
+    UnderscoreReturnError is raised when a ReturnNode is run, any containing
+    functions will catch it, but, if it is not caught, the user will see it
+    (they placed a return outside of a function).
     """
 
     def __init__(self, expression_to_return, *args, **kwargs):
         self.expression_to_return = expression_to_return
         super(UnderscoreError, self).__init__(*args, **kwargs)
+
+
+class UnderscoreBreakError(UnderscoreError):
+    """
+    UnderscoreBreakError is raised when a BreakNode is run, any containing while
+    loops will catch it, but, if it is not caught, the user will see it (they
+    placed a break outside of a while loop).
+    """
+    pass
+
+
+class UnderscoreContinueError(UnderscoreError):
+    """
+    UnderscoreContinueError is raised when a ContinueNode is run, any containing
+    while loops will catch it, but, if it is not caught, the user will see it
+    (they placed a continue outside of a while loop).
+    """
+    pass

@@ -32,7 +32,8 @@ def parse_sections(self, stop_parsing_section_at=[]):
             self._parse_expression,
             self._parse_control,
             self._parse_return,
-            self._parse_comment
+            self._parse_comment,
+            self._parse_break_or_continue
         ]
 
         none_worked_error = exceptions.UnderscoreCouldNotConsumeError(

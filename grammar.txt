@@ -4,7 +4,7 @@ replaced by any number (including zero) of spaces.
 
 An underscore program obeys the rules for <sections>.
 
-<sections>::=(<statement>|<expression>|<control>|<comment>|<return>)*
+<sections>::=(<statement>|<expression>|<control>|<comment>|<return>|<break>|<continue>)*
 <statement>::=<reference> ' = ' <expression>
 <single_name>::=(<letter>|'_') (<letter>|<digit>|'_')*
 <letter>::=[a-z][A-Z]
@@ -40,6 +40,8 @@ An underscore program obeys the rules for <sections>.
 <if>::='if ( ' <expression> ' ) { ' <sections> ' }' (' else ( ' <expression> ' ) { ' <sections> ' }')?
 <while>::='while (' <expression> ') {' <sections> '}'
 <comment>::=' #' .* '# '
+<break>::='break;'
+<continue>::='continue;'
 
 Please note that there are reserved words that cannot be a single_name. These
 are:

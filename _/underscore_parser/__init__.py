@@ -89,5 +89,6 @@ class UnderscoreParser:
     from ._controls import parse_control as _parse_control, parse_if as \
         _parse_if, parse_while as _parse_while
     from ._try_parsers import try_parsers as _try_parsers
-    from ._parse_return import parse_return as _parse_return
+    from ._breaks import parse_return as _parse_return, \
+        parse_break_or_continue as _parse_break_or_continue
     from ._parse_comment import parse_comment as _parse_comment

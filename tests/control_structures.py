@@ -60,3 +60,38 @@ class TestControlStructures(unittest.TestCase):
         )
         memory = compiled.run()
         self.assertEqual(memory['value'], 16)
+
+    def test_break(self):
+        compiled = _.compile_(
+            '''
+            iterator = 0;
+            value = 2;
+            while (true) {
+                value = value * 2;
+                iterator = iterator + 1;
+                if (iterator >= 3) {
+                    break;
+                };
+            };
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 16)
+
+    def test_continue(self):
+        compiled = _.compile_(
+            '''
+            iterator = 0;
+            value = 2;
+            while (true) {
+                value = value * 2;
+                iterator = iterator + 1;
+                if (iterator < 3) {
+                    continue;
+                };
+                break;
+            };
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 16)

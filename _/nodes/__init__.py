@@ -9,7 +9,7 @@ from .maths import AdditionNode, SubtractionNode, MultiplicationNode, \
     DivisionNode
 from .boolean_statements import EqualityNode, SmallerThanOrEqualToNode, \
     SmallerThanNode, GreaterThanNode, GreaterThanOrEqualToNode, InequalityNode
-from .controls import IfNode, WhileNode
+from .controls import IfNode, WhileNode, BreakNode, ContinueNode
 from .comment_node import CommentNode
 
 class ProgramNode:
