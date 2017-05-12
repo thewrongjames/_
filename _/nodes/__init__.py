@@ -4,7 +4,7 @@ from .underscore_node import UnderscoreNode
 from .statement_node import StatementNode
 from .value_node import ValueNode
 from .references import ReferenceNode, TemplateInstantiateFunctionCallNode
-from .template_function_node import TemplateFunctionNode
+from .templates_and_functions import TemplateFunctionNode, ReturnNode
 from .maths import AdditionNode, SubtractionNode, MultiplicationNode, \
     DivisionNode
 from .boolean_statements import EqualityNode, SmallerThanOrEqualToNode, \

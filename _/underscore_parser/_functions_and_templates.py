@@ -4,50 +4,24 @@ from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
-def parse_function(self):
+def parse_function_or_template(self):
     try:
         self._try_consume('function')
     except exceptions.UnderscoreCouldNotConsumeError:
-        raise exceptions.UnderscoreIncorrectParserError()
-    names = self._parse_passable_names()
-    # The above line may error, but, that is okay. Until you are past that line,
-    # you do not know that you are definately in a template, and not in, say, a
-    # name or reference that begins with 'template'
-    self._try_consume('{', needed=True)
-    self._consume_whitespace()
-    sections = self._parse_sections(['}', 'return'])
-    returns = nodes.ValueNode(None)
-    try:
-        self._try_consume('return')
-    except exceptions.UnderscoreCouldNotConsumeError:
-        pass
+        self._try_consume('template', needed_for_this=True)
+        is_function = False
     else:
-        self._consume_whitespace()
-        self._try_consume('(', needed=True)
-        returns = self._parse_expression(has_semi_colon=False)
-        self._try_consume(')', needed=True)
-        self._consume_whitespace()
-        self._try_consume(';', needed=True)
-        self._consume_whitespace()
-    self._try_consume('}', needed=True)
-    return nodes.TemplateFunctionNode(sections, returns, names)
-
-
-@surrounding_whitespace_removed
-def parse_template(self):
-    try:
-        self._try_consume('template')
-    except exceptions.UnderscoreCouldNotConsumeError:
-        raise exceptions.UnderscoreIncorrectParserError()
+        is_function = True
     names = self._parse_passable_names()
     # The above line may error, but, that is okay. Until you are past that line,
-    # you do not know that you are definately in a template, and not in, say, a
-    # name or reference that begins with 'template'
+    # you do not know that you are definately in a template or function, and not
+    # in, say, a name or reference that begins with 'template'.
     self._try_consume('{', needed=True)
     self._consume_whitespace()
+    # If it is a function, you need to allow for parsing return.
     sections = self._parse_sections(['}'])
     self._try_consume('}', needed=True)
-    return nodes.TemplateFunctionNode(sections, None, names)
+    return nodes.TemplateFunctionNode(sections, is_function, names)
 
 
 @surrounding_whitespace_removed

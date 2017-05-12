@@ -18,6 +18,6 @@ def compile_file(directory, memory_limit=None, time_limit=None):
     into a ProgramNode object which may be run (with the run method). Some
     errors will be found during compilation, and some at runtime.
     """
-    file_ = open(str(directory), 'r')
-    program = file_.read()
+    with open(str(directory), 'r') as file_:
+        program = file_.read()
     return compile_(program, memory_limit, time_limit)

@@ -2,9 +2,11 @@ Sorry if you don't like my symbols (using some regex stuff because I am lazy).
 All whitespace is ignored, meaning that any spaces in the grammar may also be
 replaced by any number (including zero) of spaces.
 
-<S>::=(<statement>|<expression>|<control>|comment)*
+An underscore program obeys the rules for <sections>.
+
+<sections>::=(<statement>|<expression>|<control>|<comment>)*
 <statement>::=<reference> ' = ' <expression>
-<single_name>::=(<letter>|'_'|'-') (<letter>|<digit>|'_'|'-')*
+<single_name>::=(<letter>|'_') (<letter>|<digit>|'_')*
 <letter>::=[a-z][A-Z]
 <digit>::=[0-9]
 <expression>::=(<addition>|<subtraction>|<term>|<boolean_expression>)' ; '
@@ -14,14 +16,16 @@ replaced by any number (including zero) of spaces.
 <boolean>::='true'|'false'
 <string>::="'"<character>*"'"|'"'<character>*'"'|"'''"<character>*"'''"|'"""'<character>*'"""'
 <none>::='none'
-<template>::='template ' <passable_names>? '{ ' <S> ' } '
+<template>::='template ' <passable_names>? '{ ' <sections> ' } '
 <passable_names>::= ' ( ' ( <single_name> (', ' <single_name>)* )? ' ) '
 <reference>::=(<single_name>|<template_instantiation>|<function_call>)('.'(<single_name>|<template_instantiation>|<function_call>))*
 <reference>::=(<single_name>|<template_instantiation>|<function_call>)('['<expression>']')*
 <template_instantiation>::=(<template>|<single_name>)? <passable_expressions>
 <passable_expressions>::= ' ( ' ( <expression> (', ' <expression>)* )? ' ) '
 <function_call>::=(<function>|<single_name>)? <passable_expressions>
-<function>::='function ' <passable_names> '{ ' <S> ('return ( ' <expression_without_semi_colon> ' ) ; ')? ' } '
+<function>::='function ' <passable_names> '{ ' <sections_with_return> ' } '
+<sections_with_return>::=(<statement>|<expression>|<control>|<comment>|<return>)*
+<return>::='return ( ' <expression_without_semi_colon> ' ) ; '
 <expression_without_semi_colon>::=<object>|<addition>|<subtraction>|<term>|<boolean_expression>
 <addition>::=<term> ' + ' (<term>|<addition>|<subtraction>)
 <term>::=<multiplication>|<division>|<non_expandable_term>
@@ -33,11 +37,12 @@ replaced by any number (including zero) of spaces.
 <boolean_statement>::=<non_boolean_expression>(' == '|' <= '|' < '|' >= '|' > '|' != ')<non_boolean_expression>
 <non_boolean_expression>::=(<object>|<addition>|<subtraction>|<term>|)
 <control>::=(<if>|<while>)' ; '
-<if>::='if ( ' <expression> ' ) { ' <S> ' }' (' else ( ' <expression> ' ) { ' <S> ' }')?
-<while>::='while (' <expression> ') {' <S> '}'
+<if>::='if ( ' <expression> ' ) { ' <sections> ' }' (' else ( ' <expression> ' ) { ' <sections> ' }')?
+<while>::='while (' <expression> ') {' <sections> '}'
 <comment>::=' #' .* '# '
 
-Please note that there are reserved words that cannot be a single_name. These are:
+Please note that there are reserved words that cannot be a single_name. These
+are:
     if
     else
     while
@@ -55,3 +60,6 @@ There are also read-only names, that cannot be assigned to:
     set
     get
     delete
+
+Also note that the set() standard method can be used to (and is intended to be
+able to) override these restrictions (only within templates though).

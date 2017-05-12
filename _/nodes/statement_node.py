@@ -1,5 +1,5 @@
 from .underscore_node import UnderscoreNode
-from .template_function_node import TemplateFunctionNode
+from .templates_and_functions import TemplateFunctionNode
 
 
 class StatementNode(UnderscoreNode):

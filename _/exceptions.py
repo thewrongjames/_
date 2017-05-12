@@ -56,3 +56,15 @@ class UnderscoreValueError(UnderscoreError):
 
 class UnderscoreTypeError(UnderscoreError):
     pass
+
+
+class UnderscoreReturnError(UnderscoreError):
+    """
+    UnderscoreReturnErrors are raised when a return statement is run, any
+    containing functions will catch it, but, if it is not caught, the user will
+    see it (they placed a return outside of a function).
+    """
+
+    def __init__(self, expression_to_return, *args, **kwargs):
+        self.expression_to_return = expression_to_return
+        super(UnderscoreError, self).__init__(*args, **kwargs)

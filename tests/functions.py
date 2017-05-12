@@ -3,7 +3,7 @@ import unittest
 
 
 class TestFunctions(unittest.TestCase):
-    def test_return(self):
+    def test_basic_return(self):
         compiled = _.compile_(
             '''
             value = function(){return(5);}();
@@ -11,6 +11,26 @@ class TestFunctions(unittest.TestCase):
         )
         memory = compiled.run()
         self.assertEqual(memory['value'], 5)
+
+    def test_not_at_end_return(self):
+        compiled = _.compile_(
+            '''
+            definately_not_eight = 9;
+            function_ = function(boolean_value) {
+                if(boolean_value) {
+                    return('this');
+                };
+                return('that');
+                definately_not_eight = 8;
+            };
+            value_one = function_(true);
+            value_two = function_(false);
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['definately_not_eight'], 9)
+        self.assertEqual(memory['value_one'], 'this')
+        self.assertEqual(memory['value_two'], 'that')
 
     def test_python_callable(self):
         compiled = _.compile_(
@@ -78,20 +98,19 @@ class TestFunctions(unittest.TestCase):
             compiled.run()
 
     def test_recursion(self):
-        # Quite a bit needs to be done before this will work.
-        # Perhaps I need to make a return node? Something that when run errors
-        # in a way that the function catches? And returns what it needs to.
-        return
         compiled = _.compile_(
             '''
             factorial = function(number) {
                 if (number <= 1) {
                     return (1);
                 };
-                return (number * factorial(number-1));
+                return (number * container.factorial(number-1));
             };
+            value = factorial(5);
             '''
         )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 120)
 
     def test_expressions_resolve_in_correct_scope(self):
         compiled = _.compile_(

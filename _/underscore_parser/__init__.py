@@ -4,7 +4,7 @@ from _ import exceptions
 
 
 class UnderscoreParser:
-    VALID_NAME_FIRST_CHARACTER_CHARACTERS = string.ascii_letters + '_-'
+    VALID_NAME_FIRST_CHARACTER_CHARACTERS = string.ascii_letters + '_'
     VALID_NAME_NON_FIRST_CHARACTER_CHARACTERS = \
         VALID_NAME_FIRST_CHARACTER_CHARACTERS + string.digits
     RESERVED_NAMES = [
@@ -67,9 +67,9 @@ class UnderscoreParser:
         _parse_single_name_or_instantiation_or_call, \
         parse_instantiation_or_call as _parse_instantiation_or_call, \
         parse_passable_expressions as _parse_passable_expressions
-    from ._functions_and_templates import parse_template as _parse_template, \
-        parse_function as _parse_function, parse_passable_names as \
-            _parse_passable_names
+    from ._functions_and_templates import parse_function_or_template as \
+        _parse_function_or_template, parse_passable_names as \
+        _parse_passable_names
     from ._maths import parse_addition as _parse_addition, parse_subtraction \
         as _parse_subtraction, parse_bracketed_expression as \
         _parse_bracketed_expression, parse_term as _parse_term, \
@@ -82,4 +82,4 @@ class UnderscoreParser:
     from ._controls import parse_control as _parse_control, parse_if as \
         _parse_if, parse_while as _parse_while
     from ._try_parsers import try_parsers as _try_parsers
-    from ._parse_return import parse_return as _parse_retrun
+    from ._parse_return import parse_return as _parse_return

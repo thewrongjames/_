@@ -13,8 +13,7 @@ def parse_object(self):
         self._parse_string,
         self._parse_none,
         self._parse_reference,
-        self._parse_template,
-        self._parse_function,
+        self._parse_function_or_template,
     ]
     return self._try_parsers(valid_parsers, 'object')
 

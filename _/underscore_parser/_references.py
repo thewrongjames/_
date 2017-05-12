@@ -12,7 +12,9 @@ def parse_reference(self):
             self.position_in_program += 1
             # It is possible that a function is added and is not at the end.
             # The error for that will be raised by the ReferenceNode.
-            components.append(self._parse_single_name_or_instantiation_or_call())
+            components.append(
+                self._parse_single_name_or_instantiation_or_call()
+            )
         elif self._peek() == '[':
             self.position_in_program += 1
             components.append(
@@ -40,10 +42,8 @@ def parse_instantiation_or_call(self):
     will be fed to a reference node which will work out what to do with them.
     """
     starting_position = self.position_in_program
-    if self._peek(9) == 'template(':
-        instantiation_or_call = self._parse_template()
-    elif self._peek(9) == 'function(':
-        instantiation_or_call = self._parse_function()
+    if self._peek(9) == 'template(' or self._peek(9) == 'function(':
+        instantiation_or_call = self._parse_function_or_template()
     else:
         instantiation_or_call = nodes.ReferenceNode(
             [self._parse_single_name()],
