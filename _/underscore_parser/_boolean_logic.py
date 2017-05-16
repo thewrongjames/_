@@ -5,14 +5,17 @@ from ._whitespace import surrounding_whitespace_removed
 
 @surrounding_whitespace_removed
 def parse_boolean_expression(self):
-    return self._parse_boolean_statement()
+    raise exceptions.UnderscoreIncorrectParserError
 
 
 @surrounding_whitespace_removed
-def parse_boolean_statement(self):
+def parse_comparison(self):
     first_expression = self._parse_expression(
         has_semi_colon=False,
-        parsers_to_not_allow=[self._parse_boolean_expression]
+        parsers_to_not_allow=[
+            self._parse_boolean_expression,
+            self._parse_comparison
+        ]
     )
     symbols_and_nodes = (
         ('==', nodes.EqualityNode),
@@ -30,9 +33,6 @@ def parse_boolean_statement(self):
             continue
         else:
             self._consume_whitespace()
-            second_expression = self._parse_expression(
-                has_semi_colon=False,
-                parsers_to_not_allow=[self._parse_boolean_expression]
-            )
+            second_expression = self._parse_expression(has_semi_colon=False)
             return node(first_expression, second_expression)
     raise exceptions.UnderscoreIncorrectParserError

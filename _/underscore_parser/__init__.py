@@ -80,12 +80,11 @@ class UnderscoreParser:
     from ._maths import parse_addition as _parse_addition, parse_subtraction \
         as _parse_subtraction, parse_bracketed_expression as \
         _parse_bracketed_expression, parse_term as _parse_term, \
-        parse_non_expandable_term as _parse_non_expandable_term, \
-        parse_multiplication as _parse_multiplication, parse_division as \
-        _parse_division
+        parse_object_or_contained_expression as \
+        _parse_object_or_contained_expression, parse_multiplication as \
+        _parse_multiplication, parse_division as _parse_division
     from ._boolean_logic import parse_boolean_expression as \
-        _parse_boolean_expression, parse_boolean_statement as \
-        _parse_boolean_statement
+        _parse_boolean_expression, parse_comparison as _parse_comparison
     from ._controls import parse_control as _parse_control, parse_if as \
         _parse_if, parse_while as _parse_while
     from ._try_parsers import try_parsers as _try_parsers
