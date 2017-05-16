@@ -6,7 +6,7 @@ from ._whitespace import surrounding_whitespace_removed
 def parse_addition(self):
     first_term = self._parse_term()
     self._try_consume('+', needed_for_this=True)
-    second_term = self._parse_expression()
+    second_term = self._parse_expression(has_semi_colon=False)
     return nodes.AdditionNode(first_term, second_term)
 
 
@@ -14,7 +14,7 @@ def parse_addition(self):
 def parse_division(self):
     first_term = self._parse_object_or_contained_expression()
     self._try_consume('/', needed_for_this=True)
-    second_term = self._parse_expression()
+    second_term = self._parse_expression(has_semi_colon=False)
     return nodes.DivisionNode(first_term, second_term)
 
 
@@ -22,7 +22,7 @@ def parse_division(self):
 def parse_multiplication(self):
     first_term = self._parse_object_or_contained_expression()
     self._try_consume('*', needed_for_this=True)
-    second_term = self._parse_expression()
+    second_term = self._parse_expression(has_semi_colon=False)
     return nodes.MultiplicationNode(first_term, second_term)
 
 
@@ -30,7 +30,7 @@ def parse_multiplication(self):
 def parse_subtraction(self):
     first_term = self._parse_term()
     self._try_consume('-', needed_for_this=True)
-    second_term = self._parse_expression()
+    second_term = self._parse_expression(has_semi_colon=False)
     return nodes.SubtractionNode(first_term, second_term)
 
 
