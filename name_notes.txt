@@ -1,0 +1,26 @@
+Please note that there are reserved words that cannot be a single_name. These
+are:
+    if
+    else
+    while
+    template
+    function
+    return
+    true
+    false
+    none
+    break
+    continue
+    float
+    integer
+    boolean
+    string
+
+There are also read-only names, that cannot be assigned to:
+    container
+    set
+    get
+    delete
+
+Also note that the set() standard method can be used to (and is intended to be
+able to) override these restrictions (only within templates though).

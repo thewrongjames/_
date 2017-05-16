@@ -12,4 +12,6 @@ in terms of memory and execution, simply storing the values and functions it
 assigns in a python dictionary, in a python readable format. This may ultimately
 change, but for now, that is all I need.
 ## Grammar
-See grammar.txt for the planned grammar
+See grammar.ebnf for the planned grammar.
+## Language Notes
+See name_notes.txt.

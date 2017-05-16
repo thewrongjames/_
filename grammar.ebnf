@@ -1,0 +1,53 @@
+(* any of the spaces in the following definition may be replaced by any number
+   of spaces (including zero), and will still be valid *)
+underscore program = sections ;
+sections = statement | expression | control | comment | return | break |
+           continue ;
+statement = reference, ' = ', expression ;
+reference = (single name | template instantiation | function call), ' . ', {
+            single name | template instantiation | function call} ;
+reference = (single name | template instantiation | function call), { ' [ ', (
+            single name | template instantiation | function call), ' ] ' } ;
+single name = letter, { letter | digit | '_'} ;
+letter = ? any upper or lower case letter ? ;
+digit = ? any digit ? ;
+template instantiation = ( template | single name ), passable expressions ;
+template = ' template ', passable names, ' { ', sections, ' } ' ;
+passable names = ' ( ', [ single name, { ' , ', single name } ], ' ) ' ;
+passable expressions = ' ( ', [ expression, { ' , ', expression } ], ' ) ' ;
+expression = (boolean expression | comparison | addition | subtraction | term),
+             ' ; ' ;
+boolean expression = [ ' NOT ' ], expression without boolean expression, [ (' 
+                     AND ' | ' OR '), [ ' NOT '], expression ] ;
+expression without boolean expression = (comparison | addition | subtraction |
+                                        term), ' ; ' ;
+comparison = expression without boolean expression or comparison,
+             ( ' == ' | ' <= ' | ' < ' | ' >= ' | ' > ' | ' != ' ), expression ;
+expression without boolean expression or comparison = (addition | subtraction |
+                                                      term), ' ; ' ;
+addition = term, ' + ', expression ;
+term = ( multiplication | division | object or contained expression ) ;
+multiplication = object or contained expression, ' * ', expression ;
+object or contained expression = ( ' ( ', expression without semicolon, ' ) ' )
+                                 | object ;
+expression without semicolon = (boolean expression | comparison |
+                               addition or subtraction | term) ;
+object = integer | float | boolean | string | none | template | function |
+         reference ;
+integer = [ ' + ' | ' - ' ], digit, { digit } ;
+float = [ ' + ' | ' - ' ], digit, { digit }, ' . ', digit, { digit } ;
+boolean = ' true ' | ' false ' ;
+string = ? any characters contained in single or triple single or double quotes
+         ? ;
+none = ' none ' ;
+function = ' function ', passable names, ' { ', sections, ' } ' ;
+division = object or contained expression, ' * ', expression ;
+subtraction = term, ' - ', expression;
+function call = ( function | single name ), passable expressions ;
+control = ( if | while ), ' ; ' ;
+if = ' if ( ', expression, ' ) { ', sections, ' } ', [ ' else { ', sections,
+     ' } ']  ;
+while = ' while ( ', expression, ' ) { ', sections, ' } ' ;
+comment = ' #', ? any characters other than the hash ?, '# ' ;
+break = ' break ; ' ;
+continue = ' continue ; ' ;
