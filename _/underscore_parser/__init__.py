@@ -83,8 +83,8 @@ class UnderscoreParser:
         parse_object_or_contained_expression as \
         _parse_object_or_contained_expression, parse_multiplication as \
         _parse_multiplication, parse_division as _parse_division
-    from ._boolean_logic import parse_boolean_expression as \
-        _parse_boolean_expression, parse_comparison as _parse_comparison
+    from ._boolean_logic import parse_comparison as _parse_comparison, \
+        parse_and_or_or as _parse_and_or_or, parse_not as _parse_not
     from ._controls import parse_control as _parse_control, parse_if as \
         _parse_if, parse_while as _parse_while
     from ._try_parsers import try_parsers as _try_parsers

@@ -4,34 +4,34 @@ from ._whitespace import surrounding_whitespace_removed
 
 @surrounding_whitespace_removed
 def parse_addition(self):
-    first_term = self._parse_term()
+    first_expression = self._parse_term()
     self._try_consume('+', needed_for_this=True)
-    second_term = self._parse_expression(has_semi_colon=False)
-    return nodes.AdditionNode(first_term, second_term)
+    second_expression = self._parse_expression(has_semi_colon=False)
+    return nodes.AdditionNode(first_expression, second_expression)
 
 
 @surrounding_whitespace_removed
 def parse_division(self):
-    first_term = self._parse_object_or_contained_expression()
+    first_expression = self._parse_object_or_contained_expression()
     self._try_consume('/', needed_for_this=True)
-    second_term = self._parse_expression(has_semi_colon=False)
-    return nodes.DivisionNode(first_term, second_term)
+    second_expression = self._parse_expression(has_semi_colon=False)
+    return nodes.DivisionNode(first_expression, second_expression)
 
 
 @surrounding_whitespace_removed
 def parse_multiplication(self):
-    first_term = self._parse_object_or_contained_expression()
+    first_expression = self._parse_object_or_contained_expression()
     self._try_consume('*', needed_for_this=True)
-    second_term = self._parse_expression(has_semi_colon=False)
-    return nodes.MultiplicationNode(first_term, second_term)
+    second_expression = self._parse_expression(has_semi_colon=False)
+    return nodes.MultiplicationNode(first_expression, second_expression)
 
 
 @surrounding_whitespace_removed
 def parse_subtraction(self):
-    first_term = self._parse_term()
+    first_expression = self._parse_term()
     self._try_consume('-', needed_for_this=True)
-    second_term = self._parse_expression(has_semi_colon=False)
-    return nodes.SubtractionNode(first_term, second_term)
+    second_expression = self._parse_expression(has_semi_colon=False)
+    return nodes.SubtractionNode(first_expression, second_expression)
 
 
 @surrounding_whitespace_removed

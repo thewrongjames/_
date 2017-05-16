@@ -7,8 +7,9 @@ from .references import ReferenceNode, TemplateInstantiateFunctionCallNode
 from .templates_and_functions import TemplateFunctionNode, ReturnNode
 from .maths import AdditionNode, SubtractionNode, MultiplicationNode, \
     DivisionNode
-from .boolean_statements import EqualityNode, SmallerThanOrEqualToNode, \
-    SmallerThanNode, GreaterThanNode, GreaterThanOrEqualToNode, InequalityNode
+from .boolean_logic import AndOrOrNode, NotNode, EqualityNode, \
+    SmallerThanOrEqualToNode, SmallerThanNode, GreaterThanNode, \
+    GreaterThanOrEqualToNode, InequalityNode
 from .controls import IfNode, WhileNode, BreakNode, ContinueNode
 from .comment_node import CommentNode
 

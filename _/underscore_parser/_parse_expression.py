@@ -17,7 +17,8 @@ def parse_expression(
     """
     # Assign the parsers that may make up the expression.
     valid_parsers = [
-        self._parse_boolean_expression,
+        self._parse_and_or_or,
+        self._parse_not,
         self._parse_comparison,
         self._parse_addition,
         self._parse_subtraction,

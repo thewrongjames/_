@@ -1,6 +1,28 @@
 from .underscore_node import UnderscoreNode
 
 
+class AndOrOrNode(UnderscoreNode):
+    def __init__(self, is_and, first_expression, second_expression):
+        self.is_and = is_and
+        self.first_expression = first_expression
+        self.second_expression = second_expression
+
+    def run(self, memory, *args, **kwargs):
+        first_value = self.first_expression.run(memory)
+        second_value = self.second_expression.run(memory)
+        if self.is_and:
+            return first_value and second_value
+        return first_value or second_value\
+
+
+class NotNode(UnderscoreNode):
+    def __init__(self, expression):
+        self.expression = expression
+
+    def run(self, memory, *args, **kwargs):
+        return not self.expression.run(memory)
+
+
 class BooleanStatementNode(UnderscoreNode):
     def __init__(self, first_object, second_object):
         self.first_object = first_object

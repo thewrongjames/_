@@ -38,7 +38,7 @@ class TestBooleanExpressions(unittest.TestCase):
         )
         memory = compiled.run()
         self.assertTrue(memory['value_one'])
-        self.assertTrue(memory['value_two'])
+        self.assertFalse(memory['value_two'])
 
     def test_complex_expressions(self):
         compiled = _.compile_(
