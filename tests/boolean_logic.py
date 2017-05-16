@@ -2,7 +2,7 @@ import _
 import unittest
 
 
-class TestBooleanExpressions
+class TestBooleanExpressions(unittest.TestCase):
     def test_and(self):
         compiled = _.compile_(
             '''
