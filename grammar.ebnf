@@ -24,12 +24,13 @@ or = expression without and or or, ' OR ', expression ;
    brackets *)
 not = ' NOT ' expression without and or or ;
 comparison = expression without boolean expression or comparison,
-             ( ' == ' | ' <= ' | ' < ' | ' >= ' | ' > ' | ' != ' ), expression ;
+             ( ' == ' | ' <= ' | ' < ' | ' >= ' | ' > ' | ' != ' ),
+             expression without boolean expression or comparison ;
 expression without boolean expression or comparison = (addition | subtraction |
                                                       term) ;
-addition = term, ' + ', expression ;
+addition = term, ' + ', expression without boolean expression or comparison ;
 term = ( multiplication | division | object or contained expression ) ;
-multiplication = object or contained expression, ' * ', expression ;
+multiplication = object or contained expression, ' * ', term ;
 object or contained expression = ( ' ( ', expression, ' ) ' )
                                  | object ;
 object = integer | float | boolean | string | none | template | function |
@@ -41,8 +42,8 @@ string = ? any characters contained in single or triple single or double quotes
          ? ;
 none = ' none ' ;
 function = ' function ', passable names, ' { ', sections, ' } ' ;
-division = object or contained expression, ' * ', expression ;
-subtraction = term, ' - ', expression;
+division = object or contained expression, ' * ', term ;
+subtraction = term, ' - ', expression without boolean expression or comparison ;
 function call = ( function | single name ), passable expressions ;
 expression with semicolon = expression, ' ; ' ;
 control = ( if | while ), ' ; ' ;

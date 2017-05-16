@@ -33,13 +33,14 @@ def parse_not(self):
 
 @surrounding_whitespace_removed
 def parse_comparison(self):
+    parsers_to_not_allow=[
+        self._parse_and_or_or,
+        self._parse_not,
+        self._parse_comparison
+    ]
     first_expression = self._parse_expression(
         has_semi_colon=False,
-        parsers_to_not_allow=[
-            self._parse_and_or_or,
-            self._parse_not,
-            self._parse_comparison
-        ]
+        parsers_to_not_allow=parsers_to_not_allow
     )
     symbols_and_nodes = (
         ('==', nodes.EqualityNode),
@@ -57,6 +58,9 @@ def parse_comparison(self):
             continue
         else:
             self._consume_whitespace()
-            second_expression = self._parse_expression(has_semi_colon=False)
+            second_expression = self._parse_expression(
+                has_semi_colon=False,
+                parsers_to_not_allow=parsers_to_not_allow
+            )
             return node(first_expression, second_expression)
     raise exceptions.UnderscoreIncorrectParserError
