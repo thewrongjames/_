@@ -9,7 +9,8 @@ def parse_comment(self):
     while self._peek() is not None and self._peek() != '#':
         self.position_in_program += 1
     if self._peek() is None:
-        raise UnderscoreSyntaxError('expected \'#\' got end of file')
-    # if self._peek() is not None, then self._peek() must be '#', so consume that.
+        raise UnderscoreSyntaxError('expected \'#\', got end of file')
+    # if self._peek() is not None, then self._peek() must be '#', so consume
+    # that.
     self.position_in_program += 1
     return CommentNode()

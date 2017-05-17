@@ -1,5 +1,5 @@
 RUN_STRING_TESTS = True
-RUN_FILE_TESTS = False
+RUN_FILE_TESTS = True
 
 if RUN_STRING_TESTS:
     from .assignment import TestAssignment

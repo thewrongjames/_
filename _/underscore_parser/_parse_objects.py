@@ -37,7 +37,7 @@ def parse_float(self):
 def parse_digits(self, consume_sign):
     """
     Consumes as many digits as it can, but, may also first consume a single '+'
-    or '-' if consume sign is True. It then returns the string of what it has
+    or '-' if consume_sign is True. It then returns the string of what it has
     consumed.
     """
     string_of_integer = ''

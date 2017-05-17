@@ -27,10 +27,7 @@ def parse_function_or_template(self):
 
 @surrounding_whitespace_removed
 def parse_passable_names(self):
-    try:
-        self._try_consume('(')
-    except UnderscoreCouldNotConsumeError:
-        raise UnderscoreIncorrectParserError
+    self._try_consume('(', needed_for_this=True)
     names = []
     while self._peek() is not None:
         self._consume_whitespace()
@@ -46,7 +43,7 @@ def parse_passable_names(self):
             names.append(self._parse_single_name())
         except UnderscoreIncorrectParserError:
             raise UnderscoreSyntaxError(
-                'Expected name, got {}'.format(self.peek())
+                'expected name, got {}'.format(self.peek())
             )
         else:
             self._consume_whitespace()
@@ -54,6 +51,6 @@ def parse_passable_names(self):
                 self._try_consume(',', needed=True)
 
     if self._peek() is None:
-        raise UnderscoreSyntaxError('Expected \')\' got end of file')
+        raise UnderscoreSyntaxError('expected \')\', got end of file')
 
     return names

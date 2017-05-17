@@ -36,27 +36,6 @@ class UnderscoreParser:
             ]
         # If you are at or past the end of the program, this will return none.
 
-    def _is_before(self, items_to_check_for, items_to_check_is_before):
-        """
-        This function is currently unused. It may later have uses in parser
-        optimisation.
-
-        Reads from self.position_in_program, and returns True any of
-        items_to_check_for appear before the first items_to_check_is_before
-        appear.
-        """
-        earliest_item_to_check_for = len(self.program)
-        earliest_item_to_check_is_before = len(self.program)
-        for item in items_to_check_for:
-            item_position = self.program.find(item, self.position_in_program)
-            if item_position < earliest_item_to_check_for:
-                earliest_item_to_check_for = item_positon
-        for item in items_to_check_is_before:
-            item_position = self.program.find(item, self.position_in_program)
-            if item_position < earliest_item_to_check_is_before:
-                earliest_item_to_check_is_before = item_positon
-        return earliest_item_to_check_for < earliest_item_to_check_is_before
-
     from ._try_consume import try_consume as _try_consume
     from ._whitespace import consume_whitespace as _consume_whitespace
     from ._parse import parse, parse_sections as _parse_sections
