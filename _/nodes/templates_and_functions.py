@@ -1,4 +1,4 @@
-import _
+from _.exceptions import UnderscoreTypeError, UnderscoreReturnError
 from .underscore_node import UnderscoreNode
 from .value_node import ValueNode
 from .standard_methods import Set, Get, Delete
@@ -33,7 +33,7 @@ class TemplateFunctionNode(UnderscoreNode):
 
             def __call__(self, memory_from_call_location, expressions=[]):
                 if len(expressions) != len(self.names):
-                    raise _.exceptions.UnderscoreTypeError(
+                    raise UnderscoreTypeError(
                         'number of expressions passed does not match number '
                         'required'
                     )
@@ -73,7 +73,7 @@ class TemplateFunctionNode(UnderscoreNode):
                             *self.args,
                             **self.kwargs
                         )
-                    except _.exceptions.UnderscoreReturnError as return_error:
+                    except UnderscoreReturnError as return_error:
                         return return_error.expression_to_return.run(
                             internal_memory,
                             *self.args,
@@ -100,7 +100,7 @@ class ReturnNode(UnderscoreNode):
     def run(self, memory, *args, **kwargs):
         # The user will only ever see this error if it is outside of a function,
         # so that is the message it gives.
-        raise _.exceptions.UnderscoreReturnError(
+        raise UnderscoreReturnError(
             self.expression_to_return,
             '\'return\' outside of function',
             self.position_in_program

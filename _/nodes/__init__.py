@@ -1,5 +1,5 @@
-import time
 import _
+from time import time
 from .underscore_node import UnderscoreNode
 from .statement_node import StatementNode
 from .value_node import ValueNode
@@ -19,7 +19,7 @@ class ProgramNode:
         self.memory_limit = memory_limit
         self.time_limit = time_limit
         self.memory = {}
-        self.pre_run_start_time = time.time()
+        self.pre_run_start_time = time()
         for section in self.sections:
             section.pre_run(
                 memory=self.memory,
@@ -27,7 +27,7 @@ class ProgramNode:
                 time_limit=self.time_limit,
                 start_time = self.pre_run_start_time
             )
-        self.pre_run_time_taken = time.time() - self.pre_run_start_time
+        self.pre_run_time_taken = time() - self.pre_run_start_time
         if self.time_limit is not None:
             self.time_limit -= self.pre_run_time_taken
 
@@ -39,6 +39,6 @@ class ProgramNode:
                 memory=self.memory,
                 memory_limit=self.memory_limit,
                 time_limit=self.time_limit,
-                start_time=time.time(),
+                start_time=time(),
             )
         return self.memory

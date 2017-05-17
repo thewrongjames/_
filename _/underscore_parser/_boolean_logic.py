@@ -1,5 +1,6 @@
 from _ import nodes
-from _ import exceptions
+from _.exceptions import UnderscoreCouldNotConsumeError, \
+    UnderscoreIncorrectParserError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -12,7 +13,7 @@ def parse_and_or_or(self):
     self._consume_whitespace()
     try:
         self._try_consume('AND')
-    except exceptions.UnderscoreCouldNotConsumeError:
+    except UnderscoreCouldNotConsumeError:
         self._try_consume('OR', needed_for_this=True)
         is_and = False
     else:
@@ -54,7 +55,7 @@ def parse_comparison(self):
         self._consume_whitespace()
         try:
             self._try_consume(symbol)
-        except exceptions.UnderscoreCouldNotConsumeError:
+        except UnderscoreCouldNotConsumeError:
             continue
         else:
             self._consume_whitespace()
@@ -63,4 +64,4 @@ def parse_comparison(self):
                 parsers_to_not_allow=parsers_to_not_allow
             )
             return node(first_expression, second_expression)
-    raise exceptions.UnderscoreIncorrectParserError
+    raise UnderscoreIncorrectParserError

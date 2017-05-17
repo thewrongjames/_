@@ -1,5 +1,5 @@
-from _ import nodes
-from _ import exceptions
+from _.nodes import ReturnNode, BreakNode, ContinueNode
+from _.exceptions import UnderscoreCouldNotConsumeError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -12,13 +12,13 @@ def parse_return(self):
     self._try_consume(')', needed=True)
     self._consume_whitespace()
     self._try_consume(';', needed=True)
-    return nodes.ReturnNode(expression_to_return, self.position_in_program)
+    return ReturnNode(expression_to_return, self.position_in_program)
 
 @surrounding_whitespace_removed
 def parse_break_or_continue(self):
     try:
         self._try_consume('break;')
-    except exceptions.UnderscoreCouldNotConsumeError:
+    except UnderscoreCouldNotConsumeError:
         self._try_consume('continue;', needed_for_this=True)
-        return nodes.ContinueNode(self.position_in_program)
-    return nodes.BreakNode(self.position_in_program)
+        return ContinueNode(self.position_in_program)
+    return BreakNode(self.position_in_program)

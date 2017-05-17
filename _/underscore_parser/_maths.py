@@ -1,5 +1,6 @@
-from _ import nodes
-from _ import exceptions
+from _.nodes import AdditionNode, SubtractionNode, MultiplicationNode, \
+    DivisionNode
+from _.exceptions import UnderscoreCouldNotConsumeError
 from ._whitespace import surrounding_whitespace_removed
 
 @surrounding_whitespace_removed
@@ -7,7 +8,7 @@ def parse_addition_or_subtraction(self):
     first_expression = self._parse_term()
     try:
         self._try_consume('+')
-    except exceptions.UnderscoreCouldNotConsumeError:
+    except UnderscoreCouldNotConsumeError:
         self._try_consume('-', needed_for_this=True)
         is_addition = False
     else:
@@ -21,8 +22,8 @@ def parse_addition_or_subtraction(self):
             ]
         )
     if is_addition:
-        return nodes.AdditionNode(first_expression, second_expression)
-    return nodes.SubtractionNode(first_expression, second_expression)
+        return AdditionNode(first_expression, second_expression)
+    return SubtractionNode(first_expression, second_expression)
 
 
 @surrounding_whitespace_removed
@@ -30,15 +31,15 @@ def parse_multiplication_or_division(self):
     first_expression = self._parse_object_or_contained_expression()
     try:
         self._try_consume('*')
-    except exceptions.UnderscoreCouldNotConsumeError:
+    except UnderscoreCouldNotConsumeError:
         self._try_consume('/', needed_for_this=True)
         is_multiplication = False
     else:
         is_multiplication = True
     second_expression = self._parse_term()
     if is_multiplication:
-        return nodes.MultiplicationNode(first_expression, second_expression)
-    return nodes.DivisionNode(first_expression, second_expression)
+        return MultiplicationNode(first_expression, second_expression)
+    return DivisionNode(first_expression, second_expression)
 
 
 @surrounding_whitespace_removed

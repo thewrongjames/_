@@ -1,4 +1,4 @@
-import _
+from _.exceptions import UnderscoreTypeError
 from .underscore_node import UnderscoreNode
 
 
@@ -18,7 +18,7 @@ class AdditionNode(MathsNode):
         try:
             return first_value + second_value
         except TypeError:
-            raise _.exceptions.UnderscoreTypeError(
+            raise UnderscoreTypeError(
                 'Could not add {} to {}.'.format(
                     first_value,
                     second_value
@@ -31,7 +31,7 @@ class SubtractionNode(MathsNode):
         try:
             return first_value - second_value
         except TypeError:
-            raise _.exceptions.UnderscoreTypeError(
+            raise UnderscoreTypeError(
                 'Could not subtract {} from {}.'.format(
                     second_value,
                     first_value
@@ -44,7 +44,7 @@ class MultiplicationNode(MathsNode):
         try:
             return first_value * second_value
         except TypeError:
-            raise _.exceptions.UnderscoreTypeError(
+            raise UnderscoreTypeError(
                 'Could not multiply {} by {}.'.format(
                     first_value,
                     second_value
@@ -57,7 +57,7 @@ class DivisionNode(MathsNode):
         try:
             return first_value / second_value
         except TypeError:
-            raise _.exceptions.UnderscoreTypeError(
+            raise UnderscoreTypeError(
                 'Could not divide {} by {}.'.format(
                     first_value,
                     second_value

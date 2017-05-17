@@ -1,8 +1,8 @@
-import string
+from string import whitespace
 
 
 def consume_whitespace(self):
-    while (self._peek() is not None and self._peek() in string.whitespace):
+    while (self._peek() is not None and self._peek() in whitespace):
         self.position_in_program += 1
 
 

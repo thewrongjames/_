@@ -1,4 +1,5 @@
-from _ import exceptions
+from _.exceptions import UnderscoreCouldNotConsumeError, \
+    UnderscoreIncorrectParserError, UnderscoreSyntaxError
 
 
 def try_consume(
@@ -14,7 +15,7 @@ def try_consume(
         if self._peek() != character:
             self.position_in_program = starting_position
             if needed:
-                raise exceptions.UnderscoreSyntaxError(
+                raise UnderscoreSyntaxError(
                     'expected {}, got {}'.format(
                         string_to_consume,
                         string_read if self._peek() is not None else \
@@ -23,8 +24,8 @@ def try_consume(
                     starting_position
                 )
             if needed_for_this:
-                raise exceptions.UnderscoreIncorrectParserError
-            raise exceptions.UnderscoreCouldNotConsumeError(
+                raise UnderscoreIncorrectParserError
+            raise UnderscoreCouldNotConsumeError(
                 'could not consume',
                 string_to_consume
             )

@@ -1,4 +1,4 @@
-from _ import exceptions
+from _.exceptions import UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -37,7 +37,7 @@ def parse_expression(
     expression = self._try_parsers(valid_parsers, 'expression')
 
     if self._peek() != ';' and has_semi_colon:
-        raise exceptions.UnderscoreSyntaxError(
+        raise UnderscoreSyntaxError(
             "expected ';', got {}".format(
                 self._peek() if self._peek() is not None else 'end of file',
             ),

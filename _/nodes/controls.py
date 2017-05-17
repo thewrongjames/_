@@ -1,4 +1,4 @@
-from _ import exceptions
+from _.exceptions import UnderscoreBreakError, UnderscoreContinueError
 from .underscore_node import UnderscoreNode
 
 class IfNode(UnderscoreNode):
@@ -60,10 +60,10 @@ class WhileNode(UnderscoreNode):
                         *args,
                         **kwargs
                     )
-                except exceptions.UnderscoreBreakError:
+                except UnderscoreBreakError:
                     should_break = True
                     break
-                except exceptions.UnderscoreContinueError:
+                except UnderscoreContinueError:
                     should_contine = True
                     break
             if should_break: break
@@ -75,7 +75,7 @@ class BreakNode(UnderscoreNode):
         self.position_in_program = position_in_program
 
     def run(self, *args, **kwargs):
-        raise exceptions.UnderscoreBreakError(
+        raise UnderscoreBreakError(
             'break outside of loop',
             self.position_in_program
         )
@@ -86,7 +86,7 @@ class ContinueNode(UnderscoreNode):
         self.position_in_program = position_in_program
 
     def run(self, *args, **kwargs):
-        raise exceptions.UnderscoreContinueError(
+        raise UnderscoreContinueError(
             'Continue outside of loop',
             self.position_in_program
         )

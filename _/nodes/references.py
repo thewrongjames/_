@@ -1,4 +1,4 @@
-import _
+from _.exceptions import UnderscoreNameError, UnderscoreValueError
 from .underscore_node import UnderscoreNode
 
 
@@ -30,7 +30,7 @@ class ReferenceNode(UnderscoreNode):
         if call_memory is None:
             call_memory = memory
 
-        error = _.exceptions.UnderscoreNameError(
+        error = UnderscoreNameError(
             "'{}' is not defined in this context".format(
                 '.'.join([str(item) for item in self.components])
             ),
@@ -81,7 +81,7 @@ class ReferenceNode(UnderscoreNode):
 
         if requires_running:
             if not isinstance(run_value, dict):
-                raise _.exceptions.UnderscoreNameError(
+                raise UnderscoreNameError(
                     '{} does not contain any names'.format(current_component),
                     self.character
                 )
@@ -97,8 +97,8 @@ class ReferenceNode(UnderscoreNode):
             raise error
         try:
             return new_node.run(memory=next_memory, call_memory=memory)
-        except _.exceptions.UnderscoreNameError:
-            raise _.exceptions.UnderscoreNameError(
+        except UnderscoreNameError:
+            raise UnderscoreNameError(
                 '{} does not contain {}'.format(
                     current_component,
                     self.components[1]
@@ -127,7 +127,7 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
         if isinstance(self.template_or_function, ReferenceNode):
             template_or_function = self.template_or_function.run(memory)
             if not callable(template_or_function):
-                raise _.exceptions.UnderscoreValueError(
+                raise UnderscoreValueError(
                     'reference is not callable',
                     self.character
                 )

@@ -1,12 +1,10 @@
-import string
-from _ import nodes
-from _ import exceptions
+from string import ascii_letters, digits
 
 
 class UnderscoreParser:
-    VALID_NAME_FIRST_CHARACTER_CHARACTERS = string.ascii_letters + '_'
+    VALID_NAME_FIRST_CHARACTER_CHARACTERS = ascii_letters + '_'
     VALID_NAME_NON_FIRST_CHARACTER_CHARACTERS = \
-        VALID_NAME_FIRST_CHARACTER_CHARACTERS + string.digits
+        VALID_NAME_FIRST_CHARACTER_CHARACTERS + digits
     RESERVED_NAMES = [
         'if',
         'else',

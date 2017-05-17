@@ -1,6 +1,7 @@
-import string
-from _ import nodes
-from _ import exceptions
+from string import digits
+from _.nodes import ValueNode
+from _.exceptions import UnderscoreCouldNotConsumeError, \
+    UnderscoreIncorrectParserError, UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -27,10 +28,10 @@ def parse_float(self):
         string_of_float += self._parse_digits(consume_sign=False)
     else:
         # It's an integer.
-        raise exceptions.UnderscoreIncorrectParserError
+        raise UnderscoreIncorrectParserError
     if string_of_float[-1] == '.':
-        raise exceptions.UnderscoreIncorrectParserError
-    return nodes.ValueNode(float(string_of_float))
+        raise UnderscoreIncorrectParserError
+    return ValueNode(float(string_of_float))
 
 
 def parse_digits(self, consume_sign):
@@ -41,20 +42,20 @@ def parse_digits(self, consume_sign):
     """
     string_of_integer = ''
     if self._peek() is None:
-        raise exceptions.UnderscoreIncorrectParserError
+        raise UnderscoreIncorrectParserError
     if self._peek() in ['+', '-'] and consume_sign:
         string_of_integer += self._peek()
         self.position_in_program += 1
     self._consume_whitespace()
-    if self._peek() not in string.digits:
-        raise exceptions.UnderscoreIncorrectParserError(
+    if self._peek() not in digits:
+        raise UnderscoreIncorrectParserError(
             'expected one of {}, got {}'.format(
-                string.digits,
+                digits,
                 self._peek() if self._peek() is not None else 'end of file',
             ),
             self.position_in_program,
         )
-    while self._peek() in string.digits:
+    while self._peek() in digits:
         string_of_integer += self._peek()
         self.position_in_program += 1
     return string_of_integer
@@ -62,23 +63,23 @@ def parse_digits(self, consume_sign):
 
 @surrounding_whitespace_removed
 def parse_integer(self):
-    return nodes.ValueNode(int(self._parse_digits(consume_sign=True)))
+    return ValueNode(int(self._parse_digits(consume_sign=True)))
 
 
 @surrounding_whitespace_removed
 def parse_boolean(self):
     try:
         self._try_consume('true')
-    except exceptions.UnderscoreCouldNotConsumeError:
+    except UnderscoreCouldNotConsumeError:
         pass
     else:
-        return nodes.ValueNode(True)
+        return ValueNode(True)
     try:
         self._try_consume('false')
-    except exceptions.UnderscoreCouldNotConsumeError:
-        raise exceptions.UnderscoreIncorrectParserError()
+    except UnderscoreCouldNotConsumeError:
+        raise UnderscoreIncorrectParserError()
     else:
-        return nodes.ValueNode(False)
+        return ValueNode(False)
 
 
 @surrounding_whitespace_removed
@@ -89,16 +90,16 @@ def parse_string(self):
     for string_starter in string_starters:
         try:
             self._try_consume(string_starter)
-        except exceptions.UnderscoreCouldNotConsumeError:
+        except UnderscoreCouldNotConsumeError:
             pass
         else:
             string_starter_used = string_starter
     if string_starter_used is None:
-        raise exceptions.UnderscoreIncorrectParserError()
+        raise UnderscoreIncorrectParserError()
     string = ''
     while self._peek(len(string_starter_used)) != string_starter_used:
         if self._peek() is None:
-            raise exceptions.UnderscoreSyntaxError(
+            raise UnderscoreSyntaxError(
                 'expected {}, got end of file'.format(string_starter_used),
                 self.position_in_program
             )
@@ -106,13 +107,13 @@ def parse_string(self):
         self.position_in_program += 1
     for _ in string_starter_used:
         self.position_in_program += 1
-    return nodes.ValueNode(string)
+    return ValueNode(string)
 
 
 @surrounding_whitespace_removed
 def parse_none(self):
     try:
         self._try_consume('none')
-    except exceptions.UnderscoreCouldNotConsumeError:
-        raise exceptions.UnderscoreIncorrectParserError
-    return nodes.ValueNode(None)
+    except UnderscoreCouldNotConsumeError:
+        raise UnderscoreIncorrectParserError
+    return ValueNode(None)

@@ -1,12 +1,13 @@
-from _ import nodes
-from _ import exceptions
+from _.nodes import ProgramNode
+from _.exceptions import UnderscoreCouldNotConsumeError, \
+    UnderscoreIncorrectParserError
 from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
 def parse(self, memory_limit=None, time_limit=None):
     sections = self._parse_sections()
-    return nodes.ProgramNode(sections, memory_limit, time_limit)
+    return ProgramNode(sections, memory_limit, time_limit)
 
 
 def parse_sections(self, stop_parsing_section_at=[]):
@@ -36,7 +37,7 @@ def parse_sections(self, stop_parsing_section_at=[]):
             self._parse_break_or_continue
         ]
 
-        none_worked_error = exceptions.UnderscoreCouldNotConsumeError(
+        none_worked_error = UnderscoreCouldNotConsumeError(
             'encountered unparsable input'
         )
         parsed_something = False
@@ -44,7 +45,7 @@ def parse_sections(self, stop_parsing_section_at=[]):
         for parser in valid_parsers:
             try:
                 sections.append(parser())
-            except exceptions.UnderscoreIncorrectParserError:
+            except UnderscoreIncorrectParserError:
                 self.position_in_program = starting_position
             else:
                 parsed_something = True

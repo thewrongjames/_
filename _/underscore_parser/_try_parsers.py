@@ -1,4 +1,4 @@
-from _ import exceptions
+from _.exceptions import UnderscoreIncorrectParserError, UnderscoreSyntaxError
 
 
 def try_parsers(self, parsers, expected=None, needed=False):
@@ -7,19 +7,19 @@ def try_parsers(self, parsers, expected=None, needed=False):
     one_worked = False
     if expected is not None:
         if needed:
-            none_worked_error = exceptions.UnderscoreSyntaxError(
+            none_worked_error = UnderscoreSyntaxError(
                 'expected {}'.format(expected),
                 starting_position
             )
         else:
-            none_worked_error = exceptions.UnderscoreIncorrectParserError()
+            none_worked_error = UnderscoreIncorrectParserError()
     else:
         none_worked_error = None
 
     for parser in parsers:
         try:
             return parser()
-        except exceptions.UnderscoreIncorrectParserError:
+        except UnderscoreIncorrectParserError:
             self.position_in_program = starting_position
         else:
             one_worked = True

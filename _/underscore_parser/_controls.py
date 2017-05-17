@@ -1,5 +1,5 @@
-from _ import nodes
-from _ import exceptions
+from _.nodes import IfNode, WhileNode
+from _.exceptions import UnderscoreSyntaxError, UnderscoreCouldNotConsumeError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -13,7 +13,7 @@ def parse_control(self):
 
     if self._peek() != ';':
         # The control must be followed by a semi colon.
-        raise exceptions.UnderscoreSyntaxError(
+        raise UnderscoreSyntaxError(
             "expected ';', got {}".format(
                 self._peek() if self._peek() is not None else 'end of file',
             ),
@@ -39,7 +39,7 @@ def parse_if(self):
     self._consume_whitespace()
     try:
         self._try_consume('else')
-    except exceptions.UnderscoreCouldNotConsumeError:
+    except UnderscoreCouldNotConsumeError:
         else_sections = []
     else:
         self._consume_whitespace()
@@ -48,7 +48,7 @@ def parse_if(self):
         else_sections = self._parse_sections(['}'])
         self._try_consume('}', needed=True)
 
-    return nodes.IfNode(expression, if_sections, else_sections)
+    return IfNode(expression, if_sections, else_sections)
 
 
 def parse_while(self):
@@ -62,4 +62,4 @@ def parse_while(self):
     sections = self._parse_sections(['}'])
     self._try_consume('}', needed=True)
 
-    return nodes.WhileNode(expression, sections)
+    return WhileNode(expression, sections)

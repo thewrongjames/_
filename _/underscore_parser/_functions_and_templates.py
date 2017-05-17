@@ -1,5 +1,6 @@
-from _ import nodes
-from _ import exceptions
+from _.nodes import TemplateFunctionNode
+from _.exceptions import UnderscoreCouldNotConsumeError, \
+    UnderscoreIncorrectParserError, UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -7,7 +8,7 @@ from ._whitespace import surrounding_whitespace_removed
 def parse_function_or_template(self):
     try:
         self._try_consume('function')
-    except exceptions.UnderscoreCouldNotConsumeError:
+    except UnderscoreCouldNotConsumeError:
         self._try_consume('template', needed_for_this=True)
         is_function = False
     else:
@@ -21,30 +22,30 @@ def parse_function_or_template(self):
     # If it is a function, you need to allow for parsing return.
     sections = self._parse_sections(['}'])
     self._try_consume('}', needed=True)
-    return nodes.TemplateFunctionNode(sections, is_function, names)
+    return TemplateFunctionNode(sections, is_function, names)
 
 
 @surrounding_whitespace_removed
 def parse_passable_names(self):
     try:
         self._try_consume('(')
-    except exceptions.UnderscoreCouldNotConsumeError:
-        raise exceptions.UnderscoreIncorrectParserError
+    except UnderscoreCouldNotConsumeError:
+        raise UnderscoreIncorrectParserError
     names = []
     while self._peek() is not None:
         self._consume_whitespace()
 
         try:
             self._try_consume(')')
-        except exceptions.UnderscoreCouldNotConsumeError:
+        except UnderscoreCouldNotConsumeError:
             pass
         else:
             break
 
         try:
             names.append(self._parse_single_name())
-        except exceptions.UnderscoreIncorrectParserError:
-            raise exceptions.UnderscoreSyntaxError(
+        except UnderscoreIncorrectParserError:
+            raise UnderscoreSyntaxError(
                 'Expected name, got {}'.format(self.peek())
             )
         else:
@@ -53,6 +54,6 @@ def parse_passable_names(self):
                 self._try_consume(',', needed=True)
 
     if self._peek() is None:
-        raise exceptions.UnderscoreSyntaxError('Expected \')\' got end of file')
+        raise UnderscoreSyntaxError('Expected \')\' got end of file')
 
     return names

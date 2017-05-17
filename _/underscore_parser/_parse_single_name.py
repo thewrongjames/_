@@ -1,4 +1,4 @@
-from _ import exceptions
+from _.exceptions import UnderscoreIncorrectParserError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -8,7 +8,7 @@ def parse_single_name(self):
 
     if self._peek() is None or self._peek() not in \
             self.VALID_NAME_FIRST_CHARACTER_CHARACTERS:
-        raise exceptions.UnderscoreIncorrectParserError(
+        raise UnderscoreIncorrectParserError(
             'expected one of {}, got {}'.format(
                 self.VALID_NAME_FIRST_CHARACTER_CHARACTERS,
                 self._peek() if self._peek() is not None else 'end of file',
@@ -24,7 +24,7 @@ def parse_single_name(self):
         name += self._peek()
         self.position_in_program += 1
     if name in self.RESERVED_NAMES:
-        raise exceptions.UnderscoreIncorrectParserError(
+        raise UnderscoreIncorrectParserError(
             'name was in reserved words'
         )
     return name

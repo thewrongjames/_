@@ -1,5 +1,6 @@
-from _ import nodes
-from _ import exceptions
+from _.nodes import ReferenceNode
+from _.exceptions import UnderscoreCouldNotConsumeError, \
+    UnderscoreIncorrectParserError, UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -23,14 +24,14 @@ def parse_reference(self):
             self._try_consume(']', needed=True)
         else:
             break
-    return nodes.ReferenceNode(components, starting_position)
+    return ReferenceNode(components, starting_position)
 
 
 def parse_single_name_or_instantiation_or_call(self):
     starting_position = self.position_in_program
     try:
         return self._parse_instantiation_or_call()
-    except exceptions.UnderscoreIncorrectParserError:
+    except UnderscoreIncorrectParserError:
         self.position_in_program = starting_position
         return self._parse_single_name()
 
@@ -45,13 +46,13 @@ def parse_instantiation_or_call(self):
     if self._peek(9) == 'template(' or self._peek(9) == 'function(':
         instantiation_or_call = self._parse_function_or_template()
     else:
-        instantiation_or_call = nodes.ReferenceNode(
+        instantiation_or_call = ReferenceNode(
             [self._parse_single_name()],
             starting_position
         )
     try:
         expressions = self._parse_passable_expressions()
-    except exceptions.UnderscoreIncorrectParserError:
+    except UnderscoreIncorrectParserError:
         self.position_in_program = starting_position
         raise
     return (instantiation_or_call, expressions)
@@ -61,8 +62,8 @@ def parse_instantiation_or_call(self):
 def parse_passable_expressions(self, only_one_expression=False):
     try:
         self._try_consume('(')
-    except exceptions.UnderscoreCouldNotConsumeError:
-        raise exceptions.UnderscoreIncorrectParserError
+    except UnderscoreCouldNotConsumeError:
+        raise UnderscoreIncorrectParserError
     expressions = []
     # The while loop has to run twice even if only_one_expression == False, so
     # that the closing ')' is consumed. The case in which there is not closing
@@ -78,9 +79,9 @@ def parse_passable_expressions(self, only_one_expression=False):
 
         try:
             self._try_consume(')')
-        except exceptions.UnderscoreCouldNotConsumeError:
+        except UnderscoreCouldNotConsumeError:
             if only_one_expression and len(expressions) >= 1:
-                raise exceptions.UnderscoreSyntaxError(
+                raise UnderscoreSyntaxError(
                     'Expected \')\', got {}'.format(self._peek()),
                     self.position_in_program
                 )
@@ -89,8 +90,8 @@ def parse_passable_expressions(self, only_one_expression=False):
 
         try:
             expressions.append(self._parse_expression(has_semi_colon=False))
-        except exceptions.UnderscoreIncorrectParserError:
-            raise exceptions.UnderscoreSyntaxError(
+        except UnderscoreIncorrectParserError:
+            raise UnderscoreSyntaxError(
                 'Expected name, got {}'.format(self._peek()),
                 self.position_in_program
             )
@@ -100,6 +101,6 @@ def parse_passable_expressions(self, only_one_expression=False):
                 self._try_consume(',', needed=True)
 
     if self._peek() is None:
-        raise exceptions.UnderscoreSyntaxError('Expected \')\' got end of file')
+        raise UnderscoreSyntaxError('Expected \')\' got end of file')
 
     return expressions
