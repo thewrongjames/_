@@ -20,8 +20,7 @@ def parse_expression(
         self._parse_and_or_or,
         self._parse_not,
         self._parse_comparison,
-        self._parse_addition,
-        self._parse_subtraction,
+        self._parse_addition_or_subtraction,
         self._parse_term,
     ]
 

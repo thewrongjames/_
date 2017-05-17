@@ -77,12 +77,12 @@ class UnderscoreParser:
     from ._functions_and_templates import parse_function_or_template as \
         _parse_function_or_template, parse_passable_names as \
         _parse_passable_names
-    from ._maths import parse_addition as _parse_addition, parse_subtraction \
-        as _parse_subtraction, parse_bracketed_expression as \
+    from ._maths import parse_addition_or_subtraction as \
+        _parse_addition_or_subtraction, parse_bracketed_expression as \
         _parse_bracketed_expression, parse_term as _parse_term, \
         parse_object_or_contained_expression as \
-        _parse_object_or_contained_expression, parse_multiplication as \
-        _parse_multiplication, parse_division as _parse_division
+        _parse_object_or_contained_expression, \
+        parse_multiplication_or_division as _parse_multiplication_or_division
     from ._boolean_logic import parse_comparison as _parse_comparison, \
         parse_and_or_or as _parse_and_or_or, parse_not as _parse_not
     from ._controls import parse_control as _parse_control, parse_if as \
