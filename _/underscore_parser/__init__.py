@@ -17,12 +17,17 @@ class UnderscoreParser:
         'none',
         'break',
         'continue',
+    ]
+    READ_ONLY_NAMES = [
         'float',
         'integer',
         'boolean',
-        'string'
+        'string',
+        'container',
+        'set',
+        'get',
+        'delete'
     ]
-    READ_ONLY_NAMES = ['container', 'set', 'get', 'delete']
 
     def __init__(self, program):
         self.program = program
@@ -56,8 +61,8 @@ class UnderscoreParser:
         _parse_passable_names
     from ._maths import parse_addition_or_subtraction as \
         _parse_addition_or_subtraction, parse_bracketed_expression as \
-        _parse_bracketed_expression, parse_term as _parse_term, \
-        parse_object_or_contained_expression as \
+        _parse_bracketed_expression, parse_term as _parse_term, parse_power as \
+        _parse_power, parse_object_or_contained_expression as \
         _parse_object_or_contained_expression, \
         parse_multiplication_or_division as _parse_multiplication_or_division
     from ._boolean_logic import parse_comparison as _parse_comparison, \

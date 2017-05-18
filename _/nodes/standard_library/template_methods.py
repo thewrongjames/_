@@ -1,13 +1,14 @@
 from _.exceptions import UnderscoreTypeError
-from .value_node import ValueNode
-
-
-BASIC_TYPES = [int, float, bool, str, type(None)]
+from ..value_node import ValueNode
+from .constants import BASIC_TYPES
 
 
 class Set:
     def __init__(self, memory):
         self.memory = memory
+
+    def __str__(self, memory):
+        return 'set_method'
 
     def __call__(self, memory_from_call_location, expressions=[]):
         if len(expressions) != 2:
@@ -32,12 +33,15 @@ class Get:
     def __init__(self, memory):
         self.memory = memory
 
+    def __str__(self, memory):
+        return 'get_method'
+
     def __call__(self, memory_from_call_location, expressions=[]):
         if len(expressions) != 1:
             raise UnderscoreTypeError(
                 '{} expressions passed, {} required'.format(
                     len(expressions),
-                    2
+                    1
                 )
             )
         value_to_get_from = expressions[0].run(memory_from_call_location)
@@ -60,12 +64,15 @@ class Delete:
     def __init__(self, memory):
         self.memory = memory
 
+    def __str__(self, memory):
+        return 'delete_method'
+
     def __call__(self, memory_from_call_location, expressions=[]):
         if len(expressions) != 1:
             raise UnderscoreTypeError(
                 '{} expressions passed, {} required'.format(
                     len(expressions),
-                    2
+                    1
                 )
             )
         value_to_get_from = expressions[0].run(memory_from_call_location)

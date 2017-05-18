@@ -43,6 +43,15 @@ class TestMaths(unittest.TestCase):
         memory = compiled.run()
         self.assertEqual(memory['value'], -30)
 
+    def test_power(self):
+        compiled = _.compile_(
+            '''
+            value = (3 + 1) ^ (-1 / 2);
+            '''
+        )
+        memory = compiled.run()
+        self.assertEqual(memory['value'], 0.5)
+
     def test_brackets(self):
         compiled = _.compile_(
             '''

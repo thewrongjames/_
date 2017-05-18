@@ -24,7 +24,6 @@ def parse_single_name(self):
         name += self._peek()
         self.position_in_program += 1
     if name in self.RESERVED_NAMES:
-        raise UnderscoreIncorrectParserError(
-            'name was in reserved words'
-        )
+        # If the name is reserved, it is not a name. It is something like 'if'.
+        raise UnderscoreIncorrectParserError()
     return name

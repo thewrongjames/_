@@ -1,5 +1,4 @@
-Please note that there are reserved words that cannot be a single_name. These
-are:
+Please note that there are several reserved words that cannot be names:
     if
     else
     while
@@ -11,12 +10,13 @@ are:
     none
     break
     continue
+
+There are also several read-only names, that cannot be assigned to by
+statements:
     float
     integer
     boolean
     string
-
-There are also read-only names, that cannot be assigned to:
     container
     set
     get

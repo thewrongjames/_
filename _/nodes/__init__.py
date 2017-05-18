@@ -6,7 +6,7 @@ from .value_node import ValueNode
 from .references import ReferenceNode, TemplateInstantiateFunctionCallNode
 from .templates_and_functions import TemplateFunctionNode, ReturnNode
 from .maths import AdditionNode, SubtractionNode, MultiplicationNode, \
-    DivisionNode
+    DivisionNode, PowerNode
 from .boolean_logic import AndOrOrNode, NotNode, EqualityNode, \
     SmallerThanOrEqualToNode, SmallerThanNode, GreaterThanNode, \
     GreaterThanOrEqualToNode, InequalityNode

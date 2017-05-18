@@ -36,10 +36,7 @@ def parse_sections(self, stop_parsing_section_at=[]):
             self._parse_comment,
             self._parse_break_or_continue
         ]
-
-        none_worked_error = UnderscoreCouldNotConsumeError(
-            'encountered unparsable input'
-        )
+        
         parsed_something = False
 
         for parser in valid_parsers:
@@ -52,6 +49,9 @@ def parse_sections(self, stop_parsing_section_at=[]):
                 break
 
         if not parsed_something:
-            raise none_worked_error
+            raise UnderscoreCouldNotConsumeError(
+                'encountered unparsable input',
+                self.position_in_program
+            )
 
     return sections

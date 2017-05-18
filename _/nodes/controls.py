@@ -1,5 +1,7 @@
-from _.exceptions import UnderscoreBreakError, UnderscoreContinueError
+from _.exceptions import UnderscoreBreakError, UnderscoreContinueError, \
+    UnderscoreTypeError
 from .underscore_node import UnderscoreNode
+from .standard_library.casting import BooleanCaster
 
 class IfNode(UnderscoreNode):
     def __init__(self, expression, if_sections, else_sections):
@@ -8,7 +10,19 @@ class IfNode(UnderscoreNode):
         self.else_sections = else_sections
 
     def run(self, memory, *args, **kwargs):
-        if self.expression.run(memory, *args, **kwargs):
+        expression_result = self.expression.run(memory, *args, **kwargs)
+        if isinstance(expression_result, dict):
+            # If the expression is a template instance, it needs to be casted
+            # to a boolean the way its casting method defines, if it has one.
+            # Otherwise it defaults to true.
+            try:
+                conditional = BooleanCaster()(memory, [expression_result])
+            except UnderscoreTypeError:
+                conditional = True
+        else:
+            conditional = expression_result
+
+        if conditional:
             for section in self.if_sections:
                 section.pre_run(
                     memory=memory,
@@ -42,7 +56,19 @@ class WhileNode(UnderscoreNode):
         self.sections = sections
 
     def run(self, memory, *args, **kwargs):
-        while self.expression.run(memory, *args, **kwargs):
+        expression_result = self.expression.run(memory, *args, **kwargs)
+        if isinstance(expression_result, dict):
+            # If the expression is a template instance, it needs to be casted
+            # to a boolean the way its casting method defines, if it has one.
+            # Otherwise it defaults to true.
+            try:
+                conditional = BooleanCaster()(memory, [expression_result])
+            except UnderscoreTypeError:
+                conditional = True
+        else:
+            conditional = expression_result
+
+        while conditional:
             should_break = False
             should_continue = False
             for section in self.sections:

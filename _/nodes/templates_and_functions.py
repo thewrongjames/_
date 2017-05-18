@@ -1,7 +1,7 @@
 from _.exceptions import UnderscoreTypeError, UnderscoreReturnError
 from .underscore_node import UnderscoreNode
 from .value_node import ValueNode
-from .standard_methods import Set, Get, Delete
+from .standard_library.template_methods import Set, Get, Delete
 
 
 class TemplateFunctionNode(UnderscoreNode):
@@ -30,6 +30,9 @@ class TemplateFunctionNode(UnderscoreNode):
                 self.memory = memory
                 self.args = args
                 self.kwargs = kwargs
+
+            def __str__(self):
+                return 'function' if self.is_function else 'template'
 
             def __call__(self, memory_from_call_location, expressions=[]):
                 if len(expressions) != len(self.names):

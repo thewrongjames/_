@@ -29,7 +29,7 @@ comparison = expression without boolean expression or comparison,
 expression without boolean expression or comparison = (addition | subtraction |
                                                       term) ;
 addition = term, ' + ', expression without boolean expression or comparison ;
-term = ( multiplication | division | object or contained expression ) ;
+term = ( multiplication | division | power | object or contained expression ) ;
 multiplication = object or contained expression, ' * ', term ;
 object or contained expression = ( ' ( ', expression, ' ) ' )
                                  | object ;
@@ -43,6 +43,7 @@ string = ? any characters contained in single or triple single or double quotes
 none = ' none ' ;
 function = ' function ', passable names, ' { ', sections, ' } ' ;
 division = object or contained expression, ' * ', term ;
+power = object or contained expression, ' ^ ', object_or_contained_expression ;
 subtraction = term, ' - ', expression without boolean expression or comparison ;
 function call = ( function | single name ), passable expressions ;
 expression with semicolon = expression, ' ; ' ;
