@@ -13,6 +13,7 @@ class ReferenceNode(UnderscoreNode):
     def name(self):
         def make_nice(item):
             if isinstance(item, tuple):
+                print(item)
                 return str(item[0]) + '({})'.format(*item[1])
             return str(item)
         return '.'.join([make_nice(item) for item in self.components])

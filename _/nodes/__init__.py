@@ -19,7 +19,7 @@ class ProgramNode:
         self.sections = sections
         self.memory_limit = memory_limit
         self.time_limit = time_limit
-        self.memory = STANDARD_LIBRARY.copy
+        self.memory = STANDARD_LIBRARY.copy()
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
         self.pre_run_start_time = time()

@@ -42,7 +42,7 @@ class TemplateFunctionNode(UnderscoreNode):
                         'required'
                     )
 
-                internal_memory = STANDARD_LIBRARY.copy
+                internal_memory = STANDARD_LIBRARY.copy()
                 # It doesn't need to be a deepcopy, I can use the same standard library
                 # methods everywhere.
                 internal_memory['container'] = self.memory
