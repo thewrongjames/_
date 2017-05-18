@@ -12,13 +12,16 @@ from .boolean_logic import AndOrOrNode, NotNode, EqualityNode, \
     GreaterThanOrEqualToNode, InequalityNode
 from .controls import IfNode, WhileNode, BreakNode, ContinueNode
 from .comment_node import CommentNode
+from .standard_library import STANDARD_LIBRARY
 
 class ProgramNode:
     def __init__(self, sections, memory_limit=None, time_limit=None):
         self.sections = sections
         self.memory_limit = memory_limit
         self.time_limit = time_limit
-        self.memory = {}
+        self.memory = STANDARD_LIBRARY.copy
+        # It doesn't need to be a deepcopy, I can use the same standard library
+        # methods everywhere.
         self.pre_run_start_time = time()
         for section in self.sections:
             section.pre_run(

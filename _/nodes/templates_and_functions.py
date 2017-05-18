@@ -1,6 +1,7 @@
 from _.exceptions import UnderscoreTypeError, UnderscoreReturnError
 from .underscore_node import UnderscoreNode
 from .value_node import ValueNode
+from .standard_library import STANDARD_LIBRARY
 from .standard_library.template_methods import Set, Get, Delete
 
 
@@ -41,9 +42,10 @@ class TemplateFunctionNode(UnderscoreNode):
                         'required'
                     )
 
-                internal_memory = {
-                    'container': self.memory
-                }
+                internal_memory = STANDARD_LIBRARY.copy
+                # It doesn't need to be a deepcopy, I can use the same standard library
+                # methods everywhere.
+                internal_memory['container'] = self.memory
 
                 # If this is a template, the standard methods must be added to
                 # the internal memory.
