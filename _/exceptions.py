@@ -86,3 +86,11 @@ class UnderscoreContinueError(UnderscoreError):
     (they placed a continue outside of a while loop).
     """
     pass
+
+
+class UnderscoreIncorrectNumberOfArgumentsError(UnderscoreTypeError):
+    """
+    This is raised whenever a template or function is called with the incorrect
+    number of arguments.
+    """
+    pass

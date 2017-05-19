@@ -1,4 +1,5 @@
-from _.exceptions import UnderscoreTypeError, UnderscoreReturnError
+from _.exceptions import UnderscoreTypeError, UnderscoreReturnError, \
+    UnderscoreIncorrectNumberOfArgumentsError
 from .underscore_node import UnderscoreNode
 from .value_node import ValueNode
 from .standard_library import STANDARD_LIBRARY
@@ -37,7 +38,7 @@ class TemplateFunctionNode(UnderscoreNode):
 
             def __call__(self, memory_from_call_location, expressions=[]):
                 if len(expressions) != len(self.names):
-                    raise UnderscoreTypeError(
+                    raise UnderscoreIncorrectNumberOfArgumentsError(
                         'number of expressions passed does not match number '
                         'required'
                     )
@@ -85,7 +86,9 @@ class TemplateFunctionNode(UnderscoreNode):
                             **self.kwargs
                         )
                 if self.is_function:
-                    return ValueNode(None)
+                    # If it is a function that has not already returned
+                    # something, it needs to return none.
+                    return
                 return internal_memory
         return TemplateOrFunction(
             self.sections,

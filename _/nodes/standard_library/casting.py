@@ -36,15 +36,16 @@ class _Caster:
             raise cannot_cast_error
 
         try:
-            return value_to_cast['__' + self.TYPE]({}, [])
+            value_to_return = value_to_cast['__' + self.TYPE]({}, [])
+        except UnderscoreIncorrectNumberOfArgumentsError:
+            # Their caster method must take zero arguments, if it doesn't, it
+            # will raise an UnderscoreIncorrectNumberOfArgumentsError, which
+            # means we need to raise an UnderscoreTypeError here, to tell them
+            # what to change.
+            raise UnderscoreTypeError(
+                '{} method must take 0 arguments'.format('__' + self.TYPE)
+            )
         except UnderscoreTypeError as error:
-            if error.args[0] == 'number of expressions passed does not match '\
-                    'number required':
-                # If their definition of the caster requires arguments the error
-                # will have the above message.
-                raise UnderscoreTypeError(
-                    '{} method must take 0 arguments'.format('__' + self.TYPE)
-                )
             # Otherwise, this is just a problem with their function that they
             # need to see.
             raise error
@@ -52,6 +53,14 @@ class _Caster:
             # If the casting magic method is not defined, the template instance
             # cannot be cast.
             raise cannot_cast_error
+        else:
+            if not isinstance(value_to_return, self.PYTHON_CASTER):
+                raise UnderscoreTypeError(
+                    '{} method did not return correct type'.format(
+                        '__' + self.TYPE
+                    )
+                )
+            return value_to_cast['__' + self.TYPE]({}, [])
 
 
 class FloatCaster(_Caster):

@@ -4,19 +4,23 @@ from .underscore_node import UnderscoreNode
 
 class ReferenceNode(UnderscoreNode):
     def __init__(self, components, character):
-        # components should be a list containing either strings or tuples containing
+        # components should be a list containing either strings or tuples
+        # containing
         # TemplateFunctionNodes and any expressions passed to them.
         self.components = components
         self.character = character
 
     @property
     def name(self):
-        def make_nice(item):
+        def make_nice_string_representation(item):
+            # nice, /nʌɪs/, adjective: giving pleasure or satisfaction; pleasant
+            # or attractive.
             if isinstance(item, tuple):
-                print(item)
-                return str(item[0]) + '({})'.format(*item[1])
+                return '{}({})'.format(item[0], ', '.join(item[1])[1:-2])
             return str(item)
-        return '.'.join([make_nice(item) for item in self.components])
+        return '.'.join(
+            [make_nice_string_representation(item) for item in self.components]
+        )
 
     def __str__(self):
         return self.name
