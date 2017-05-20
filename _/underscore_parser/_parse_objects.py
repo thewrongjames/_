@@ -55,7 +55,7 @@ def parse_digits(self, consume_sign):
             ),
             self.position_in_program,
         )
-    while self._peek() in digits:
+    while self._peek() is not None and self._peek() in digits:
         string_of_integer += self._peek()
         self.position_in_program += 1
     return string_of_integer
