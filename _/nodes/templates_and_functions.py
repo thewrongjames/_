@@ -108,13 +108,20 @@ class TemplateFunctionNode(UnderscoreNode):
     def __str__(self):
         return 'function' if self.is_function else 'template'
 
-    def run(self, memory, include_standard_library, *args, **kwargs):
+    def run(
+            self,
+            memory,
+            compiling_underscore_standard_library=False,
+            *args,
+            **kwargs
+    ):
         return TemplateOrFunction(
             self.sections,
             self.is_function,
             self.names,
             memory,
-            include_standard_library=include_standard_library
+            compiling_underscore_standard_library=\
+                compiling_underscore_standard_library
             *args,
             **kwargs
         )

@@ -26,11 +26,13 @@ class ProgramNode:
         self.memory_limit = memory_limit
         self.time_limit = time_limit
         self.memory = CASTERS.copy()
+        self.compiling_underscore_standard_library = \
+            compiling_underscore_standard_library
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
         if not compiling_underscore_standard_library:
-            import _.standard_library.written_in_underscore\
-                .WRITTEN_IN_UNDERSCORE
+            from _.standard_library.written_in_underscore import \
+                WRITTEN_IN_UNDERSCORE
             for key, value in WRITTEN_IN_UNDERSCORE:
                 memory[key] = value
         self.pre_run_start_time = time()
@@ -57,6 +59,6 @@ class ProgramNode:
                 time_limit=self.time_limit,
                 start_time=time(),
                 compiling_underscore_standard_library=\
-                    compiling_underscore_standard_library
+                    self.compiling_underscore_standard_library
             )
         return self.memory

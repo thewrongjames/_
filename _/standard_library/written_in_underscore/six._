@@ -1,0 +1,3 @@
+six = function() {
+    return (6);
+};

@@ -45,7 +45,8 @@ def smart_compile(directory,
     there.
     """
     file_name = str(directory).replace('\\', '/').split('/')[-1]
-    directory_of_pickle = file_name.split('.')[0] + '.pickle'
+    directory_of_pickle = str(directory).split('.')[0] + '.pickle'
+
     try:
         with open(directory_of_pickle, 'rb') as pickle_file:
             unpickled_program = pickle.load(pickle_file)
@@ -53,11 +54,27 @@ def smart_compile(directory,
         # There is no pickled version.
         pickled_section_parser_list = []
     else:
-        # Attempt to go through old list.
-        # If one fails, return to parsing as normal.
-        pickled_section_parser_list = [
-            type(section).FIRST_PARSER for section in unpickled_program.sections
-        ]
+        print(unpickled_program)
+        def build_recursive_sections_list(node):
+            try:
+                sections = node.sections
+            except AttributeError:
+                return []
+            section_list = []
+            for section in node.sections:
+                section_list.append(
+                    (
+                        type(section).FIRST_PARSER,
+                        build_recursive_sections_list(type(section))
+                    )
+                )
+            return section_list
+
+        # Construct a list of the parsers from the previous ProgramNode.
+        pickled_section_parser_list = build_recursive_sections_list(
+            unpickled_program
+        )
+        print(pickled_section_parser_list)
 
     with open(str(directory), 'r') as file_:
         program = file_.read()

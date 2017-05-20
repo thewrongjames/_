@@ -32,6 +32,7 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
         self._parse_break_or_continue
     ]
     trying_specific_parsers = False
+    print(parsers_to_try_first)
     if parsers_to_try_first:
         parser_methods = {
             '_parse_statement': self._parse_statement,
@@ -41,9 +42,13 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
             '_parse_comment': self._parse_comment,
             '_parse_break_or_continue': self._parse_break_or_continue
         }
-        parser_methods_to_try_first = [
-            parser_methods(parser_name) for parser_name in parsers_to_try_first
-        ]
+        parser_methods_to_try_first = []
+        for parser_name, contained_parsers_to_try_first in \
+                parser_methods_to_try_first:
+            parser_methods_to_try_first.append(
+                parser_methods[parser_name],
+                contained_parsers_to_try_first
+            )
         trying_specific_parsers = True
         index_in_specific_parsers = 0
 
@@ -66,12 +71,14 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
 
         if trying_specific_parsers:
             try:
+                # parser_methods_to_try_first[index] is a tuple containing
                 sections.append(
-                    parser_methods_to_try_first[index_in_specific_parsers]
+                    parser_methods_to_try_first[index_in_specific_parsers][0]
                 )
             except UnderscoreIncorrectParserError:
                 self.position_in_program = starting_position
-                # Stop trying to parse specific parsers:
+                # If it failed to parse it, stop trying to parse specific
+                # parsers:
                 trying_specific_parsers = False
             else:
                 index_in_specific_parsers += 1
