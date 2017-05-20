@@ -1,4 +1,4 @@
-list_instance = template() {
+List = template() {
     length = 0;
 
     append = function(item) {
@@ -16,10 +16,4 @@ list_instance = template() {
         container.length = container.length - 1;
         return (value);
     };
-}();
-
-list_instance.append('this');
-list_instance.append(-7.2);
-
-value_one = list_instance.pop(0);
-value_two = list_instance[0 / 9];
+};

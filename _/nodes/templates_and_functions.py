@@ -88,6 +88,8 @@ class TemplateOrFunction:
 
 
 class TemplateFunctionNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_expression'
+
     def __init__(self, sections, is_function, names):
         self.sections = sections
         self.is_function = is_function
@@ -108,6 +110,8 @@ class TemplateFunctionNode(UnderscoreNode):
 
 
 class ReturnNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_return'
+
     def __init__(self, expression_to_return, position_in_program):
         self.expression_to_return = expression_to_return
         self.position_in_program = position_in_program

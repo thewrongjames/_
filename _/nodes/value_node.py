@@ -2,6 +2,8 @@ from .underscore_node import UnderscoreNode
 
 
 class ValueNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_expression'
+
     def __init__(self, value):
         self.value = value
 

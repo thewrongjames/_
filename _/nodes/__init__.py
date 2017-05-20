@@ -1,5 +1,6 @@
 import _
-from time import time
+import _.standard_library.STANDARD_LIBRARY
+import time.time
 from .underscore_node import UnderscoreNode
 from .statement_node import StatementNode
 from .value_node import ValueNode
@@ -12,7 +13,6 @@ from .boolean_logic import AndOrOrNode, NotNode, EqualityNode, \
     GreaterThanOrEqualToNode, InequalityNode
 from .controls import IfNode, WhileNode, BreakNode, ContinueNode
 from .comment_node import CommentNode
-from .standard_library import STANDARD_LIBRARY
 
 class ProgramNode:
     def __init__(self, sections, memory_limit=None, time_limit=None):

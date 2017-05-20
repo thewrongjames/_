@@ -4,6 +4,8 @@ from .underscore_node import UnderscoreNode
 from .standard_library.casting import BooleanCaster
 
 class IfNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_control'
+
     def __init__(self, expression, if_sections, else_sections):
         self.expression = expression
         self.if_sections = if_sections
@@ -51,6 +53,8 @@ class IfNode(UnderscoreNode):
 
 
 class WhileNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_control'
+
     def __init__(self, expression, sections):
         self.expression = expression
         self.sections = sections
@@ -97,6 +101,8 @@ class WhileNode(UnderscoreNode):
 
 
 class BreakNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_break_or_continue'
+
     def __init__(self, position_in_program):
         self.position_in_program = position_in_program
 
@@ -108,6 +114,8 @@ class BreakNode(UnderscoreNode):
 
 
 class ContinueNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_break_or_continue'
+
     def __init__(self, position_in_program):
         self.position_in_program = position_in_program
 

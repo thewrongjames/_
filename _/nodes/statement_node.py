@@ -3,6 +3,8 @@ from .templates_and_functions import TemplateFunctionNode
 
 
 class StatementNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_statement'
+
     def __init__(self, reference, expression):
         self.reference = reference
         self.expression = expression

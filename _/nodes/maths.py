@@ -4,6 +4,8 @@ from .value_node import ValueNode
 
 
 class MathsNode(UnderscoreNode):
+    FIRST_PARSER = '_parse_expression'
+
     def __init__(self, first_term, second_term):
         self.first_term = first_term
         self.second_term = second_term
