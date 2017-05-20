@@ -1,5 +1,10 @@
 import _
 
-print(dir(_))
-List = _.smart_compile('written_in_underscore/list._', \
-    include_standard_library=False).run()['List']
+
+List = _.smart_compile('_/standard_library/written_in_underscore/list._', \
+    compiling_underscore_standard_library=True).run()['List']
+
+
+WRITTEN_IN_UNDERSCORE = {
+    'List': List
+}

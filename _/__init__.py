@@ -1,17 +1,11 @@
-x = 6
-
 import pickle
+from _.underscore_parser import UnderscoreParser
 
-y = 6
-import _.underscore_parser.UnderscoreParser
-
-z = 6
 
 def compile_(
         program,
         memory_limit=None,
         time_limit=None,
-        include_standard_library=True
 ):
     """
     Compiles underscore code (passed as a string to program) into a ProgramNode
@@ -23,7 +17,6 @@ def compile_(
     compiled = parser.parse(
         memory_limit=memory_limit,
         time_limit=time_limit,
-        include_standard_library=include_standard_library
     )
     return compiled
 
@@ -42,7 +35,7 @@ def compile_file(directory, *args, **kwargs):
 def smart_compile(directory,
         memory_limit=None,
         time_limit=None,
-        include_standard_library=True
+        compiling_underscore_standard_library=False
 ):
     """
     Compiles underscore code, and saves a pickled version of the code alongside
@@ -72,7 +65,8 @@ def smart_compile(directory,
     compiled = parser.parse(
         memory_limit=memory_limit,
         time_limit=memory_limit,
-        include_standard_library=include_standard_library,
+        compiling_underscore_standard_library=\
+            compiling_underscore_standard_library,
         parsers_to_try_first=pickled_section_parser_list
     )
 

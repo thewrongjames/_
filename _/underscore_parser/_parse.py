@@ -1,4 +1,4 @@
-import _.nodes.ProgramNode
+from _.nodes import ProgramNode
 from _.exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError
 from ._whitespace import surrounding_whitespace_removed
@@ -9,7 +9,7 @@ def parse(
         self,
         memory_limit=None,
         time_limit=None,
-        include_standard_library=True,
+        compiling_underscore_standard_library=False,
         parsers_to_try_first=[]
 ):
     sections = self._parse_sections(parsers_to_try_first=parsers_to_try_first)
@@ -17,7 +17,7 @@ def parse(
         sections,
         memory_limit,
         time_limit,
-        include_standard_library
+        compiling_underscore_standard_library
     )
 
 

@@ -1,3 +1,4 @@
+from _.standard_library.casting import CASTERS
 from _.exceptions import UnderscoreTypeError, UnderscoreReturnError, \
     UnderscoreIncorrectNumberOfArgumentsError
 from .underscore_node import UnderscoreNode
@@ -17,14 +18,15 @@ class TemplateOrFunction:
             names,
             memory,
             *args,
-            include_standard_library=True,
+            compiling_underscore_standard_library=False,
             **kwargs
     ):
         self.sections = sections
         self.is_function = is_function
         self.names = names
         self.memory = memory
-        self.include_standard_library = include_standard_library
+        self.compiling_underscore_standard_library = \
+            compiling_underscore_standard_library
         self.args = args
         self.kwargs = kwargs
 
@@ -38,18 +40,21 @@ class TemplateOrFunction:
                 'required'
             )
 
-        if self.include_standard_library:
-            import _.standard_library.STANDARD_LIBRARY
+        internal_memory = CASTERS.copy()
+        # It doesn't need to be a deepcopy, I can use the same standard library
+        # methods everywhere.
+        if not self.compiling_underscore_standard_library:
+            import _.standard_library.written_in_underscore\
+                .WRITTEN_IN_UNDERSCORE
+            for key, value in WRITTEN_IN_UNDERSCORE:
+                internal_memory[key] = value
+        # If this is a template, the set, get and delete methods must be added
+        # to the internal memory.
+        if not self.is_function:
             from _.standard_library.template_methods import Set, Get, Delete
-            internal_memory = STANDARD_LIBRARY.copy()
-            # It doesn't need to be a deepcopy, I can use the same standard library
-            # methods everywhere.
-            # If this is a template, the standard methods must be added to
-            # the internal memory.
-            if not self.is_function:
-                internal_memory['set'] = Set(internal_memory)
-                internal_memory['get'] = Get(internal_memory)
-                internal_memory['delete'] = Delete(internal_memory)
+            internal_memory['set'] = Set(internal_memory)
+            internal_memory['get'] = Get(internal_memory)
+            internal_memory['delete'] = Delete(internal_memory)
         else:
             internal_memory = {}
 

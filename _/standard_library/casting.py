@@ -80,3 +80,11 @@ class BooleanCaster(_Caster):
 class StringCaster(_Caster):
     TYPE = 'string'
     PYTHON_CASTER = str
+
+
+CASTERS = {
+    'float': FloatCaster(),
+    'integer': IntegerCaster(),
+    'boolean': BooleanCaster(),
+    'string': StringCaster(),
+}
