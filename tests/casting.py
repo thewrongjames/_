@@ -13,12 +13,12 @@ class TestCasting(unittest.TestCase):
         self.assertEqual(memory['value'], -0.289)
 
     def test_float_where_not_possible(self):
-        compiled = _.copmile_(
+        compiled = _.compile_(
             '''
             value = float(function(){});
             '''
         )
-        with self.assertRaises(_.exceptions.UnderscoreTypeError):
+        with self.assertRaises(_.exceptions.UnderscoreValueError):
             compiled.run()
 
     def test_integer_where_possible(self):
@@ -33,12 +33,12 @@ class TestCasting(unittest.TestCase):
         self.assertEqual(memory['value_two'], -8)
 
     def test_integer_where_not_possible(self):
-        compiled = _.copmile_(
+        compiled = _.compile_(
             '''
             value = integer('18.6');
             '''
         )
-        with self.assertRaises(_.exceptions.UnderscoreTypeError):
+        with self.assertRaises(_.exceptions.UnderscoreValueError):
             compiled.run()
 
     def test_boolean(self):
@@ -46,8 +46,8 @@ class TestCasting(unittest.TestCase):
         # counter case.
         compiled = _.compile_(
             '''
-            value_one = boolean(template(){});
-            value_two = boolean(0);
+            value_one = boolean(7);
+            value_two = boolean('');
             '''
         )
         memory = compiled.run()
@@ -59,10 +59,13 @@ class TestCasting(unittest.TestCase):
         # counter case.
         compiled = _.compile_(
             '''
-            value_one = string(function(){});
-            value_two = string(-12/5)
+            value_one = string(false);
+            value_two = string(-12/5);
             '''
         )
         memory = compiled.run()
-        self.assertEqual(memory['value_one'], 'function')
+        self.assertEqual(memory['value_one'], 'False')
+        # Unfortunately because it is the python value being casted, the boolean
+        # values and none will have capital letters, but, we will just have to
+        # live with that for now.
         self.assertEqual(memory['value_two'], '-2.4')
