@@ -5,9 +5,20 @@ from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
-def parse(self, memory_limit=None, time_limit=None, parsers_to_try_first=[]):
+def parse(
+        self,
+        memory_limit=None,
+        time_limit=None,
+        include_standard_library=True,
+        parsers_to_try_first=[]
+):
     sections = self._parse_sections(parsers_to_try_first=parsers_to_try_first)
-    return ProgramNode(sections, memory_limit, time_limit)
+    return ProgramNode(
+        sections,
+        memory_limit,
+        time_limit,
+        include_standard_library
+    )
 
 
 def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):

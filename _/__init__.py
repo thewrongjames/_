@@ -7,7 +7,12 @@ import _.underscore_parser.UnderscoreParser
 
 z = 6
 
-def compile_(program, memory_limit=None, time_limit=None):
+def compile_(
+        program,
+        memory_limit=None,
+        time_limit=None,
+        include_standard_library=True
+):
     """
     Compiles underscore code (passed as a string to program) into a ProgramNode
     object which may be run (with the run method). Some errors will be found
@@ -15,7 +20,11 @@ def compile_(program, memory_limit=None, time_limit=None):
     """
     program = str(program)
     parser = UnderscoreParser(program)
-    compiled = parser.parse()
+    compiled = parser.parse(
+        memory_limit=memory_limit,
+        time_limit=time_limit,
+        include_standard_library=include_standard_library
+    )
     return compiled
 
 
@@ -30,7 +39,11 @@ def compile_file(directory, *args, **kwargs):
     return compile_(program, *args, **kwargs)
 
 
-def smart_compile(directory, *args, **kwargs):
+def smart_compile(directory,
+        memory_limit=None,
+        time_limit=None,
+        include_standard_library=True
+):
     """
     Compiles underscore code, and saves a pickled version of the code alongside
     it. The next time it runs it, it attempts to parse it the same way it was
@@ -56,7 +69,12 @@ def smart_compile(directory, *args, **kwargs):
     with open(str(directory), 'r') as file_:
         program = file_.read()
     parser = UnderscoreParser(program)
-    compiled = parser.parse(parsers_to_try_first=pickled_section_parser_list)
+    compiled = parser.parse(
+        memory_limit=memory_limit,
+        time_limit=memory_limit,
+        include_standard_library=include_standard_library,
+        parsers_to_try_first=pickled_section_parser_list
+    )
 
     # Write the newly compiled version to the pickle file.
     with open(str(directory_of_pickle), 'wb') as pickle_file:

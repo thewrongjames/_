@@ -2,8 +2,6 @@ from _.exceptions import UnderscoreTypeError, UnderscoreReturnError, \
     UnderscoreIncorrectNumberOfArgumentsError
 from .underscore_node import UnderscoreNode
 from .value_node import ValueNode
-from .standard_library import STANDARD_LIBRARY
-from .standard_library.template_methods import Set, Get, Delete
 
 
 class TemplateOrFunction:
@@ -19,12 +17,14 @@ class TemplateOrFunction:
             names,
             memory,
             *args,
+            include_standard_library=True,
             **kwargs
     ):
         self.sections = sections
         self.is_function = is_function
         self.names = names
         self.memory = memory
+        self.include_standard_library = include_standard_library
         self.args = args
         self.kwargs = kwargs
 
@@ -38,17 +38,22 @@ class TemplateOrFunction:
                 'required'
             )
 
-        internal_memory = STANDARD_LIBRARY.copy()
-        # It doesn't need to be a deepcopy, I can use the same standard library
-        # methods everywhere.
-        internal_memory['container'] = self.memory
+        if self.include_standard_library:
+            import _.standard_library.STANDARD_LIBRARY
+            from _.standard_library.template_methods import Set, Get, Delete
+            internal_memory = STANDARD_LIBRARY.copy()
+            # It doesn't need to be a deepcopy, I can use the same standard library
+            # methods everywhere.
+            # If this is a template, the standard methods must be added to
+            # the internal memory.
+            if not self.is_function:
+                internal_memory['set'] = Set(internal_memory)
+                internal_memory['get'] = Get(internal_memory)
+                internal_memory['delete'] = Delete(internal_memory)
+        else:
+            internal_memory = {}
 
-        # If this is a template, the standard methods must be added to
-        # the internal memory.
-        if not self.is_function:
-            internal_memory['set'] = Set(internal_memory)
-            internal_memory['get'] = Get(internal_memory)
-            internal_memory['delete'] = Delete(internal_memory)
+        internal_memory['container'] = self.memory
 
         values_of_passed_expressions = []
         for expression in expressions:
@@ -98,12 +103,13 @@ class TemplateFunctionNode(UnderscoreNode):
     def __str__(self):
         return 'function' if self.is_function else 'template'
 
-    def run(self, memory, *args, **kwargs):
+    def run(self, memory, include_standard_library, *args, **kwargs):
         return TemplateOrFunction(
             self.sections,
             self.is_function,
             self.names,
             memory,
+            include_standard_library=include_standard_library
             *args,
             **kwargs
         )

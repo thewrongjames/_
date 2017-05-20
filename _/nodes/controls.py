@@ -1,7 +1,7 @@
 from _.exceptions import UnderscoreBreakError, UnderscoreContinueError, \
     UnderscoreTypeError
 from .underscore_node import UnderscoreNode
-from .standard_library.casting import BooleanCaster
+from _.standard_library.casting import BooleanCaster
 
 class IfNode(UnderscoreNode):
     FIRST_PARSER = '_parse_control'
