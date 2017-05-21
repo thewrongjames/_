@@ -6,6 +6,8 @@ class BooleanLogicNode(UnderscoreNode):
 
 
 class AndOrOrNode(BooleanLogicNode):
+    SECOND_PARSER = '_parse_and_or_or'
+
     def __init__(self, is_and, first_expression, second_expression):
         self.is_and = is_and
         self.first_expression = first_expression
@@ -20,6 +22,8 @@ class AndOrOrNode(BooleanLogicNode):
 
 
 class NotNode(BooleanLogicNode):
+    SECOND_PARSER = '_parse_not'
+
     def __init__(self, expression):
         self.expression = expression
 
@@ -28,6 +32,8 @@ class NotNode(BooleanLogicNode):
 
 
 class BooleanStatementNode(BooleanLogicNode):
+    SECOND_PARSER = '_parse_comparison'
+
     def __init__(self, first_object, second_object):
         self.first_object = first_object
         self.second_object = second_object

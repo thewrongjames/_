@@ -4,6 +4,7 @@ from .underscore_node import UnderscoreNode
 
 class ReferenceNode(UnderscoreNode):
     FIRST_PARSER = '_parse_expression'
+    SECOND_PARSER = '_parse_reference'
 
     def __init__(self, components, character):
         # components should be a list containing either strings or tuples

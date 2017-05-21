@@ -5,6 +5,7 @@ from _.standard_library.casting import BooleanCaster
 
 class IfNode(UnderscoreNode):
     FIRST_PARSER = '_parse_control'
+    SECOND_PARSER = '_parse_if'
 
     def __init__(self, expression, if_sections, else_sections):
         self.expression = expression
@@ -54,6 +55,7 @@ class IfNode(UnderscoreNode):
 
 class WhileNode(UnderscoreNode):
     FIRST_PARSER = '_parse_control'
+    SECOND_PARSER = '_parse_while'
 
     def __init__(self, expression, sections):
         self.expression = expression

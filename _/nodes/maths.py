@@ -50,6 +50,7 @@ class MathsNode(UnderscoreNode):
 
 
 class AdditionNode(MathsNode):
+    SECOND_PARSER = '_parse_addition_or_subtraction'
     MAGIC_METHOD_NAME = '__addition'
     VERB = 'add'
     PREPOSITION = 'to'
@@ -62,6 +63,7 @@ class AdditionNode(MathsNode):
 
 
 class SubtractionNode(MathsNode):
+    SECOND_PARSER = '_parse_addition_or_subtraction'
     MAGIC_METHOD_NAME = '__subtraction'
     VERB = 'subtract'
     PREPOSITION = 'from'
@@ -73,7 +75,12 @@ class SubtractionNode(MathsNode):
             return self._try_magic_methods(first_value, second_value)
 
 
+# _parse_term could be split up such that the three nodes immediately below have
+# different second parsers.
+
+
 class MultiplicationNode(MathsNode):
+    SECOND_PARSER = '_parse_term'
     MAGIC_METHOD_NAME = '__multiplication'
     VERB = 'multiply'
     PREPOSITION = 'by'
@@ -86,6 +93,7 @@ class MultiplicationNode(MathsNode):
 
 
 class DivisionNode(MathsNode):
+    SECOND_PARSER = '_parse_term'
     MAGIC_METHOD_NAME = '__division'
     VERB = 'divide'
     PREPOSITION = 'by'
@@ -97,6 +105,7 @@ class DivisionNode(MathsNode):
             return self._try_magic_methods(first_value, second_value)
 
 class PowerNode(MathsNode):
+    SECOND_PARSER = '_parse_term'
     MAGIC_METHOD_NAME = '__power'
     VERB = 'raise'
     PREPOSITION = 'to'

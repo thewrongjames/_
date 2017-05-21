@@ -99,6 +99,7 @@ class TemplateOrFunction:
 
 class TemplateFunctionNode(UnderscoreNode):
     FIRST_PARSER = '_parse_expression'
+    SECOND_PARSER = '_parse_function_or_template'
 
     def __init__(self, sections, is_function, names):
         self.sections = sections
