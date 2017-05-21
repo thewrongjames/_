@@ -12,7 +12,7 @@ def parse(
         running_underscore_standard_library=False,
         parsers_to_try_first=[]
 ):
-    print(4, parsers_to_try_first)
+
     sections = self._parse_sections(parsers_to_try_first=parsers_to_try_first)
     return ProgramNode(
         sections,
@@ -34,9 +34,9 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
     ]
     # Smart compiling stuff:
     trying_specific_parsers = bool(parsers_to_try_first)
-    print(parsers_to_try_first)
+
     if trying_specific_parsers:
-        print(0)
+
         PARSER_METHODS = {
             '_parse_statement': self._parse_statement,
             '_parse_expression': self._parse_expression,
@@ -52,12 +52,12 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                 (PARSER_METHODS[parser_name], contained_parsers_to_try_first)
             )
         index_in_specific_parsers = 0
-        print(parser_methods_to_try_first)
-    print(1)
+
+
 
     while True:
         if self._peek() is None:
-            print(5)
+
             break
 
         # This is currently only used for '}' at the end of controls, functions
@@ -74,12 +74,12 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
         parsed_something = False
 
         if trying_specific_parsers:
-            print(2)
+
             try:
                 # parser_methods_to_try_first[index] is a tuple containing the
                 # parser to try now, and then a list of parsers to try within
                 # that later on.
-                print(parser_methods_to_try_first, index_in_specific_parsers)
+
                 sections.append(
                     parser_methods_to_try_first[index_in_specific_parsers][0]()
                 )
@@ -100,11 +100,11 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                     index_in_specific_parsers += 1
                 parsed_something = True
         else:
-            print(3)
+
          # If you aren't trying to parse something specific, just loop through
          # them (in order (importantly)) and see what you can parse.
             for parser in valid_parsers:
-                print(parser)
+
                 try:
                     sections.append(parser())
                 except UnderscoreIncorrectParserError:

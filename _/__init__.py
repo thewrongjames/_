@@ -73,7 +73,7 @@ def smart_compile(directory,
         pickled_section_parser_list = build_recursive_sections_list(
             unpickled_program
         )
-        print(7, pickled_section_parser_list)
+
 
     with open(str(directory), 'r') as file_:
         program = file_.read()

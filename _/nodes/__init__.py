@@ -35,16 +35,16 @@ class ProgramNode:
         # case, it needs to know to not try to import itself.
 
         if not running_underscore_standard_library:
-            print(6)
+
             from _.standard_library.written_in_underscore import \
                 WRITTEN_IN_UNDERSCORE
             for key, value in WRITTEN_IN_UNDERSCORE.items():
                 self.memory[key] = value
 
         self.pre_run_start_time = time()
-        print(1111111111111111111111111111111111111111111111111111111111111111)
-        print(self.sections)
-        print(1111111111111111111111111111111111111111111111111111111111111111)
+
+
+        
         for section in self.sections:
             section.pre_run(
                 memory=self.memory,
