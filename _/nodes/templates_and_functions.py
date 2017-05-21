@@ -44,9 +44,9 @@ class TemplateOrFunction:
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
         if not self.running_underscore_standard_library:
-            import _.standard_library.written_in_underscore\
-                .WRITTEN_IN_UNDERSCORE
-            for key, value in WRITTEN_IN_UNDERSCORE:
+            from _.standard_library.written_in_underscore import \
+                WRITTEN_IN_UNDERSCORE
+            for key, value in WRITTEN_IN_UNDERSCORE.items():
                 internal_memory[key] = value
         # If this is a template, the set, get and delete methods must be added
         # to the internal memory.

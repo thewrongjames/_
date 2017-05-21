@@ -1,5 +1,5 @@
 from _.exceptions import UnderscoreTypeError
-from ..value_node import ValueNode
+from _.nodes.value_node import ValueNode
 from .constants import BASIC_TYPES
 
 
