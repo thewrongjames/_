@@ -1,9 +1,9 @@
 from _.nodes import StatementNode
 from _.exceptions import UnderscoreIncorrectParserError, UnderscoreSyntaxError
-from ._whitespace import SurroundingWhitespaceRemover
+from ._whitespace import surrounding_whitespace_removed
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_statement(self):
     reference = self._parse_reference()
     if self._peek() != '=':

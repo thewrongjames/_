@@ -1,10 +1,10 @@
 from _.nodes import TemplateFunctionNode
 from _.exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError, UnderscoreSyntaxError
-from ._whitespace import SurroundingWhitespaceRemover
+from ._whitespace import surrounding_whitespace_removed
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_function_or_template(self):
     try:
         self._try_consume('function')
@@ -25,7 +25,7 @@ def parse_function_or_template(self):
     return TemplateFunctionNode(sections, is_function, names)
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_passable_names(self):
     self._try_consume('(', needed_for_this=True)
     names = []

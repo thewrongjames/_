@@ -1,10 +1,10 @@
 from _.nodes import ReferenceNode
 from _.exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError, UnderscoreSyntaxError
-from ._whitespace import SurroundingWhitespaceRemover
+from ._whitespace import surrounding_whitespace_removed
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_reference(self):
     starting_position = self.position_in_program
     components = [self._parse_single_name_or_instantiation_or_call()]
@@ -37,7 +37,7 @@ def parse_single_name_or_instantiation_or_call(self):
         return self._parse_single_name()
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_instantiation_or_call(self):
     """
     This will return either a reference node, a template, or a function. These
@@ -59,7 +59,7 @@ def parse_instantiation_or_call(self):
     return (instantiation_or_call, expressions)
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_passable_expressions(self, only_one_expression=False):
     try:
         self._try_consume('(')

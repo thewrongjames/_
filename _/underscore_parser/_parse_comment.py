@@ -1,9 +1,9 @@
 from _.nodes import CommentNode
 from _.exceptions import UnderscoreSyntaxError
-from ._whitespace import SurroundingWhitespaceRemover
+from ._whitespace import surrounding_whitespace_removed
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_comment(self):
     self._try_consume('#', needed_for_this=True)
     while self._peek() is not None and self._peek() != '#':

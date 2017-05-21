@@ -1,9 +1,9 @@
 from _.nodes import IfNode, WhileNode
 from _.exceptions import UnderscoreSyntaxError, UnderscoreCouldNotConsumeError
-from ._whitespace import SurroundingWhitespaceRemover
+from ._whitespace import surrounding_whitespace_removed
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_control(self):
     # Assign the parsers that may make up the control.
     valid_parsers = [self._parse_if, self._parse_while]

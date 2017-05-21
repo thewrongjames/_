@@ -1,10 +1,10 @@
 from _ import nodes
 from _.exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError
-from ._whitespace import SurroundingWhitespaceRemover
+from ._whitespace import surrounding_whitespace_removed
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_and_or_or(self):
     first_expression = self._parse_expression(
         has_semi_colon=False,
@@ -22,7 +22,7 @@ def parse_and_or_or(self):
     return nodes.AndOrOrNode(is_and, first_expression, second_expression)
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_not(self):
     self._try_consume('NOT', needed_for_this=True)
     expression = self._parse_expression(
@@ -32,7 +32,7 @@ def parse_not(self):
     return nodes.NotNode(expression)
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse_comparison(self):
     parsers_to_not_allow=[
         self._parse_and_or_or,

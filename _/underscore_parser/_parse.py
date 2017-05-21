@@ -1,10 +1,10 @@
 from _.nodes import ProgramNode
 from _.exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError
-from ._whitespace import SurroundingWhitespaceRemover
+from ._whitespace import surrounding_whitespace_removed
 
 
-@SurroundingWhitespaceRemover()
+@surrounding_whitespace_removed
 def parse(
         self,
         memory_limit=None,
