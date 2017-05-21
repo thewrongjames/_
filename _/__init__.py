@@ -35,7 +35,7 @@ def compile_file(directory, *args, **kwargs):
 def smart_compile(directory,
         memory_limit=None,
         time_limit=None,
-        compiling_underscore_standard_library=False
+        running_underscore_standard_library=False
 ):
     """
     Compiles underscore code, and saves a pickled version of the code alongside
@@ -73,7 +73,7 @@ def smart_compile(directory,
         pickled_section_parser_list = build_recursive_sections_list(
             unpickled_program
         )
-        print(pickled_section_parser_list)
+        print(7, pickled_section_parser_list)
 
     with open(str(directory), 'r') as file_:
         program = file_.read()
@@ -81,8 +81,8 @@ def smart_compile(directory,
     compiled = parser.parse(
         memory_limit=memory_limit,
         time_limit=memory_limit,
-        compiling_underscore_standard_library=\
-            compiling_underscore_standard_library,
+        running_underscore_standard_library=\
+            running_underscore_standard_library,
         parsers_to_try_first=pickled_section_parser_list
     )
 

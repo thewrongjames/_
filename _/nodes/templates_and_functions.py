@@ -18,15 +18,15 @@ class TemplateOrFunction:
             names,
             memory,
             *args,
-            compiling_underscore_standard_library=False,
+            running_underscore_standard_library=False,
             **kwargs
     ):
         self.sections = sections
         self.is_function = is_function
         self.names = names
         self.memory = memory
-        self.compiling_underscore_standard_library = \
-            compiling_underscore_standard_library
+        self.running_underscore_standard_library = \
+            running_underscore_standard_library
         self.args = args
         self.kwargs = kwargs
 
@@ -43,7 +43,7 @@ class TemplateOrFunction:
         internal_memory = CASTERS.copy()
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
-        if not self.compiling_underscore_standard_library:
+        if not self.running_underscore_standard_library:
             import _.standard_library.written_in_underscore\
                 .WRITTEN_IN_UNDERSCORE
             for key, value in WRITTEN_IN_UNDERSCORE:
@@ -111,7 +111,7 @@ class TemplateFunctionNode(UnderscoreNode):
     def run(
             self,
             memory,
-            compiling_underscore_standard_library=False,
+            running_underscore_standard_library=False,
             *args,
             **kwargs
     ):
@@ -120,8 +120,8 @@ class TemplateFunctionNode(UnderscoreNode):
             self.is_function,
             self.names,
             memory,
-            compiling_underscore_standard_library=\
-                compiling_underscore_standard_library
+            running_underscore_standard_library=\
+                running_underscore_standard_library
             *args,
             **kwargs
         )

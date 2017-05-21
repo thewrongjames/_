@@ -9,7 +9,7 @@ def parse(
         self,
         memory_limit=None,
         time_limit=None,
-        compiling_underscore_standard_library=False,
+        running_underscore_standard_library=False,
         parsers_to_try_first=[]
 ):
     print(4, parsers_to_try_first)
@@ -18,7 +18,7 @@ def parse(
         sections,
         memory_limit,
         time_limit,
-        compiling_underscore_standard_library
+        running_underscore_standard_library
     )
 
 
@@ -57,6 +57,7 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
 
     while True:
         if self._peek() is None:
+            print(5)
             break
 
         # This is currently only used for '}' at the end of controls, functions
@@ -80,7 +81,7 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                 # that later on.
                 print(parser_methods_to_try_first, index_in_specific_parsers)
                 sections.append(
-                    parser_methods_to_try_first[index_in_specific_parsers][0]
+                    parser_methods_to_try_first[index_in_specific_parsers][0]()
                 )
             except UnderscoreIncorrectParserError:
                 self.position_in_program = starting_position
@@ -88,7 +89,15 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                 # parsers:
                 trying_specific_parsers = False
             else:
-                index_in_specific_parsers += 1
+                if (
+                        index_in_specific_parsers >=
+                        len(parser_methods_to_try_first) - 1
+                ):
+                    # The list of specific parsers has run out, but, perhaps
+                    # they have added something on the end.
+                    trying_specific_parsers = False
+                else:
+                    index_in_specific_parsers += 1
                 parsed_something = True
         else:
             print(3)
