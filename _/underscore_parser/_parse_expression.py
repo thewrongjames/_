@@ -1,8 +1,8 @@
 from _.exceptions import UnderscoreSyntaxError
-from ._whitespace import surrounding_whitespace_removed
+from ._whitespace import SurroundingWhitespaceRemover
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_expression(
         self,
         has_semi_colon=True,

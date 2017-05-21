@@ -1,8 +1,8 @@
 from _.exceptions import UnderscoreIncorrectParserError
-from ._whitespace import surrounding_whitespace_removed
+from ._whitespace import SurroundingWhitespaceRemover
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_single_name(self):
     name = ''
 

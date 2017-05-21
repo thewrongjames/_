@@ -1,9 +1,9 @@
 from _.nodes import AdditionNode, SubtractionNode, MultiplicationNode, \
     DivisionNode, PowerNode
 from _.exceptions import UnderscoreCouldNotConsumeError
-from ._whitespace import surrounding_whitespace_removed
+from ._whitespace import SurroundingWhitespaceRemover
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_addition_or_subtraction(self):
     first_expression = self._parse_term()
     try:
@@ -26,7 +26,7 @@ def parse_addition_or_subtraction(self):
     return SubtractionNode(first_expression, second_expression)
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_multiplication_or_division(self):
     first_expression = self._parse_object_or_contained_expression()
     try:
@@ -42,7 +42,7 @@ def parse_multiplication_or_division(self):
     return DivisionNode(first_expression, second_expression)
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_power(self):
     first_expression = self._parse_object_or_contained_expression()
     self._try_consume('^', needed_for_this=True)
@@ -50,7 +50,7 @@ def parse_power(self):
     return PowerNode(first_expression, second_expression)
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_bracketed_expression(self):
     self._try_consume('(', needed_for_this=True)
     self._consume_whitespace()
@@ -60,7 +60,7 @@ def parse_bracketed_expression(self):
     return expression
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_object_or_contained_expression(self):
     valid_parsers = [
         self._parse_bracketed_expression,
@@ -69,7 +69,7 @@ def parse_object_or_contained_expression(self):
     return self._try_parsers(valid_parsers, 'non expandable term')
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_term(self):
     valid_parsers = [
         self._parse_multiplication_or_division,

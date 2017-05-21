@@ -2,10 +2,10 @@ from string import digits
 from _.nodes import ValueNode
 from _.exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError, UnderscoreSyntaxError
-from ._whitespace import surrounding_whitespace_removed
+from ._whitespace import SurroundingWhitespaceRemover
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_object(self):
     valid_parsers = [
         self._parse_float,
@@ -19,7 +19,7 @@ def parse_object(self):
     return self._try_parsers(valid_parsers, 'object')
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_float(self):
     string_of_float = self._parse_digits(consume_sign=True)
     if self._peek() == '.':
@@ -61,12 +61,12 @@ def parse_digits(self, consume_sign):
     return string_of_integer
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_integer(self):
     return ValueNode(int(self._parse_digits(consume_sign=True)))
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_boolean(self):
     try:
         self._try_consume('true')
@@ -82,7 +82,7 @@ def parse_boolean(self):
         return ValueNode(False)
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_string(self):
     string_starters = ['"""', "'''", '"', "'"]
     string_starter_used = None
@@ -110,7 +110,7 @@ def parse_string(self):
     return ValueNode(string)
 
 
-@surrounding_whitespace_removed
+@SurroundingWhitespaceRemover()
 def parse_none(self):
     try:
         self._try_consume('none')

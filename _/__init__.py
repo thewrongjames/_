@@ -54,7 +54,6 @@ def smart_compile(directory,
         # There is no pickled version.
         pickled_section_parser_list = []
     else:
-        print(unpickled_program)
         def build_recursive_sections_list(node):
             try:
                 sections = node.sections

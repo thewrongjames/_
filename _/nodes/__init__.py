@@ -33,7 +33,7 @@ class ProgramNode:
         if not compiling_underscore_standard_library:
             from _.standard_library.written_in_underscore import \
                 WRITTEN_IN_UNDERSCORE
-            for key, value in WRITTEN_IN_UNDERSCORE:
+            for key, value in WRITTEN_IN_UNDERSCORE.items():
                 memory[key] = value
         self.pre_run_start_time = time()
         for section in self.sections:
