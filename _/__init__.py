@@ -1,4 +1,6 @@
+import os
 import pickle
+import time
 from _.underscore_parser import UnderscoreParser
 
 
@@ -32,10 +34,12 @@ def compile_file(directory, *args, **kwargs):
     return compile_(program, *args, **kwargs)
 
 
-def smart_compile(directory,
+def smart_compile(
+        directory,
         memory_limit=None,
         time_limit=None,
-        running_underscore_standard_library=False
+        running_underscore_standard_library=False,
+        force_pickle_update=False
 ):
     """
     Compiles underscore code, and saves a pickled version of the code alongside
@@ -44,12 +48,20 @@ def smart_compile(directory,
     write over <file name before dot>.pickle, so, don't put anything important
     there.
     """
+    with open(str(directory), 'r') as file_:
+        program = file_.read()
+
+    underscore_last_modified_time = os.path.getmtime(directory)
+    # Start from assuming the pickle is older.
+    pickle_last_modified_time = underscore_last_modified_time - 1
+
     file_name = str(directory).replace('\\', '/').split('/')[-1]
     directory_of_pickle = str(directory).split('.')[0] + '.pickle'
 
     try:
         with open(directory_of_pickle, 'rb') as pickle_file:
             unpickled_program = pickle.load(pickle_file)
+        pickle_last_modified_time = os.path.getmtime(directory_of_pickle)
     except FileNotFoundError:
         # There is no pickled version.
         pickled_section_parser_list = []
@@ -79,17 +91,25 @@ def smart_compile(directory,
             unpickled_program
         )
 
-
-    with open(str(directory), 'r') as file_:
-        program = file_.read()
-    parser = UnderscoreParser(program)
-    compiled = parser.parse(
-        memory_limit=memory_limit,
-        time_limit=memory_limit,
-        running_underscore_standard_library=\
-            running_underscore_standard_library,
-        parsers_to_try_first=pickled_section_parser_list
-    )
+    # If the pickle has been modified more recently than the underscore program
+    # it represents, then it should be up to date, and can be used instead of
+    # compiling the program.
+    if (
+            (pickle_last_modified_time > underscore_last_modified_time) and
+            not force_pickle_update
+    ):
+        # This if statement can only be entered if the try statement
+        # successfully got past the assignment of unpickled_program.
+        compiled = unpickled_program
+    else:
+        parser = UnderscoreParser(program)
+        compiled = parser.parse(
+            memory_limit=memory_limit,
+            time_limit=memory_limit,
+            running_underscore_standard_library=\
+                running_underscore_standard_library,
+            parsers_to_try_first=pickled_section_parser_list
+        )
 
     # Write the newly compiled version to the pickle file.
     with open(str(directory_of_pickle), 'wb') as pickle_file:

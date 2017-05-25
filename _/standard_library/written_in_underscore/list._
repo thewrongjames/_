@@ -1,6 +1,6 @@
 List = template() {
     length = 0;
-    
+
     append = function(item) {
         container.set(container.length, item);
         container.length = container.length + 1;
