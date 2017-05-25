@@ -61,18 +61,26 @@ class WhileNode(UnderscoreNode):
         self.expression = expression
         self.sections = sections
 
-    def run(self, memory, *args, **kwargs):
+    def _get_conditional(self, memory, *args, **kwargs):
         expression_result = self.expression.run(memory, *args, **kwargs)
         if isinstance(expression_result, dict):
             # If the expression is a template instance, it needs to be casted
             # to a boolean the way its casting method defines, if it has one.
             # Otherwise it defaults to true.
             try:
-                conditional = BooleanCaster()(memory, [expression_result])
+                return BooleanCaster()(memory, [expression_result])
             except UnderscoreTypeError:
-                conditional = True
+                return True
         else:
-            conditional = expression_result
+            return expression_result
+
+    def run(self, memory, *args, **kwargs):
+        conditional = self._get_conditional(memory, *args, **kwargs)
+        print('here', self.expression)
+        print(type(self.expression))
+        print(self.expression.first_object, self.expression.second_object)
+        print(self.expression.first_value, self.expression.second_value)
+        print('there', conditional)
 
         while conditional:
             should_break = False
@@ -100,6 +108,7 @@ class WhileNode(UnderscoreNode):
                     break
             if should_break: break
             if should_continue: continue
+            conditional = self._get_conditional(memory, *args, **kwargs)
 
 
 class BreakNode(UnderscoreNode):

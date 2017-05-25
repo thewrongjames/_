@@ -17,23 +17,28 @@ class TemplateOrFunction:
             is_function,
             names,
             memory,
+            running_underscore_standard_library,
             *args,
-            running_underscore_standard_library=False,
             **kwargs
     ):
+        print('r3', running_underscore_standard_library)
         self.sections = sections
         self.is_function = is_function
         self.names = names
         self.memory = memory
         self.running_underscore_standard_library = \
             running_underscore_standard_library
+        print('r4', self.running_underscore_standard_library)
         self.args = args
         self.kwargs = kwargs
 
     def __str__(self):
-        return 'function call' if self.is_function else 'template instance'
+        return 'function' if self.is_function else 'template'
 
-    def __call__(self, memory_from_call_location, expressions=[]):
+    def __repr__(self):
+        return str(self)
+
+    def __call__(self, memory_from_call_location, expressions, character):
         if len(expressions) != len(self.names):
             raise UnderscoreIncorrectNumberOfArgumentsError(
                 'number of expressions passed does not match number '
@@ -43,6 +48,7 @@ class TemplateOrFunction:
         internal_memory = CASTERS.copy()
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
+        print('r5', self.running_underscore_standard_library)
         if not self.running_underscore_standard_library:
             from _.standard_library.written_in_underscore import \
                 WRITTEN_IN_UNDERSCORE
@@ -52,9 +58,21 @@ class TemplateOrFunction:
         # to the internal memory.
         if not self.is_function:
             from _.standard_library.template_methods import Set, Get, Delete
-            internal_memory['set'] = Set(internal_memory)
-            internal_memory['get'] = Get(internal_memory)
-            internal_memory['delete'] = Delete(internal_memory)
+            internal_memory['set'] = Set(
+                internal_memory,
+                running_underscore_standard_library=\
+                    self.running_underscore_standard_library
+            )
+            internal_memory['get'] = Get(
+                internal_memory,
+                running_underscore_standard_library=\
+                    self.running_underscore_standard_library
+            )
+            internal_memory['delete'] = Delete(
+                internal_memory,
+                running_underscore_standard_library=\
+                    self.running_underscore_standard_library
+            )
         else:
             internal_memory = {}
 
@@ -74,6 +92,8 @@ class TemplateOrFunction:
             # pre_run.
             section.pre_run(
                 memory=internal_memory,
+                running_underscore_standard_library=\
+                    self.running_underscore_standard_library,
                 *self.args,
                 **self.kwargs
             )
@@ -81,12 +101,16 @@ class TemplateOrFunction:
             try:
                 section.run(
                     memory=internal_memory,
+                    running_underscore_standard_library=\
+                        self.running_underscore_standard_library,
                     *self.args,
                     **self.kwargs
                 )
             except UnderscoreReturnError as return_error:
                 return return_error.expression_to_return.run(
                     internal_memory,
+                    running_underscore_standard_library=\
+                        self.running_underscore_standard_library,
                     *self.args,
                     **self.kwargs
                 )
@@ -106,24 +130,22 @@ class TemplateFunctionNode(UnderscoreNode):
         self.is_function = is_function
         self.names = names
 
-    def __str__(self):
-        return 'function' if self.is_function else 'template'
-
     def run(
             self,
             memory,
-            running_underscore_standard_library=False,
+            running_underscore_standard_library,
             *args,
             **kwargs
     ):
+        print('r2', running_underscore_standard_library)
         return TemplateOrFunction(
-            self.sections,
-            self.is_function,
-            self.names,
-            memory,
-            running_underscore_standard_library=\
-                running_underscore_standard_library
             *args,
+            sections=self.sections,
+            is_function=self.is_function,
+            names=self.names,
+            memory=memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library,
             **kwargs
         )
 

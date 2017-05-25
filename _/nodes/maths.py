@@ -10,9 +10,20 @@ class MathsNode(UnderscoreNode):
         self.first_term = first_term
         self.second_term = second_term
 
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_term.run(memory)
-        second_value = self.second_term.run(memory)
+    def __str__(self):
+        return str(self.first_term) + self.SYMBOL + str(self.second_term)
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        first_value = self.first_term.run(
+            memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
+        second_value = self.second_term.run(
+            memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
         return self._specific_maths(first_value, second_value)
 
     def _try_magic_methods(self, first_value, second_value):
@@ -54,6 +65,7 @@ class AdditionNode(MathsNode):
     MAGIC_METHOD_NAME = '__addition'
     VERB = 'add'
     PREPOSITION = 'to'
+    SYMBOL = ' + '
 
     def _specific_maths(self, first_value, second_value):
         try:
@@ -67,6 +79,7 @@ class SubtractionNode(MathsNode):
     MAGIC_METHOD_NAME = '__subtraction'
     VERB = 'subtract'
     PREPOSITION = 'from'
+    SYMBOL = ' - '
 
     def _specific_maths(self, first_value, second_value):
         try:
@@ -84,6 +97,7 @@ class MultiplicationNode(MathsNode):
     MAGIC_METHOD_NAME = '__multiplication'
     VERB = 'multiply'
     PREPOSITION = 'by'
+    SYMBOL = ' * '
 
     def _specific_maths(self, first_value, second_value):
         try:
@@ -97,6 +111,7 @@ class DivisionNode(MathsNode):
     MAGIC_METHOD_NAME = '__division'
     VERB = 'divide'
     PREPOSITION = 'by'
+    SYMBOL = ' / '
 
     def _specific_maths(self, first_value, second_value):
         try:
@@ -109,6 +124,7 @@ class PowerNode(MathsNode):
     MAGIC_METHOD_NAME = '__power'
     VERB = 'raise'
     PREPOSITION = 'to'
+    SYMBOL = ' ^ '
 
     def _specific_maths(self, first_value, second_value):
         try:

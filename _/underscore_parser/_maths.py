@@ -4,7 +4,7 @@ from _.exceptions import UnderscoreCouldNotConsumeError
 from ._whitespace import surrounding_whitespace_removed
 
 @surrounding_whitespace_removed
-def parse_addition_or_subtraction(self):
+def parse_addition_or_subtraction(self, *args):
     first_expression = self._parse_term()
     try:
         self._try_consume('+')
@@ -27,7 +27,7 @@ def parse_addition_or_subtraction(self):
 
 
 @surrounding_whitespace_removed
-def parse_multiplication_or_division(self):
+def parse_multiplication_or_division(self, *args):
     first_expression = self._parse_object_or_contained_expression()
     try:
         self._try_consume('*')
@@ -43,7 +43,7 @@ def parse_multiplication_or_division(self):
 
 
 @surrounding_whitespace_removed
-def parse_power(self):
+def parse_power(self, *args):
     first_expression = self._parse_object_or_contained_expression()
     self._try_consume('^', needed_for_this=True)
     second_expression = self._parse_object_or_contained_expression()
@@ -51,7 +51,7 @@ def parse_power(self):
 
 
 @surrounding_whitespace_removed
-def parse_bracketed_expression(self):
+def parse_bracketed_expression(self, *args):
     self._try_consume('(', needed_for_this=True)
     self._consume_whitespace()
     expression = self._parse_expression(has_semi_colon=False)
@@ -61,19 +61,23 @@ def parse_bracketed_expression(self):
 
 
 @surrounding_whitespace_removed
-def parse_object_or_contained_expression(self):
+def parse_object_or_contained_expression(self, next_parsers_to_try_first=[]):
     valid_parsers = [
         self._parse_bracketed_expression,
         self._parse_object,
     ]
-    return self._try_parsers(valid_parsers, 'non expandable term')
+    return self._try_parsers(
+        valid_parsers,
+        'non expandable term',
+        next_parsers_to_try_first
+    )
 
 
 @surrounding_whitespace_removed
-def parse_term(self):
+def parse_term(self, next_parsers_to_try_first=[]):
     valid_parsers = [
         self._parse_multiplication_or_division,
         self._parse_power,
         self._parse_object_or_contained_expression,
     ]
-    return self._try_parsers(valid_parsers, 'term')
+    return self._try_parsers(valid_parsers, 'term', next_parsers_to_try_first)

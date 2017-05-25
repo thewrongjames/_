@@ -3,7 +3,10 @@ from .constants import BASIC_TYPES
 
 
 class _Caster:
-    def __str__(self, memory):
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
         return self.TYPE + '_caster'
 
     def __call__(self, memory_from_call_location, expressions=[]):
@@ -44,14 +47,12 @@ class _Caster:
             raise UnderscoreTypeError(
                 '{} method must take 0 arguments'.format('__' + self.TYPE)
             )
-        except UnderscoreTypeError as error:
-            # Otherwise, this is just a problem with their function that they
-            # need to see.
-            raise error
         except KeyError:
             # If the casting magic method is not defined, the template instance
             # cannot be cast.
             raise cannot_cast_error
+        # Otherwise, this is just a problem with their function that they
+        # need to see.
         else:
             if not isinstance(value_to_return, self.PYTHON_CASTER):
                 raise UnderscoreTypeError(

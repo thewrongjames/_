@@ -54,23 +54,28 @@ def smart_compile(directory,
         # There is no pickled version.
         pickled_section_parser_list = []
     else:
-        def build_recursive_sections_list(node):
+        def recursively_build_sections_list(node):
             try:
                 sections = node.sections
             except AttributeError:
                 return []
             section_list = []
             for section in node.sections:
+                try:
+                    second_parser = section.SECOND_PARSER
+                except AttributeError:
+                    second_parser = None
                 section_list.append(
                     (
-                        type(section).FIRST_PARSER,
-                        build_recursive_sections_list(type(section))
+                        section.FIRST_PARSER,
+                        second_parser,
+                        recursively_build_sections_list(section)
                     )
                 )
             return section_list
 
         # Construct a list of the parsers from the previous ProgramNode.
-        pickled_section_parser_list = build_recursive_sections_list(
+        pickled_section_parser_list = recursively_build_sections_list(
             unpickled_program
         )
 

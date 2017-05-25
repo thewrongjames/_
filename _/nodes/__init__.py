@@ -33,9 +33,8 @@ class ProgramNode:
         # running_underscore_standard_library refers to whether or not this
         # program is within the standard_library itself, because, if that is the
         # case, it needs to know to not try to import itself.
-
+        print('r0', running_underscore_standard_library)
         if not running_underscore_standard_library:
-
             from _.standard_library.written_in_underscore import \
                 WRITTEN_IN_UNDERSCORE
             for key, value in WRITTEN_IN_UNDERSCORE.items():
@@ -43,8 +42,7 @@ class ProgramNode:
 
         self.pre_run_start_time = time()
 
-
-        
+        print(0)
         for section in self.sections:
             section.pre_run(
                 memory=self.memory,
@@ -59,6 +57,8 @@ class ProgramNode:
             self.time_limit -= self.pre_run_time_taken
 
     def run(self):
+        print(1)
+        print('r1', self.running_underscore_standard_library)
         for section in self.sections:
             # The arguements are keyword arguments, because not all sections
             # will want all of these.

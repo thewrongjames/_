@@ -1,4 +1,4 @@
-from _.exceptions import UnderscoreSyntaxError
+from _.exceptions import UnderscoreSyntaxError, UnderscoreIncorrectParserError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -6,7 +6,9 @@ from ._whitespace import surrounding_whitespace_removed
 def parse_expression(
         self,
         has_semi_colon=True,
-        parsers_to_not_allow=[]
+        parsers_to_not_allow=[],
+        second_parser=None,
+        next_parsers_to_try_first=[]
 ):
     """
     Parses an expression (see grammar for details). An expression consists
@@ -34,7 +36,23 @@ def parse_expression(
     except TypeError:
         raise TypeError('parser_to_not_allow must be iterable.')
 
-    expression = self._try_parsers(valid_parsers, 'expression')
+    # Try the second parser from the previous compiled version.
+    parsed_already = False
+    if second_parser is not None:
+        try:
+            expression = second_parser(next_parsers_to_try_first)
+        except UnderscoreIncorrectParserError:
+            pass
+        else:
+            parsed_already = True
+
+    # If that doesn't work:
+    if not parsed_already:
+        expression = self._try_parsers(
+            valid_parsers,
+            'expression',
+            item_to_pass=next_parsers_to_try_first
+        )
 
     if self._peek() != ';' and has_semi_colon:
         raise UnderscoreSyntaxError(

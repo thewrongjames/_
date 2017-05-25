@@ -13,12 +13,27 @@ class AndOrOrNode(BooleanLogicNode):
         self.first_expression = first_expression
         self.second_expression = second_expression
 
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_expression.run(memory)
-        second_value = self.second_expression.run(memory)
+    def __str__(self):
+        return (
+            str(self.first_expression) +
+            ' AND ' +
+            str(self.second_expression)
+        )
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        self.first_value = self.first_expression.run(
+            memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
+        self.second_value = self.second_expression.run(
+            memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
         if self.is_and:
-            return first_value and second_value
-        return first_value or second_value\
+            return self.first_value and self.second_value
+        return self.first_value or self.second_value\
 
 
 class NotNode(BooleanLogicNode):
@@ -27,8 +42,15 @@ class NotNode(BooleanLogicNode):
     def __init__(self, expression):
         self.expression = expression
 
-    def run(self, memory, *args, **kwargs):
-        return not self.expression.run(memory)
+    def __str__(self):
+        return 'NOT ' + str(self.expression)
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        return not self.expression.run(
+            memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
 
 
 class BooleanStatementNode(BooleanLogicNode):
@@ -38,92 +60,114 @@ class BooleanStatementNode(BooleanLogicNode):
         self.first_object = first_object
         self.second_object = second_object
 
+    def __str__(self):
+        return str(self.first_object) + self.SYMBOL + str(self.second_object)
+
+    def _assign_values(self, memory, running_underscore_standard_library):
+        self.first_value = self.first_object.run(
+            memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
+        self.second_value = self.second_object.run(
+            memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
+
+
 
 class EqualityNode(BooleanStatementNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_object.run(memory)
-        second_value = self.second_object.run(memory)
+    SYMBOL = ' == '
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        self._assign_values(memory, running_underscore_standard_library)
         try:
-            return first_value == second_value
+            return self.first_value == self.second_value
         except:
             raise _.exceptions.UnderscoreTypeError(
                 'Could not compare {} and {}.'.format(
-                    first_value,
-                    second_value
+                    self.first_value,
+                    self.second_value
                 )
             )
 
 
 class SmallerThanOrEqualToNode(BooleanStatementNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_object.run(memory)
-        second_value = self.second_object.run(memory)
+    SYMBOL = ' <= '
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        self._assign_values(memory, running_underscore_standard_library)
         try:
-            return first_value <= second_value
+            return self.first_value <= self.second_value
         except:
             raise _.exceptions.UnderscoreTypeError(
                 'Could not compare {} and {}.'.format(
-                    first_value,
-                    second_value
+                    self.first_value,
+                    self.second_value
                 )
             )
 
 
 class SmallerThanNode(BooleanStatementNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_object.run(memory)
-        second_value = self.second_object.run(memory)
+    SYMBOL = ' < '
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        self._assign_values(memory, running_underscore_standard_library)
         try:
-            return first_value < second_value
+            return self.first_value < self.second_value
         except:
             raise _.exceptions.UnderscoreTypeError(
                 'Could not compare {} and {}.'.format(
-                    first_value,
-                    second_value
+                    self.first_value,
+                    self.second_value
                 )
             )
 
 
 class GreaterThanOrEqualToNode(BooleanStatementNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_object.run(memory)
-        second_value = self.second_object.run(memory)
+    SYMBOL = ' >= '
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        self._assign_values(memory, running_underscore_standard_library)
         try:
-            return first_value >= second_value
+            return self.first_value >= self.second_value
         except:
             raise _.exceptions.UnderscoreTypeError(
                 'Could not compare {} and {}.'.format(
-                    first_value,
-                    second_value
+                    self.first_value,
+                    self.second_value
                 )
             )
 
 
 class GreaterThanNode(BooleanStatementNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_object.run(memory)
-        second_value = self.second_object.run(memory)
+    SYMBOL = ' > '
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        self._assign_values(memory, running_underscore_standard_library)
         try:
-            return first_value > second_value
+            return self.first_value > self.second_value
         except:
             raise _.exceptions.UnderscoreTypeError(
                 'Could not compare {} and {}.'.format(
-                    first_value,
-                    second_value
+                    self.first_value,
+                    self.second_value
                 )
             )
 
 
 class InequalityNode(BooleanStatementNode):
-    def run(self, memory, *args, **kwargs):
-        first_value = self.first_object.run(memory)
-        second_value = self.second_object.run(memory)
+    SYMBOL = ' != '
+
+    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
+        self._assign_values(memory, running_underscore_standard_library)
         try:
-            return first_value != second_value
+            return self.first_value != self.second_value
         except:
             raise _.exceptions.UnderscoreTypeError(
                 'Could not compare {} and {}.'.format(
-                    first_value,
-                    second_value
+                    self.first_value,
+                    self.second_value
                 )
             )

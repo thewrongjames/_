@@ -13,22 +13,37 @@ class ReferenceNode(UnderscoreNode):
         self.components = components
         self.character = character
 
+    @staticmethod
+    def _make_nice_string_representation(item, just_name=False):
+        """
+        Takes a component, and makes it look nice.
+
+        nice, /nʌɪs/, adjective: giving pleasure or satisfaction; pleasant
+        or attractive.
+        """
+        if isinstance(item, tuple):
+            passed_values = ', '.join(str(value) for value in item[1])
+            return str(item[0])
+            return '{}({})'.format(item[0], passed_values)
+
+        return str(item)
+
     @property
     def name(self):
-        def make_nice_string_representation(item):
-            # nice, /nʌɪs/, adjective: giving pleasure or satisfaction; pleasant
-            # or attractive.
-            if isinstance(item, tuple):
-                return '{}({})'.format(item[0], ', '.join(item[1])[1:-2])
-            return str(item)
-        return '.'.join(
-            [make_nice_string_representation(item) for item in self.components]
-        )
+        return '.'.join([self._make_nice_string_representation(item) for item \
+            in self.components])
 
-    def __str__(self):
+    def __repr__(self):
         return self.name
 
-    def run(self, memory, *args, call_memory=None, **kwargs):
+    def run(
+                self,
+                memory,
+                running_underscore_standard_library,
+                *args,
+                call_memory=None,
+                **kwargs
+    ):
         # call_memory is the original memory from the top of the chain of
         # reference nodes (if there is one), this is the memory that should be
         # passed into any TemplateInstantiateFunctionCallNode created for it to
@@ -58,7 +73,12 @@ class ReferenceNode(UnderscoreNode):
                 current_component[0],
                 self.character,
                 current_component[1]
-            ).run(memory=memory, call_memory=call_memory)
+            ).run(
+                memory=memory,
+                call_memory=call_memory,
+                running_underscore_standard_library=\
+                    running_underscore_standard_library
+            )
         elif not isinstance(current_component, str):
             # If the item is both not a tuple and not a string, it has come from
             # square bracket indexing, and is an expression that must be run
@@ -66,7 +86,11 @@ class ReferenceNode(UnderscoreNode):
             # call_memory as that is from the scope that the actual reference
             # is in.
             requires_running = True
-            run_value = current_component.run(memory=call_memory)
+            run_value = current_component.run(
+                memory=call_memory,
+                running_underscore_standard_library=\
+                    running_underscore_standard_library
+            )
 
         if len(self.components) == 1:
             if requires_running:
@@ -103,16 +127,28 @@ class ReferenceNode(UnderscoreNode):
             next_memory = memory[current_component]
         except KeyError:
             raise error
-        try:
-            return new_node.run(memory=next_memory, call_memory=memory)
-        except UnderscoreNameError:
-            raise UnderscoreNameError(
-                '{} does not contain {}'.format(
-                    current_component,
-                    self.components[1]
-                ),
-                self.character
-            )
+        # try:
+        # This may error, but, only if the item being accessed doesn't exist.
+        return new_node.run(
+            memory=next_memory,
+            call_memory=memory,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
+        # except UnderscoreNameError:
+        #     print('Components', self.components)
+        #     print('current_component', current_component)
+        #     print(memory)
+        #     raise UnderscoreNameError(
+        #         '{} does not contain {}'.format(
+        #             current_component,
+        #             self._make_nice_string_representation(
+        #                 self.components[1],
+        #                 just_name=True
+        #             )
+        #         ),
+        #         self.character
+        #     )
 
 
 class TemplateInstantiateFunctionCallNode(UnderscoreNode):
@@ -127,13 +163,24 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
         self.character = character
         self.expressions = expressions
 
-    def run(self, memory, call_memory, *args, **kwargs):
+    def run(
+            self,
+            memory,
+            call_memory,
+            running_underscore_standard_library,
+            *args,
+            **kwargs
+        ):
         # memory is the memory location in which the most recent reference was,
         # where the template_or_function must be found if it is a ReferenceNode.
         # call_memory is the memory location in which the reference originated,
         # i.e. where the expressions that are passed need to be run.
         if isinstance(self.template_or_function, ReferenceNode):
-            template_or_function = self.template_or_function.run(memory)
+            template_or_function = self.template_or_function.run(
+                memory=memory,
+                running_underscore_standard_library=\
+                    running_underscore_standard_library
+            )
             if not callable(template_or_function):
                 raise UnderscoreValueError(
                     'reference is not callable',
@@ -141,6 +188,14 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
                 )
         else:
             template_or_function = self.template_or_function.run(
-                *args, memory=memory, **kwargs
+                *args,
+                memory=memory,
+                running_underscore_standard_library=\
+                    running_underscore_standard_library,
+                **kwargs
             )
-        return template_or_function(call_memory, self.expressions)
+        return template_or_function(
+            call_memory,
+            self.expressions,
+            self.character
+        )

@@ -6,9 +6,14 @@ List = template() {
         container.length = container.length + 1;
     };
 
+    pop_iterations = 0;
+
     pop = function(index) {
         value = container.get(index);
         while (index < container.length - 1) {
+            container.pop_iterations = container.pop_iterations + 1;
+            last_index = index;
+            container_dot_length_minus_one = container.length - 1;
             container.set(index, container.get(index + 1));
             index = index + 1;
         };

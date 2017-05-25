@@ -5,7 +5,7 @@ from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
-def parse_and_or_or(self):
+def parse_and_or_or(self, *args):
     first_expression = self._parse_expression(
         has_semi_colon=False,
         parsers_to_not_allow=[self._parse_and_or_or]
@@ -23,7 +23,7 @@ def parse_and_or_or(self):
 
 
 @surrounding_whitespace_removed
-def parse_not(self):
+def parse_not(self, *args):
     self._try_consume('NOT', needed_for_this=True)
     expression = self._parse_expression(
         has_semi_colon=False,
@@ -33,7 +33,7 @@ def parse_not(self):
 
 
 @surrounding_whitespace_removed
-def parse_comparison(self):
+def parse_comparison(self, *args):
     parsers_to_not_allow=[
         self._parse_and_or_or,
         self._parse_not,

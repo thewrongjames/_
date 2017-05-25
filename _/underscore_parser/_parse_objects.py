@@ -6,7 +6,7 @@ from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
-def parse_object(self):
+def parse_object(self, next_parsers_to_try_first=[]):
     valid_parsers = [
         self._parse_float,
         self._parse_integer,
@@ -16,11 +16,15 @@ def parse_object(self):
         self._parse_reference,
         self._parse_function_or_template,
     ]
-    return self._try_parsers(valid_parsers, 'object')
+    return self._try_parsers(
+        valid_parsers,
+        'object',
+        item_to_pass=next_parsers_to_try_first
+    )
 
 
 @surrounding_whitespace_removed
-def parse_float(self):
+def parse_float(self, *args):
     string_of_float = self._parse_digits(consume_sign=True)
     if self._peek() == '.':
         string_of_float += '.'
@@ -62,12 +66,12 @@ def parse_digits(self, consume_sign):
 
 
 @surrounding_whitespace_removed
-def parse_integer(self):
+def parse_integer(self, *args):
     return ValueNode(int(self._parse_digits(consume_sign=True)))
 
 
 @surrounding_whitespace_removed
-def parse_boolean(self):
+def parse_boolean(self, *args):
     try:
         self._try_consume('true')
     except UnderscoreCouldNotConsumeError:
@@ -83,7 +87,7 @@ def parse_boolean(self):
 
 
 @surrounding_whitespace_removed
-def parse_string(self):
+def parse_string(self, *args):
     string_starters = ['"""', "'''", '"', "'"]
     string_starter_used = None
     first_character = self._peek()
@@ -111,7 +115,7 @@ def parse_string(self):
 
 
 @surrounding_whitespace_removed
-def parse_none(self):
+def parse_none(self, *args):
     try:
         self._try_consume('none')
     except UnderscoreCouldNotConsumeError:

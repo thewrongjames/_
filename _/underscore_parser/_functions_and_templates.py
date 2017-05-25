@@ -5,7 +5,7 @@ from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
-def parse_function_or_template(self):
+def parse_function_or_template(self, next_parsers_to_try_first):
     try:
         self._try_consume('function')
     except UnderscoreCouldNotConsumeError:
@@ -20,7 +20,10 @@ def parse_function_or_template(self):
     self._try_consume('{', needed=True)
     self._consume_whitespace()
     # If it is a function, you need to allow for parsing return.
-    sections = self._parse_sections(['}'])
+    sections = self._parse_sections(
+        ['}'],
+        parsers_to_try_first=next_parsers_to_try_first
+    )
     self._try_consume('}', needed=True)
     return TemplateFunctionNode(sections, is_function, names)
 

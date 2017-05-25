@@ -12,7 +12,6 @@ def parse(
         running_underscore_standard_library=False,
         parsers_to_try_first=[]
 ):
-
     sections = self._parse_sections(parsers_to_try_first=parsers_to_try_first)
     return ProgramNode(
         sections,
@@ -43,21 +42,28 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
             '_parse_control': self._parse_control,
             '_parse_return': self._parse_return,
             '_parse_comment': self._parse_comment,
-            '_parse_break_or_continue': self._parse_break_or_continue
+            '_parse_break_or_continue': self._parse_break_or_continue,
+            '_parse_function_or_template': self._parse_function_or_template,
+            '_parse_and_or_or': self._parse_and_or_or,
+            '_parse_not': self._parse_not,
+            '_parse_comparison': self._parse_comparison,
+            '_parse_addition_or_subtraction': \
+                self._parse_addition_or_subtraction,
+            '_parse_term': self._parse_term,
+            '_parse_reference': self._parse_reference
         }
         parser_methods_to_try_first = []
-        for parser_name, contained_parsers_to_try_first in \
-                parsers_to_try_first:
+        for first_parser_name, second_parser_name, _ in parsers_to_try_first:
             parser_methods_to_try_first.append(
-                (PARSER_METHODS[parser_name], contained_parsers_to_try_first)
+                (
+                    PARSER_METHODS[first_parser_name],
+                    PARSER_METHODS[second_parser_name]
+                )
             )
         index_in_specific_parsers = 0
 
-
-
     while True:
         if self._peek() is None:
-
             break
 
         # This is currently only used for '}' at the end of controls, functions
@@ -74,14 +80,17 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
         parsed_something = False
 
         if trying_specific_parsers:
-
             try:
-                # parser_methods_to_try_first[index] is a tuple containing the
-                # parser to try now, and then a list of parsers to try within
-                # that later on.
-
+                # Parsers methods to try first contains a tuple, the first one
+                # beign the parser to try at the expression level, and the next
+                # one for the next level down.
                 sections.append(
-                    parser_methods_to_try_first[index_in_specific_parsers][0]()
+                    parser_methods_to_try_first[index_in_specific_parsers][0](
+                        second_parser=parser_methods_to_try_first[\
+                            index_in_specific_parsers][1],
+                        next_parsers_to_try_first=parsers_to_try_first[\
+                            index_in_specific_parsers][2]
+                    )
                 )
             except UnderscoreIncorrectParserError:
                 self.position_in_program = starting_position
