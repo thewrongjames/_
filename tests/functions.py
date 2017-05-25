@@ -13,19 +13,8 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['value'], 5)
 
     def test_not_at_end_return(self):
-        compiled = _.compile_(
-            '''
-            definately_not_eight = 9;
-            function_ = function(boolean_value) {
-                if(boolean_value) {
-                    return('this');
-                };
-                return('that');
-                definately_not_eight = 8;
-            };
-            value_one = function_(true);
-            value_two = function_(false);
-            '''
+        compiled = _.smart_compile(
+            'tests/file_tests/functions/test_not_at_end_return._'
         )
         memory = compiled.run()
         self.assertEqual(memory['definately_not_eight'], 9)
@@ -48,21 +37,11 @@ class TestFunctions(unittest.TestCase):
             '''
         )
         memory = compiled.run()
-        self.assertEqual(memory['instance']({}), 'bar')
+        self.assertEqual(memory['instance']({}, []), 'bar')
 
     def test_method_like_behaviour(self):
-        compiled = _.compile_(
-            '''
-            instance = template(){
-                value = 7;
-                method = function(){
-                    container.value = 'bar';
-                };
-            }();
-            first_value = instance.value;
-            instance.method();
-            second_value = instance.value;
-            '''
+        compiled = _.smart_compile(
+            'tests/file_tests/functions/test_method_like_behaviour._'
         )
         memory = compiled.run()
         self.assertEqual(memory['first_value'], 7)
@@ -122,18 +101,9 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['value'], 120)
 
     def test_expressions_resolve_in_correct_scope(self):
-        compiled = _.compile_(
-            '''
-            template_instance = template() {
-                this = 0;
-                that_plus_one = function(that){return(that+1);};
-                method = function(this) {
-                    container.this_plus_one = container.that_plus_one(this);
-                    container.set('that', this);
-                };
-            }();
-            template_instance.method(1);
-            '''
+        compiled = _.smart_compile(
+            'tests/file_tests/functions/'
+            'test_expressions_resolve_in_correct_scope._'
         )
         memory = compiled.run()
         self.assertEqual(memory['template_instance']['this_plus_one'], 2)

@@ -1,6 +1,6 @@
 import _
 from time import time
-from _.standard_library.casting import CASTERS
+from _.standard_library.casting import get_casters
 from .underscore_node import UnderscoreNode
 from .statement_node import StatementNode
 from .value_node import ValueNode
@@ -25,7 +25,7 @@ class ProgramNode:
         self.sections = sections
         self.memory_limit = memory_limit
         self.time_limit = time_limit
-        self.memory = CASTERS.copy()
+        self.memory = get_casters(running_underscore_standard_library)
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
         self.running_underscore_standard_library = \

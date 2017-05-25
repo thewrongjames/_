@@ -1,0 +1,9 @@
+instance = template(){
+    value = 7;
+    method = function(){
+        container.value = 'bar';
+    };
+}();
+first_value = instance.value;
+instance.method();
+second_value = instance.value;

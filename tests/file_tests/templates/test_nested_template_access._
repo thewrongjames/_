@@ -1,0 +1,10 @@
+template_1 = template(){
+    value = 7;
+    template_2 = template(){
+        container.value = 'bar';
+    };
+};
+instance = template_1();
+first_value = instance.value;
+instance.template_2();
+second_value = instance.value;

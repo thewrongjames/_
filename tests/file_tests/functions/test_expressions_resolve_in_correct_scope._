@@ -1,0 +1,9 @@
+template_instance = template() {
+    this = 0;
+    that_plus_one = function(that){return(that+1);};
+    method = function(this) {
+        container.this_plus_one = container.that_plus_one(this);
+        container.set('that', this);
+    };
+}();
+template_instance.method(1);

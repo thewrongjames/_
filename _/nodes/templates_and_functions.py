@@ -1,4 +1,4 @@
-from _.standard_library.casting import CASTERS
+from _.standard_library.casting import get_casters
 from _.exceptions import UnderscoreTypeError, UnderscoreReturnError, \
     UnderscoreIncorrectNumberOfArgumentsError
 from .underscore_node import UnderscoreNode
@@ -36,14 +36,14 @@ class TemplateOrFunction:
     def __repr__(self):
         return str(self)
 
-    def __call__(self, memory_from_call_location, expressions, character):
+    def __call__(self, memory_from_call_location, expressions, *args, **kwargs):
         if len(expressions) != len(self.names):
             raise UnderscoreIncorrectNumberOfArgumentsError(
                 'number of expressions passed does not match number '
                 'required'
             )
 
-        internal_memory = CASTERS.copy()
+        internal_memory = get_casters(self.running_underscore_standard_library)
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
         if not self.running_underscore_standard_library:
@@ -78,7 +78,11 @@ class TemplateOrFunction:
         values_of_passed_expressions = []
         for expression in expressions:
             values_of_passed_expressions.append(
-                expression.run(memory_from_call_location)
+                expression.run(
+                    memory_from_call_location,
+                    running_underscore_standard_library=\
+                        self.running_underscore_standard_library
+                )
             )
 
         for name, value in zip(self.names, values_of_passed_expressions):

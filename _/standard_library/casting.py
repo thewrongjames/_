@@ -3,27 +3,37 @@ from .constants import BASIC_TYPES
 
 
 class _Caster:
+    def __init__(self, running_underscore_standard_library):
+        self.running_underscore_standard_library = \
+            running_underscore_standard_library
+
     def __repr__(self):
         return str(self)
 
     def __str__(self):
         return self.TYPE + '_caster'
 
-    def __call__(self, memory_from_call_location, expressions=[]):
+    def __call__(self, memory_from_call_location, expressions, character):
         if len(expressions) != 1:
             raise UnderscoreTypeError(
                 '{} expressions passed, {} required'.format(
                     len(expressions),
                     1
-                )
+                ),
+                character
             )
 
-        value_to_cast = expressions[0].run(memory_from_call_location)
+        value_to_cast = expressions[0].run(
+            memory_from_call_location,
+            running_underscore_standard_library=\
+                self.running_underscore_standard_library
+        )
         cannot_cast_error = UnderscoreValueError(
             'could not cast {} to {}'.format(
                 expressions[0],
                 self.TYPE
-            )
+            ),
+            character
         )
 
         if type(value_to_cast) in BASIC_TYPES:
@@ -45,7 +55,8 @@ class _Caster:
             # means we need to raise an UnderscoreTypeError here, to tell them
             # what to change.
             raise UnderscoreTypeError(
-                '{} method must take 0 arguments'.format('__' + self.TYPE)
+                '{} method must take 0 arguments'.format('__' + self.TYPE),
+                character
             )
         except KeyError:
             # If the casting magic method is not defined, the template instance
@@ -58,7 +69,8 @@ class _Caster:
                 raise UnderscoreTypeError(
                     '{} method did not return correct type'.format(
                         '__' + self.TYPE
-                    )
+                    ),
+                    character
                 )
             return value_to_cast['__' + self.TYPE]({}, [])
 
@@ -83,9 +95,10 @@ class StringCaster(_Caster):
     PYTHON_CASTER = str
 
 
-CASTERS = {
-    'float': FloatCaster(),
-    'integer': IntegerCaster(),
-    'boolean': BooleanCaster(),
-    'string': StringCaster(),
-}
+def get_casters(running_underscore_standard_library=False):
+    return {
+        'float': FloatCaster(running_underscore_standard_library),
+        'integer': IntegerCaster(running_underscore_standard_library),
+        'boolean': BooleanCaster(running_underscore_standard_library),
+        'string': StringCaster(running_underscore_standard_library),
+    }

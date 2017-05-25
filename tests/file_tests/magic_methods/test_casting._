@@ -1,0 +1,22 @@
+instance = template() {
+    __float = function() {
+        return (1.8);
+    };
+
+    __integer = function() {
+        return (2);
+    };
+
+    __boolean = function() {
+        return (true);
+    };
+
+    __string = function() {
+        return ('Six by nine.');
+    };
+}();
+
+float_value = float(instance);
+integer_value = integer(instance);
+boolean_value = boolean(instance);
+string_value = string(instance);

@@ -119,7 +119,9 @@ class ReferenceNode(UnderscoreNode):
                 )
             return new_node.run(
                 memory=run_value,
-                call_memory=memory
+                call_memory=memory,
+                running_underscore_standard_library=\
+                    running_underscore_standard_library
             )
 
         #Or, if the current one is not a node

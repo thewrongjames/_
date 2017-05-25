@@ -1,0 +1,10 @@
+list_instance = template() {
+    length = 0;
+    item = 6;
+
+    append = function(item) {
+        container.set(container.length, item);
+        container.length = container.length + 1;
+    };
+}();
+list_instance.append('zero');

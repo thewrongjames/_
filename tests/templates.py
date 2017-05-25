@@ -59,19 +59,8 @@ class TestTemplates(unittest.TestCase):
         self.assertEqual(memory['external_value'], 8)
 
     def test_nested_template_access(self):
-        compiled = _.compile_(
-            '''
-            template_1 = template(){
-                value = 7;
-                template_2 = template(){
-                    container.value = 'bar';
-                };
-            };
-            instance = template_1();
-            first_value = instance.value;
-            instance.template_2();
-            second_value = instance.value;
-            '''
+        compiled = _.smart_compile(
+            'tests/file_tests/templates/test_nested_template_access._'
         )
         memory = compiled.run()
         self.assertEqual(memory['first_value'], 7)
@@ -145,19 +134,8 @@ class TestTemplates(unittest.TestCase):
         self.assertNotIn('value', memory['instance'])
 
     def test_key_value_template(self):
-        compiled = _.compile_(
-            '''
-            list_instance = template() {
-                length = 0;
-                item = 6;
-
-                append = function(item) {
-                    container.set(container.length, item);
-                    container.length = container.length + 1;
-                };
-            }();
-            list_instance.append('zero');
-            '''
+        compiled = _.smart_compile(
+            'tests/file_tests/templates/test_key_value_template._'
         )
         memory = compiled.run()
         self.assertEqual(memory['list_instance'][0], 'zero')

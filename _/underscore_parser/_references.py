@@ -55,6 +55,7 @@ def parse_instantiation_or_call(self, next_parsers_to_try_first):
             next_parsers_to_try_first
         )
     except UnderscoreIncorrectParserError:
+        self.position_in_program = starting_position
         instantiation_or_call = ReferenceNode(
             [self._parse_single_name()],
             starting_position
