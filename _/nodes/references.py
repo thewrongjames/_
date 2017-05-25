@@ -127,28 +127,12 @@ class ReferenceNode(UnderscoreNode):
             next_memory = memory[current_component]
         except KeyError:
             raise error
-        # try:
-        # This may error, but, only if the item being accessed doesn't exist.
         return new_node.run(
             memory=next_memory,
             call_memory=memory,
             running_underscore_standard_library=\
                 running_underscore_standard_library
         )
-        # except UnderscoreNameError:
-        #     print('Components', self.components)
-        #     print('current_component', current_component)
-        #     print(memory)
-        #     raise UnderscoreNameError(
-        #         '{} does not contain {}'.format(
-        #             current_component,
-        #             self._make_nice_string_representation(
-        #                 self.components[1],
-        #                 just_name=True
-        #             )
-        #         ),
-        #         self.character
-        #     )
 
 
 class TemplateInstantiateFunctionCallNode(UnderscoreNode):

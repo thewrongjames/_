@@ -79,7 +79,6 @@ class Get:
         try:
             return self.memory[value_to_get_from]
         except KeyError:
-            print('mfcl:', memory_from_call_location)
             raise UnderscoreNameError(
                 '{} is not assigned in this section'.format(
                     value_to_get_from

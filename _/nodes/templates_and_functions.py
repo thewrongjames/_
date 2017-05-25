@@ -21,14 +21,12 @@ class TemplateOrFunction:
             *args,
             **kwargs
     ):
-        print('r3', running_underscore_standard_library)
         self.sections = sections
         self.is_function = is_function
         self.names = names
         self.memory = memory
         self.running_underscore_standard_library = \
             running_underscore_standard_library
-        print('r4', self.running_underscore_standard_library)
         self.args = args
         self.kwargs = kwargs
 
@@ -48,7 +46,6 @@ class TemplateOrFunction:
         internal_memory = CASTERS.copy()
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
-        print('r5', self.running_underscore_standard_library)
         if not self.running_underscore_standard_library:
             from _.standard_library.written_in_underscore import \
                 WRITTEN_IN_UNDERSCORE
@@ -137,7 +134,6 @@ class TemplateFunctionNode(UnderscoreNode):
             *args,
             **kwargs
     ):
-        print('r2', running_underscore_standard_library)
         return TemplateOrFunction(
             *args,
             sections=self.sections,

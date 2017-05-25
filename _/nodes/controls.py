@@ -76,11 +76,6 @@ class WhileNode(UnderscoreNode):
 
     def run(self, memory, *args, **kwargs):
         conditional = self._get_conditional(memory, *args, **kwargs)
-        print('here', self.expression)
-        print(type(self.expression))
-        print(self.expression.first_object, self.expression.second_object)
-        print(self.expression.first_value, self.expression.second_value)
-        print('there', conditional)
 
         while conditional:
             should_break = False

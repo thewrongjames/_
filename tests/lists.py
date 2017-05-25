@@ -18,7 +18,6 @@ class TestLists(unittest.TestCase):
         )
 
         memory = compiled.run()
-        print(memory)
 
         self.assertEqual(memory['value_one'], 'this')
         self.assertEqual(memory['value_two'], -7.2)
