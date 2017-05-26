@@ -1,6 +1,6 @@
 from _.nodes import ProgramNode
 from _.exceptions import UnderscoreCouldNotConsumeError, \
-    UnderscoreIncorrectParserError
+    UnderscoreIncorrectParserError, UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
 
@@ -92,7 +92,7 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                             index_in_specific_parsers][2]
                     )
                 )
-            except UnderscoreIncorrectParserError:
+            except (UnderscoreIncorrectParserError, UnderscoreSyntaxError):
                 self.position_in_program = starting_position
                 # If it failed to parse it, stop trying to parse specific
                 # parsers:
@@ -108,12 +108,14 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                 else:
                     index_in_specific_parsers += 1
                 parsed_something = True
-        else:
 
+        if not trying_specific_parsers:
          # If you aren't trying to parse something specific, just loop through
-         # them (in order (importantly)) and see what you can parse.
+         # them (in order (importantly)) and see what you can parse. This needs
+         # to be another if statement, as, it might have realised it can't parse
+         # what it wants to just above, and if this isn't run, then it will see
+         # that it couldn't parse anything and raise a could not consume error.
             for parser in valid_parsers:
-
                 try:
                     sections.append(parser())
                 except UnderscoreIncorrectParserError:

@@ -6,6 +6,7 @@ class _Caster:
     def __init__(self, running_underscore_standard_library):
         self.running_underscore_standard_library = \
             running_underscore_standard_library
+        self.this_has_happened = True
 
     def __repr__(self):
         return str(self)

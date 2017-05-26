@@ -41,7 +41,7 @@ def parse_expression(
     if second_parser is not None:
         try:
             expression = second_parser(next_parsers_to_try_first)
-        except UnderscoreIncorrectParserError:
+        except (UnderscoreIncorrectParserError, UnderscoreSyntaxError):
             pass
         else:
             parsed_already = True

@@ -70,8 +70,6 @@ class TemplateOrFunction:
                 running_underscore_standard_library=\
                     self.running_underscore_standard_library
             )
-        else:
-            internal_memory = {}
 
         internal_memory['container'] = self.memory
 

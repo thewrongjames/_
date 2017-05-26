@@ -34,7 +34,7 @@ class ReferenceNode(UnderscoreNode):
             in self.components])
 
     def __repr__(self):
-        return self.name
+        return 'ReferenceNode({})'.format(self.name)
 
     def run(
                 self,
