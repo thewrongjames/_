@@ -55,18 +55,15 @@ class ProgramNode:
             self.time_limit -= self.pre_run_time_taken
 
     def run(self):
-        self.section_results = []
         for section in self.sections:
             # The arguements are keyword arguments, because not all sections
             # will want all of these.
-            self.section_results.append(
-                section.run(
-                    memory=self.memory,
-                    memory_limit=self.memory_limit,
-                    time_limit=self.time_limit,
-                    start_time=time(),
-                    running_underscore_standard_library=\
-                        self.running_underscore_standard_library
-                )
+            section.run(
+                memory=self.memory,
+                memory_limit=self.memory_limit,
+                time_limit=self.time_limit,
+                start_time=time(),
+                running_underscore_standard_library=\
+                    self.running_underscore_standard_library
             )
         return self.memory
