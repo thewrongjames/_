@@ -3,10 +3,16 @@ from .constants import BASIC_TYPES
 
 
 class _Caster:
-    def __init__(self, running_underscore_standard_library):
+    def __init__(
+        self,
+        time_limit,
+        memory_limit,
+        running_underscore_standard_library
+    ):
+        self.time_limit = time_limit
+        self.memory_limit = memory_limit
         self.running_underscore_standard_library = \
             running_underscore_standard_library
-        self.this_has_happened = True
 
     def __repr__(self):
         return str(self)
@@ -25,7 +31,9 @@ class _Caster:
             )
 
         value_to_cast = expressions[0].run(
-            memory_from_call_location,
+            memory=memory_from_call_location,
+            time_limit=self.time_limit,
+            memory_limit=self.memory_limit,
             running_underscore_standard_library=\
                 self.running_underscore_standard_library
         )
@@ -96,10 +104,22 @@ class StringCaster(_Caster):
     PYTHON_CASTER = str
 
 
-def get_casters(running_underscore_standard_library=False):
-    return {
-        'float': FloatCaster(running_underscore_standard_library),
-        'integer': IntegerCaster(running_underscore_standard_library),
-        'boolean': BooleanCaster(running_underscore_standard_library),
-        'string': StringCaster(running_underscore_standard_library),
-    }
+def get_casters(
+    time_limit,
+    memory_limit,
+    running_underscore_standard_library
+):
+    casters = {}
+    names_and_casters = (
+        ('float', FloatCaster),
+        ('integer', IntegerCaster),
+        ('boolean', BooleanCaster),
+        ('string', StringCaster)
+    )
+    for name, caster in names_and_casters:
+        casters[name] = caster(
+            time_limit,
+            memory_limit,
+            running_underscore_standard_library
+        )
+    return casters

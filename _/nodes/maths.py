@@ -15,17 +15,9 @@ class MathsNode(UnderscoreNode):
         return str(self.first_term) + self.SYMBOL + str(self.second_term)
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        first_value = self.first_term.run(
-            memory,
-            running_underscore_standard_library=\
-                running_underscore_standard_library
-        )
-        second_value = self.second_term.run(
-            memory,
-            running_underscore_standard_library=\
-                running_underscore_standard_library
-        )
+    def run(self, memory, *args, **kwargs):
+        first_value = self.first_term.run(memory, *args, **kwargs)
+        second_value = self.second_term.run(memory, *args, **kwargs)
         return self._specific_maths(first_value, second_value)
 
     def _try_magic_methods(self, first_value, second_value):

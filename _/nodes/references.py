@@ -94,6 +94,8 @@ class ReferenceNode(UnderscoreNode):
             requires_running = True
             run_value = current_component.run(
                 memory=call_memory,
+                time_limit=time_limit,
+                memory_limit=memory_limit,
                 running_underscore_standard_library=\
                     running_underscore_standard_library
             )
@@ -126,6 +128,8 @@ class ReferenceNode(UnderscoreNode):
             return new_node.run(
                 memory=run_value,
                 call_memory=memory,
+                time_limit=time_limit,
+                memory_limit=memory_limit,
                 running_underscore_standard_library=\
                     running_underscore_standard_library
             )
@@ -138,6 +142,8 @@ class ReferenceNode(UnderscoreNode):
         return new_node.run(
             memory=next_memory,
             call_memory=memory,
+            time_limit=time_limit,
+            memory_limit=memory_limit,
             running_underscore_standard_library=\
                 running_underscore_standard_library
         )

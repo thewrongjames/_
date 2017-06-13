@@ -22,17 +22,9 @@ class AndOrOrNode(BooleanLogicNode):
         )
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        self.first_value = self.first_expression.run(
-            memory,
-            running_underscore_standard_library=\
-                running_underscore_standard_library
-        )
-        self.second_value = self.second_expression.run(
-            memory,
-            running_underscore_standard_library=\
-                running_underscore_standard_library
-        )
+    def run(self, *args, **kwargs):
+        self.first_value = self.first_expression.run(*args, **kwargs)
+        self.second_value = self.second_expression.run(*args, **kwargs)
         if self.is_and:
             return self.first_value and self.second_value
         return self.first_value or self.second_value\
@@ -48,12 +40,8 @@ class NotNode(BooleanLogicNode):
         return 'NOT ' + str(self.expression)
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        return not self.expression.run(
-            memory,
-            running_underscore_standard_library=\
-                running_underscore_standard_library
-        )
+    def run(self, *args, **kwargs):
+        return not self.expression.run(*args, **kwargs)
 
 
 class BooleanStatementNode(BooleanLogicNode):
@@ -66,17 +54,9 @@ class BooleanStatementNode(BooleanLogicNode):
     def __str__(self):
         return str(self.first_object) + self.SYMBOL + str(self.second_object)
 
-    def _assign_values(self, memory, running_underscore_standard_library):
-        self.first_value = self.first_object.run(
-            memory,
-            running_underscore_standard_library=\
-                running_underscore_standard_library
-        )
-        self.second_value = self.second_object.run(
-            memory,
-            running_underscore_standard_library=\
-                running_underscore_standard_library
-        )
+    def _assign_values(self, *args, **kwargs):
+        self.first_value = self.first_object.run(*args, **kwargs)
+        self.second_value = self.second_object.run(*args, **kwargs)
 
 
 
@@ -84,8 +64,8 @@ class EqualityNode(BooleanStatementNode):
     SYMBOL = ' == '
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        self._assign_values(memory, running_underscore_standard_library)
+    def run(self, *args, **kwargs):
+        self._assign_values(*args, **kwargs)
         try:
             return self.first_value == self.second_value
         except:
@@ -101,8 +81,8 @@ class SmallerThanOrEqualToNode(BooleanStatementNode):
     SYMBOL = ' <= '
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        self._assign_values(memory, running_underscore_standard_library)
+    def run(self, *args, **kwargs):
+        self._assign_values(*args, **kwargs)
         try:
             return self.first_value <= self.second_value
         except:
@@ -118,8 +98,8 @@ class SmallerThanNode(BooleanStatementNode):
     SYMBOL = ' < '
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        self._assign_values(memory, running_underscore_standard_library)
+    def run(self, *args, **kwargs):
+        self._assign_values(*args, **kwargs)
         try:
             return self.first_value < self.second_value
         except:
@@ -135,8 +115,8 @@ class GreaterThanOrEqualToNode(BooleanStatementNode):
     SYMBOL = ' >= '
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        self._assign_values(memory, running_underscore_standard_library)
+    def run(self, *args, **kwargs):
+        self._assign_values(*args, **kwargs)
         try:
             return self.first_value >= self.second_value
         except:
@@ -152,8 +132,8 @@ class GreaterThanNode(BooleanStatementNode):
     SYMBOL = ' > '
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        self._assign_values(memory, running_underscore_standard_library)
+    def run(self, *args, **kwargs):
+        self._assign_values(*args, **kwargs)
         try:
             return self.first_value > self.second_value
         except:
@@ -169,8 +149,8 @@ class InequalityNode(BooleanStatementNode):
     SYMBOL = ' != '
 
     @limited
-    def run(self, memory, running_underscore_standard_library, *args, **kwargs):
-        self._assign_values(memory, running_underscore_standard_library)
+    def run(self, *args, **kwargs):
+        self._assign_values(*args, **kwargs)
         try:
             return self.first_value != self.second_value
         except:

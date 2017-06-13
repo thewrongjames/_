@@ -29,9 +29,19 @@ class ProgramNode:
         # take, but, within the program, it refers to the time by which it must
         # be finished.
 
-        self.memory = get_casters(running_underscore_standard_library)
-        # It doesn't need to be a deepcopy, I can use the same standard library
-        # methods everywhere.
+        if self.time_which_may_be_taken is None:
+            self.time_limit = None
+        else:
+            # self.time_limit is the time by which the program must be finished,
+            # that is, the current time, plus the time that is allowed run for.
+            self.time_limit = time() + self.time_which_may_be_taken
+
+        self.memory = get_casters(
+            time_limit=self.time_limit,
+            memory_limit=self.memory_limit,
+            running_underscore_standard_library=\
+                running_underscore_standard_library
+        )
 
         self.running_underscore_standard_library = \
             running_underscore_standard_library
@@ -43,13 +53,6 @@ class ProgramNode:
                 WRITTEN_IN_UNDERSCORE
             for key, value in WRITTEN_IN_UNDERSCORE.items():
                 self.memory[key] = value
-
-        if self.time_which_may_be_taken is None:
-            self.time_limit = None
-        else:
-            # self.time_limit is the time by which the program must be finished,
-            # that is, the current time, plus the time that is allowed run for.
-            self.time_limit = time() + self.time_which_may_be_taken
 
         for section in self.sections:
             section.pre_run(

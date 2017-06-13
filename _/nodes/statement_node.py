@@ -17,14 +17,18 @@ class StatementNode(UnderscoreNode):
     def get_memory_to_write_to(
             self,
             memory,
-            running_underscore_standard_library
+            running_underscore_standard_library,
+            *args,
+            **kwargs
     ):
         if self.reference.components == []:
             return memory
         memory_to_write_to = self.reference.run(
             memory,
+            *args,
             running_underscore_standard_library=\
-                running_underscore_standard_library
+                running_underscore_standard_library,
+            **kwargs
         )
         if not isinstance(memory_to_write_to, dict):
             raise _.exceptions.UnderscoreNameError(
@@ -48,14 +52,15 @@ class StatementNode(UnderscoreNode):
         if isinstance(self.expression, TemplateFunctionNode):
             memory_to_write_to = self.get_memory_to_write_to(
                 memory,
-                running_underscore_standard_library=\
-                    running_underscore_standard_library
+                running_underscore_standard_library,
+                *args,
+                **kwargs
             )
             memory_to_write_to[self.last_name] = self.expression.run(
-                memory=memory,
+                memory,
+                *args,
                 running_underscore_standard_library=\
                     running_underscore_standard_library,
-                *args,
                 **kwargs
             )
 
@@ -64,13 +69,14 @@ class StatementNode(UnderscoreNode):
         if not isinstance(self.expression, TemplateFunctionNode):
             memory_to_write_to = self.get_memory_to_write_to(
                 memory,
-                running_underscore_standard_library=\
-                    running_underscore_standard_library
+                running_underscore_standard_library,
+                *args,
+                **kwargs
             )
             memory_to_write_to[self.last_name] = self.expression.run(
                 memory,
+                *args,
                 running_underscore_standard_library=\
                     running_underscore_standard_library,
-                *args,
                 **kwargs
             )

@@ -49,7 +49,12 @@ class TemplateOrFunction:
                 'required'
             )
 
-        internal_memory = get_casters(self.running_underscore_standard_library)
+        internal_memory = get_casters(
+            time_limit=self.time_limit,
+            memory_limit=self.memory_limit,
+            running_underscore_standard_library=\
+                self.running_underscore_standard_library
+        )
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
         if not self.running_underscore_standard_library:
@@ -76,6 +81,8 @@ class TemplateOrFunction:
             values_of_passed_expressions.append(
                 expression.run(
                     memory_from_call_location,
+                    time_limit=self.time_limit,
+                    memory_limit=self.memory_limit,
                     running_underscore_standard_library=\
                         self.running_underscore_standard_library
                 )
@@ -110,6 +117,8 @@ class TemplateOrFunction:
             except UnderscoreReturnError as return_error:
                 return return_error.expression_to_return.run(
                     internal_memory,
+                    time_limit=self.time_limit,
+                    memory_limit=self.memory_limit,
                     running_underscore_standard_library=\
                         self.running_underscore_standard_library,
                     *self.args,
