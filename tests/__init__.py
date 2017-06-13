@@ -11,3 +11,4 @@ from .comments import TestComments
 from .casting import TestCasting
 from .lists import TestLists
 from .magic_methods import TestMagicMethods
+from .smart_compile_string import TestSmartCompileString

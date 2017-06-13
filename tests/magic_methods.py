@@ -4,7 +4,7 @@ import unittest
 
 class TestMagicMethods(unittest.TestCase):
     def test_maths(self):
-        compiled = _.smart_compile(
+        compiled = _.smart_compile_file(
             'tests/file_tests/magic_methods/test_maths._'
         )
         memory = compiled.run()
@@ -19,7 +19,7 @@ class TestMagicMethods(unittest.TestCase):
 
     def test_casting(self):
         return
-        compiled = _.smart_compile(
+        compiled = _.smart_compile_file(
             'tests/file_tests/magic_methods/test_casting._'
         )
         memory = compiled.run()
