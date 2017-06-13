@@ -1,5 +1,6 @@
 from _.exceptions import UnderscoreNameError, UnderscoreValueError
 from .underscore_node import UnderscoreNode
+from .limited import limited
 
 
 class ReferenceNode(UnderscoreNode):
@@ -36,9 +37,12 @@ class ReferenceNode(UnderscoreNode):
     def __repr__(self):
         return 'ReferenceNode({})'.format(self.name)
 
+    @limited
     def run(
                 self,
                 memory,
+                time_limit,
+                memory_limit,
                 running_underscore_standard_library,
                 *args,
                 call_memory=None,
@@ -76,6 +80,8 @@ class ReferenceNode(UnderscoreNode):
             ).run(
                 memory=memory,
                 call_memory=call_memory,
+                time_limit=time_limit,
+                memory_limit=memory_limit,
                 running_underscore_standard_library=\
                     running_underscore_standard_library
             )
@@ -149,10 +155,13 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
         self.character = character
         self.expressions = expressions
 
+    @limited
     def run(
             self,
             memory,
             call_memory,
+            time_limit,
+            memory_limit,
             running_underscore_standard_library,
             *args,
             **kwargs
@@ -164,6 +173,8 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
         if isinstance(self.template_or_function, ReferenceNode):
             template_or_function = self.template_or_function.run(
                 memory=memory,
+                time_limit=time_limit,
+                memory_limit=memory_limit,
                 running_underscore_standard_library=\
                     running_underscore_standard_library
             )
@@ -176,6 +187,8 @@ class TemplateInstantiateFunctionCallNode(UnderscoreNode):
             template_or_function = self.template_or_function.run(
                 *args,
                 memory=memory,
+                time_limit=time_limit,
+                memory_limit=memory_limit,
                 running_underscore_standard_library=\
                     running_underscore_standard_library,
                 **kwargs

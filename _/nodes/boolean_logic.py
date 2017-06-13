@@ -1,4 +1,5 @@
 from .underscore_node import UnderscoreNode
+from .limited import limited
 
 
 class BooleanLogicNode(UnderscoreNode):
@@ -20,6 +21,7 @@ class AndOrOrNode(BooleanLogicNode):
             str(self.second_expression)
         )
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         self.first_value = self.first_expression.run(
             memory,
@@ -45,6 +47,7 @@ class NotNode(BooleanLogicNode):
     def __str__(self):
         return 'NOT ' + str(self.expression)
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         return not self.expression.run(
             memory,
@@ -80,6 +83,7 @@ class BooleanStatementNode(BooleanLogicNode):
 class EqualityNode(BooleanStatementNode):
     SYMBOL = ' == '
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         self._assign_values(memory, running_underscore_standard_library)
         try:
@@ -96,6 +100,7 @@ class EqualityNode(BooleanStatementNode):
 class SmallerThanOrEqualToNode(BooleanStatementNode):
     SYMBOL = ' <= '
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         self._assign_values(memory, running_underscore_standard_library)
         try:
@@ -112,6 +117,7 @@ class SmallerThanOrEqualToNode(BooleanStatementNode):
 class SmallerThanNode(BooleanStatementNode):
     SYMBOL = ' < '
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         self._assign_values(memory, running_underscore_standard_library)
         try:
@@ -128,6 +134,7 @@ class SmallerThanNode(BooleanStatementNode):
 class GreaterThanOrEqualToNode(BooleanStatementNode):
     SYMBOL = ' >= '
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         self._assign_values(memory, running_underscore_standard_library)
         try:
@@ -144,6 +151,7 @@ class GreaterThanOrEqualToNode(BooleanStatementNode):
 class GreaterThanNode(BooleanStatementNode):
     SYMBOL = ' > '
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         self._assign_values(memory, running_underscore_standard_library)
         try:
@@ -160,6 +168,7 @@ class GreaterThanNode(BooleanStatementNode):
 class InequalityNode(BooleanStatementNode):
     SYMBOL = ' != '
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         self._assign_values(memory, running_underscore_standard_library)
         try:

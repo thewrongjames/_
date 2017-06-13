@@ -2,6 +2,8 @@ from _.exceptions import UnderscoreBreakError, UnderscoreContinueError, \
     UnderscoreTypeError
 from .underscore_node import UnderscoreNode
 from _.standard_library.casting import BooleanCaster
+from .limited import limited
+
 
 class IfNode(UnderscoreNode):
     FIRST_PARSER = '_parse_control'
@@ -12,6 +14,7 @@ class IfNode(UnderscoreNode):
         self.if_sections = if_sections
         self.else_sections = else_sections
 
+    @limited
     def run(self, memory, *args, **kwargs):
         expression_result = self.expression.run(memory, *args, **kwargs)
         if isinstance(expression_result, dict):
@@ -74,6 +77,7 @@ class WhileNode(UnderscoreNode):
         else:
             return expression_result
 
+    @limited
     def run(self, memory, *args, **kwargs):
         conditional = self._get_conditional(memory, *args, **kwargs)
 
@@ -112,6 +116,7 @@ class BreakNode(UnderscoreNode):
     def __init__(self, position_in_program):
         self.position_in_program = position_in_program
 
+    @limited
     def run(self, *args, **kwargs):
         raise UnderscoreBreakError(
             'break outside of loop',
@@ -125,6 +130,7 @@ class ContinueNode(UnderscoreNode):
     def __init__(self, position_in_program):
         self.position_in_program = position_in_program
 
+    @limited
     def run(self, *args, **kwargs):
         raise UnderscoreContinueError(
             'Continue outside of loop',

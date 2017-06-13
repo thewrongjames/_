@@ -94,3 +94,11 @@ class UnderscoreIncorrectNumberOfArgumentsError(UnderscoreTypeError):
     number of arguments.
     """
     pass
+
+
+class  UnderscoreOutOfTimeError(UnderscoreError):
+    pass
+
+
+class UnderscoreOutOfMemoryError(UnderscoreError):
+    pass

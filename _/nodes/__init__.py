@@ -24,10 +24,15 @@ class ProgramNode:
     ):
         self.sections = sections
         self.memory_limit = memory_limit
-        self.time_limit = time_limit
+        self.time_which_may_be_taken = time_limit
+        # To the user, time_limit refers to the amount of time the program may
+        # take, but, within the program, it refers to the time by which it must
+        # be finished.
+
         self.memory = get_casters(running_underscore_standard_library)
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
+
         self.running_underscore_standard_library = \
             running_underscore_standard_library
         # running_underscore_standard_library refers to whether or not this
@@ -39,20 +44,21 @@ class ProgramNode:
             for key, value in WRITTEN_IN_UNDERSCORE.items():
                 self.memory[key] = value
 
-        self.pre_run_start_time = time()
+        if self.time_which_may_be_taken is None:
+            self.time_limit = None
+        else:
+            # self.time_limit is the time by which the program must be finished,
+            # that is, the current time, plus the time that is allowed run for.
+            self.time_limit = time() + self.time_which_may_be_taken
 
         for section in self.sections:
             section.pre_run(
                 memory=self.memory,
                 memory_limit=self.memory_limit,
                 time_limit=self.time_limit,
-                start_time = self.pre_run_start_time,
                 running_underscore_standard_library=\
                     running_underscore_standard_library
             )
-        self.pre_run_time_taken = time() - self.pre_run_start_time
-        if self.time_limit is not None:
-            self.time_limit -= self.pre_run_time_taken
 
     def run(self):
         for section in self.sections:
@@ -62,7 +68,6 @@ class ProgramNode:
                 memory=self.memory,
                 memory_limit=self.memory_limit,
                 time_limit=self.time_limit,
-                start_time=time(),
                 running_underscore_standard_library=\
                     self.running_underscore_standard_library
             )

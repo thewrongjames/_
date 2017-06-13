@@ -1,6 +1,7 @@
 from _.exceptions import UnderscoreTypeError
 from .underscore_node import UnderscoreNode
 from .value_node import ValueNode
+from .limited import limited
 
 
 class MathsNode(UnderscoreNode):
@@ -13,6 +14,7 @@ class MathsNode(UnderscoreNode):
     def __str__(self):
         return str(self.first_term) + self.SYMBOL + str(self.second_term)
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         first_value = self.first_term.run(
             memory,

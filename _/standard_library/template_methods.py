@@ -3,17 +3,45 @@ from _.nodes.value_node import ValueNode
 from .constants import BASIC_TYPES
 
 
-class Set:
-    def __init__(self, memory, running_underscore_standard_library):
+def get_template_methods(
+    memory,
+    time_limit,
+    memory_limit,
+    running_underscore_standard_library
+):
+    template_methods = {}
+    for name, method in (('set', Set), ('get', Get), ('delete', Delete)):
+        template_methods[name] = method(
+            memory,
+            time_limit,
+            memory_limit,
+            running_underscore_standard_library
+        )
+    return template_methods
+
+
+class TemplateMethod:
+    def __init__(
+        self,
+        memory,
+        time_limit,
+        memory_limit,
+        running_underscore_standard_library
+    ):
         self.memory = memory
+        self.time_limit = time_limit
+        self.memory_limit = memory_limit
         self.running_underscore_standard_library = \
             running_underscore_standard_library
 
-    def __str__(self):
-        return 'set_method'
-
     def __repr__(self):
         return str(self)
+
+
+class Set(TemplateMethod):
+
+    def __str__(self):
+        return 'set_method'
 
     def __call__(self, memory_from_call_location, expressions, character):
         if len(expressions) != 2:
@@ -26,11 +54,15 @@ class Set:
             )
         value_to_assign_to = expressions[0].run(
             memory_from_call_location,
+            self.time_limit,
+            self.memory_limit,
             running_underscore_standard_library=\
                 self.running_underscore_standard_library
         )
         value_to_assign = expressions[1].run(
             memory_from_call_location,
+            self.time_limit,
+            self.memory_limit,
             running_underscore_standard_library=\
                 self.running_underscore_standard_library
         )
@@ -44,17 +76,10 @@ class Set:
         return ValueNode(None)
 
 
-class Get:
-    def __init__(self, memory, running_underscore_standard_library):
-        self.memory = memory
-        self.running_underscore_standard_library = \
-            running_underscore_standard_library
+class Get(TemplateMethod):
 
     def __str__(self):
         return 'get_method'
-
-    def __repr__(self):
-        return str(self)
 
     def __call__(self, memory_from_call_location, expressions, character):
         if len(expressions) != 1:
@@ -67,6 +92,8 @@ class Get:
             )
         value_to_get_from = expressions[0].run(
             memory_from_call_location,
+            self.time_limit,
+            self.memory_limit,
             running_underscore_standard_library=\
                 self.running_underscore_standard_library
         )
@@ -87,17 +114,10 @@ class Get:
             )
 
 
-class Delete:
-    def __init__(self, memory, running_underscore_standard_library):
-        self.memory = memory
-        self.running_underscore_standard_library = \
-            running_underscore_standard_library
+class Delete(TemplateMethod):
 
     def __str__(self):
         return 'delete_method'
-
-    def __repr__(self):
-        return str(self)
 
     def __call__(self, memory_from_call_location, expressions, character):
         if len(expressions) != 1:
@@ -110,6 +130,8 @@ class Delete:
             )
         value_to_get_from = expressions[0].run(
             memory_from_call_location,
+            self.time_limit,
+            self.memory_limit,
             running_underscore_standard_library=\
                 self.running_underscore_standard_library
         )

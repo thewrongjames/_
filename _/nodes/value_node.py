@@ -1,4 +1,7 @@
+import sys
+from _.exceptions import UnderscoreOutOfMemoryError
 from .underscore_node import UnderscoreNode
+from .limited import limited
 
 
 class ValueNode(UnderscoreNode):
@@ -11,5 +14,6 @@ class ValueNode(UnderscoreNode):
     def __str__(self):
         return str(self.value)
 
+    @limited
     def run(self, *args, **kwargs):
         return self.value

@@ -1,5 +1,6 @@
 from .underscore_node import UnderscoreNode
 from .templates_and_functions import TemplateFunctionNode
+from .limited import limited
 
 
 class StatementNode(UnderscoreNode):
@@ -31,6 +32,7 @@ class StatementNode(UnderscoreNode):
             )
         return memory_to_write_to
 
+    @limited
     def pre_run(
             self,
             memory,
@@ -57,6 +59,7 @@ class StatementNode(UnderscoreNode):
                 **kwargs
             )
 
+    @limited
     def run(self, memory, running_underscore_standard_library, *args, **kwargs):
         if not isinstance(self.expression, TemplateFunctionNode):
             memory_to_write_to = self.get_memory_to_write_to(

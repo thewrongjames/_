@@ -1,8 +1,10 @@
 from _.standard_library.casting import get_casters
+from _.standard_library.template_methods import get_template_methods
 from _.exceptions import UnderscoreTypeError, UnderscoreReturnError, \
     UnderscoreIncorrectNumberOfArgumentsError
 from .underscore_node import UnderscoreNode
 from .value_node import ValueNode
+from .limited import limited
 
 
 class TemplateOrFunction:
@@ -17,6 +19,8 @@ class TemplateOrFunction:
             is_function,
             names,
             memory,
+            time_limit,
+            memory_limit,
             running_underscore_standard_library,
             *args,
             **kwargs
@@ -25,6 +29,8 @@ class TemplateOrFunction:
         self.is_function = is_function
         self.names = names
         self.memory = memory
+        self.time_limit = time_limit
+        self.memory_limit = memory_limit
         self.running_underscore_standard_library = \
             running_underscore_standard_library
         self.args = args
@@ -54,22 +60,14 @@ class TemplateOrFunction:
         # If this is a template, the set, get and delete methods must be added
         # to the internal memory.
         if not self.is_function:
-            from _.standard_library.template_methods import Set, Get, Delete
-            internal_memory['set'] = Set(
+            template_methods = get_template_methods(
                 internal_memory,
-                running_underscore_standard_library=\
-                    self.running_underscore_standard_library
+                self.time_limit,
+                self.memory_limit,
+                self.running_underscore_standard_library
             )
-            internal_memory['get'] = Get(
-                internal_memory,
-                running_underscore_standard_library=\
-                    self.running_underscore_standard_library
-            )
-            internal_memory['delete'] = Delete(
-                internal_memory,
-                running_underscore_standard_library=\
-                    self.running_underscore_standard_library
-            )
+            for key, value in template_methods.items():
+                internal_memory[key] = value
 
         internal_memory['container'] = self.memory
 
@@ -91,6 +89,8 @@ class TemplateOrFunction:
             # pre_run.
             section.pre_run(
                 memory=internal_memory,
+                time_limit=self.time_limit,
+                memory_limit=self.memory_limit,
                 running_underscore_standard_library=\
                     self.running_underscore_standard_library,
                 *self.args,
@@ -100,6 +100,8 @@ class TemplateOrFunction:
             try:
                 section.run(
                     memory=internal_memory,
+                    time_limit=self.time_limit,
+                    memory_limit=self.memory_limit,
                     running_underscore_standard_library=\
                         self.running_underscore_standard_library,
                     *self.args,
@@ -129,10 +131,13 @@ class TemplateFunctionNode(UnderscoreNode):
         self.is_function = is_function
         self.names = names
 
+    @limited
     def run(
             self,
             memory,
             running_underscore_standard_library,
+            time_limit,
+            memory_limit,
             *args,
             **kwargs
     ):
@@ -142,6 +147,8 @@ class TemplateFunctionNode(UnderscoreNode):
             is_function=self.is_function,
             names=self.names,
             memory=memory,
+            time_limit=time_limit,
+            memory_limit=memory_limit,
             running_underscore_standard_library=\
                 running_underscore_standard_library,
             **kwargs
@@ -155,6 +162,7 @@ class ReturnNode(UnderscoreNode):
         self.expression_to_return = expression_to_return
         self.position_in_program = position_in_program
 
+    @limited
     def run(self, memory, *args, **kwargs):
         # The user will only ever see this error if it is outside of a function,
         # so that is the message it gives.
