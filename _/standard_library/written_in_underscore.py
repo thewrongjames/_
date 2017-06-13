@@ -3,7 +3,7 @@ import os
 
 
 List = _.smart_compile_file(
-    os.path.dirname(__file__) + '\written_in_underscore\list._',
+    os.path.join(os.path.dirname(__file__) + '/written_in_underscore/list._'),
     running_underscore_standard_library=True
 ).run()['List']
 
