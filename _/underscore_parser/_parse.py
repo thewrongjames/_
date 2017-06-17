@@ -50,7 +50,8 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
             '_parse_addition_or_subtraction': \
                 self._parse_addition_or_subtraction,
             '_parse_term': self._parse_term,
-            '_parse_reference': self._parse_reference
+            '_parse_reference': self._parse_reference,
+            None: None
         }
         parser_methods_to_try_first = []
         for first_parser_name, second_parser_name, _ in parsers_to_try_first:
