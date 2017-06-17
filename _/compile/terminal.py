@@ -34,10 +34,14 @@ def terminal():
             try:
                 pre_run_result = section.pre_run(
                     memory=memory,
+                    time_limit=None,
+                    memory_limit=None,
                     running_underscore_standard_library=False
                 )
                 run_result = section.run(
                     memory=memory,
+                    time_limit=None,
+                    memory_limit=None,
                     running_underscore_standard_library=False
                 )
             except Exception as error:
