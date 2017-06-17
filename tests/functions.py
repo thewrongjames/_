@@ -1,5 +1,6 @@
 import _
 import unittest
+import os
 
 
 class TestFunctions(unittest.TestCase):
@@ -14,7 +15,8 @@ class TestFunctions(unittest.TestCase):
 
     def test_not_at_end_return(self):
         compiled = _.smart_compile_file(
-            'tests/file_tests/functions/test_not_at_end_return._'
+            os.path.dirname(__file__) +
+            '/file_tests/functions/test_not_at_end_return._'
         )
         memory = compiled.run()
         self.assertEqual(memory['definately_not_eight'], 9)
@@ -41,7 +43,8 @@ class TestFunctions(unittest.TestCase):
 
     def test_method_like_behaviour(self):
         compiled = _.smart_compile_file(
-            'tests/file_tests/functions/test_method_like_behaviour._'
+            os.path.dirname(__file__) +
+            '/file_tests/functions/test_method_like_behaviour._'
         )
         memory = compiled.run()
         self.assertEqual(memory['first_value'], 7)
@@ -102,8 +105,8 @@ class TestFunctions(unittest.TestCase):
 
     def test_expressions_resolve_in_correct_scope(self):
         compiled = _.smart_compile_file(
-            'tests/file_tests/functions/'
-            'test_expressions_resolve_in_correct_scope._'
+            os.path.dirname(__file__) +
+            '/file_tests/functions/test_expressions_resolve_in_correct_scope._'
         )
         memory = compiled.run()
         self.assertEqual(memory['template_instance']['this_plus_one'], 2)

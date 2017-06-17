@@ -1,5 +1,6 @@
 import _
 import unittest
+import os
 
 
 class TestTemplates(unittest.TestCase):
@@ -60,7 +61,8 @@ class TestTemplates(unittest.TestCase):
 
     def test_nested_template_access(self):
         compiled = _.smart_compile_file(
-            'tests/file_tests/templates/test_nested_template_access._'
+            os.path.dirname(__file__) +
+            '/file_tests/templates/test_nested_template_access._'
         )
         memory = compiled.run()
         self.assertEqual(memory['first_value'], 7)
@@ -135,7 +137,8 @@ class TestTemplates(unittest.TestCase):
 
     def test_key_value_template(self):
         compiled = _.smart_compile_file(
-            'tests/file_tests/templates/test_key_value_template._'
+            os.path.dirname(__file__) +
+            '/file_tests/templates/test_key_value_template._'
         )
         memory = compiled.run()
         self.assertEqual(memory['list_instance'][0], 'zero')

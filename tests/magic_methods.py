@@ -1,11 +1,13 @@
 import _
 import unittest
+import os
 
 
 class TestMagicMethods(unittest.TestCase):
     def test_maths(self):
         compiled = _.smart_compile_file(
-            'tests/file_tests/magic_methods/test_maths._'
+            os.path.dirname(__file__) +
+            '/file_tests/magic_methods/test_maths._'
         )
         memory = compiled.run()
         self.assertEqual(memory['addition_result'], 5)
@@ -20,7 +22,8 @@ class TestMagicMethods(unittest.TestCase):
     def test_casting(self):
         return
         compiled = _.smart_compile_file(
-            'tests/file_tests/magic_methods/test_casting._'
+            os.path.dirname(__file__) +
+            '/file_tests/magic_methods/test_casting._'
         )
         memory = compiled.run()
         self.assertEqual(memory['float_value'], 1.8)
