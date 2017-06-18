@@ -1,7 +1,7 @@
 import sys
 from time import time
 from functools import wraps
-from _.exceptions import UnderscoreOutOfMemoryError, UnderscoreOutOfTimeError
+from ..exceptions import UnderscoreOutOfMemoryError, UnderscoreOutOfTimeError
 
 
 def limited(function):

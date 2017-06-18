@@ -1,5 +1,7 @@
-from _ import nodes
-from _.exceptions import UnderscoreCouldNotConsumeError, \
+from ..nodes import AndOrOrNode, NotNode, EqualityNode, \
+    SmallerThanOrEqualToNode, SmallerThanNode, GreaterThanOrEqualToNode, \
+    GreaterThanNode, InequalityNode
+from ..exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError
 from ._whitespace import surrounding_whitespace_removed
 
@@ -19,7 +21,7 @@ def parse_and_or_or(self, *args):
     else:
         is_and = True
     second_expression = self._parse_expression(has_semi_colon=False)
-    return nodes.AndOrOrNode(is_and, first_expression, second_expression)
+    return AndOrOrNode(is_and, first_expression, second_expression)
 
 
 @surrounding_whitespace_removed
@@ -29,7 +31,7 @@ def parse_not(self, *args):
         has_semi_colon=False,
         parsers_to_not_allow=[self._parse_and_or_or]
     )
-    return nodes.NotNode(expression)
+    return NotNode(expression)
 
 
 @surrounding_whitespace_removed
@@ -44,12 +46,12 @@ def parse_comparison(self, *args):
         parsers_to_not_allow=parsers_to_not_allow
     )
     symbols_and_nodes = (
-        ('==', nodes.EqualityNode),
-        ('<=', nodes.SmallerThanOrEqualToNode),
-        ('<', nodes.SmallerThanNode),
-        ('>=', nodes.GreaterThanOrEqualToNode),
-        ('>', nodes.GreaterThanNode),
-        ('!=', nodes.InequalityNode)
+        ('==', EqualityNode),
+        ('<=', SmallerThanOrEqualToNode),
+        ('<', SmallerThanNode),
+        ('>=', GreaterThanOrEqualToNode),
+        ('>', GreaterThanNode),
+        ('!=', InequalityNode)
     )
     for symbol, node in symbols_and_nodes:
         self._consume_whitespace()

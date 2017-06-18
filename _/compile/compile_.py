@@ -1,4 +1,4 @@
-from _.underscore_parser import UnderscoreParser
+from ..underscore_parser import UnderscoreParser
 
 
 def compile_(

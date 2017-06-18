@@ -1,4 +1,4 @@
-from _.exceptions import UnderscoreCouldNotConsumeError, \
+from ..exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError, UnderscoreSyntaxError
 
 

@@ -1,6 +1,6 @@
 import pickle
-from _.underscore_parser import UnderscoreParser
-from _.nodes import ProgramNode
+from ..underscore_parser import UnderscoreParser
+from ..nodes import ProgramNode
 
 
 def smart_compile_string(

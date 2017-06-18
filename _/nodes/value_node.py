@@ -1,5 +1,5 @@
 import sys
-from _.exceptions import UnderscoreOutOfMemoryError
+from ..exceptions import UnderscoreOutOfMemoryError
 from .underscore_node import UnderscoreNode
 from .limited import limited
 

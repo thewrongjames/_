@@ -1,5 +1,5 @@
-from _.nodes import TemplateFunctionNode
-from _.exceptions import UnderscoreCouldNotConsumeError, \
+from ..nodes import TemplateFunctionNode
+from ..exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError, UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
