@@ -1,12 +1,12 @@
-from _.nodes import StatementNode
-from _.exceptions import UnderscoreIncorrectParserError, UnderscoreSyntaxError
+from ..nodes import StatementNode
+from ..exceptions import UnderscoreIncorrectParserError, UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
 def parse_statement(self, **kwargs):
     reference = self._parse_reference(next_parsers_to_try_first=[])
-    
+
     if self._peek() != '=':
         # You would think that you might want to raise an incorrect parser error
         # here, put what haven't noticed future human (likely me), is that you

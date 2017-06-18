@@ -1,6 +1,5 @@
-import _
 from time import time
-from _.standard_library.casting import get_casters
+from ..standard_library.casting import get_casters
 from .underscore_node import UnderscoreNode
 from .statement_node import StatementNode
 from .value_node import ValueNode
@@ -49,7 +48,7 @@ class ProgramNode:
         # program is within the standard_library itself, because, if that is the
         # case, it needs to know to not try to import itself.
         if not running_underscore_standard_library:
-            from _.standard_library.written_in_underscore import \
+            from ..standard_library.written_in_underscore import \
                 WRITTEN_IN_UNDERSCORE
             for key, value in WRITTEN_IN_UNDERSCORE.items():
                 self.memory[key] = value

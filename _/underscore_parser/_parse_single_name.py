@@ -1,4 +1,4 @@
-from _.exceptions import UnderscoreIncorrectParserError
+from ..exceptions import UnderscoreIncorrectParserError
 from ._whitespace import surrounding_whitespace_removed
 
 

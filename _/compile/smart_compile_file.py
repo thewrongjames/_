@@ -1,6 +1,6 @@
 import os
 import pickle
-from _.underscore_parser import UnderscoreParser
+from ..underscore_parser import UnderscoreParser
 from .smart_compile_string import smart_compile_string
 
 

@@ -1,4 +1,4 @@
-from _.exceptions import UnderscoreIncorrectParserError, UnderscoreSyntaxError
+from ..exceptions import UnderscoreIncorrectParserError, UnderscoreSyntaxError
 
 
 def try_parsers(self, parsers, expected=None, needed=False, item_to_pass=None):

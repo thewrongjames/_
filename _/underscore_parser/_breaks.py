@@ -1,5 +1,5 @@
-from _.nodes import ReturnNode, BreakNode, ContinueNode
-from _.exceptions import UnderscoreCouldNotConsumeError
+from ..nodes import ReturnNode, BreakNode, ContinueNode
+from ..exceptions import UnderscoreCouldNotConsumeError
 from ._whitespace import surrounding_whitespace_removed
 
 

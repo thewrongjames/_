@@ -1,5 +1,5 @@
-from _.nodes import IfNode, WhileNode
-from _.exceptions import UnderscoreSyntaxError, UnderscoreCouldNotConsumeError
+from ..nodes import IfNode, WhileNode
+from ..exceptions import UnderscoreSyntaxError, UnderscoreCouldNotConsumeError
 from ._whitespace import surrounding_whitespace_removed
 
 

@@ -1,4 +1,4 @@
-from _.exceptions import UnderscoreTypeError, UnderscoreValueError
+from ..exceptions import UnderscoreTypeError, UnderscoreValueError
 from .constants import BASIC_TYPES
 
 

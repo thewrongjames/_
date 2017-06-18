@@ -1,5 +1,5 @@
-from _.nodes import CommentNode
-from _.exceptions import UnderscoreSyntaxError
+from ..nodes import CommentNode
+from ..exceptions import UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
 

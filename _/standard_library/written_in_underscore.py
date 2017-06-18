@@ -1,5 +1,5 @@
-import _
 import os
+from ..compile import smart_compile_file
 
 
 List = _.smart_compile_file(

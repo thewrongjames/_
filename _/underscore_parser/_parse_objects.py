@@ -1,6 +1,6 @@
 from string import digits
-from _.nodes import ValueNode
-from _.exceptions import UnderscoreCouldNotConsumeError, \
+from ..nodes import ValueNode
+from ..exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError, UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 

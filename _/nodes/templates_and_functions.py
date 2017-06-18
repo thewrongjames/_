@@ -1,6 +1,6 @@
-from _.standard_library.casting import get_casters
-from _.standard_library.template_methods import get_template_methods
-from _.exceptions import UnderscoreTypeError, UnderscoreReturnError, \
+from ..standard_library.casting import get_casters
+from ..standard_library.template_methods import get_template_methods
+from ..exceptions import UnderscoreTypeError, UnderscoreReturnError, \
     UnderscoreIncorrectNumberOfArgumentsError
 from .underscore_node import UnderscoreNode
 from .value_node import ValueNode
@@ -58,7 +58,7 @@ class TemplateOrFunction:
         # It doesn't need to be a deepcopy, I can use the same standard library
         # methods everywhere.
         if not self.running_underscore_standard_library:
-            from _.standard_library.written_in_underscore import \
+            from ..standard_library.written_in_underscore import \
                 WRITTEN_IN_UNDERSCORE
             for key, value in WRITTEN_IN_UNDERSCORE.items():
                 internal_memory[key] = value

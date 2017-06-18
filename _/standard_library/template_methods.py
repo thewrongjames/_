@@ -1,5 +1,5 @@
-from _.exceptions import UnderscoreTypeError, UnderscoreNameError
-from _.nodes.value_node import ValueNode
+from ..exceptions import UnderscoreTypeError, UnderscoreNameError
+from ..nodes.value_node import ValueNode
 from .constants import BASIC_TYPES
 
 

@@ -1,6 +1,6 @@
-from _.nodes import AdditionNode, SubtractionNode, MultiplicationNode, \
+from ..nodes import AdditionNode, SubtractionNode, MultiplicationNode, \
     DivisionNode, PowerNode
-from _.exceptions import UnderscoreCouldNotConsumeError
+from ..exceptions import UnderscoreCouldNotConsumeError
 from ._whitespace import surrounding_whitespace_removed
 
 @surrounding_whitespace_removed

@@ -1,5 +1,5 @@
-from _.nodes import ProgramNode
-from _.exceptions import UnderscoreCouldNotConsumeError, \
+from ..nodes import ProgramNode
+from ..exceptions import UnderscoreCouldNotConsumeError, \
     UnderscoreIncorrectParserError, UnderscoreSyntaxError
 from ._whitespace import surrounding_whitespace_removed
 
