@@ -124,8 +124,10 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                 try:
                     sections.append(parser())
                 except UnderscoreIncorrectParserError:
+                    print('- failed')
                     self.position_in_program = starting_position
                 else:
+                    print('- parsed')
                     parsed_something = True
                     break
 
