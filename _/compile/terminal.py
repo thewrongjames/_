@@ -18,6 +18,7 @@ def terminal():
         try:
             line = input('_> ')
         except KeyboardInterrupt:
+            print()
             break;
 
         try:

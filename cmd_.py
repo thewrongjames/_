@@ -1,5 +1,5 @@
 import sys
-from ._ import smart_compile_file, terminal
+from _ import smart_compile_file, terminal
 
 # This is a command line interface for underscore.
 

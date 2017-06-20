@@ -23,10 +23,11 @@ def smart_compile_string(
         try:
             unpickled_program = pickle.loads(pickle_bytes_string)
         except (TypeError, pickle.UnpicklingError):
-            raise ValueError('invalide pickle_bytes_string')
+            raise ValueError('invalid pickle_bytes_string')
 
-        if not isinstance(unpickled_program, ProgramNode):
-            raise ValueError('invalide pickle_bytes_string')
+        # What the pickled file is will not be validated, if someone puts
+        # something else there with all the right attributes, it will scan it
+        # to try to work out how to pass it, or, if it is newer, run it.
 
         def recursively_build_sections_list(node):
             """
