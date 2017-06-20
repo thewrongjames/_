@@ -18,8 +18,6 @@ def parse_expression(
     expression.
     """
 
-    print(next_parsers_to_try_first)
-
     # Assign the parsers that may make up the expression.
     valid_parsers = [
         self._parse_and_or_or,
@@ -67,5 +65,4 @@ def parse_expression(
     # If it should have a semi colon, it is consumed here.
     if self._peek() == ';' and has_semi_colon:
         self.position_in_program += 1
-    print('   ', expression)
     return expression

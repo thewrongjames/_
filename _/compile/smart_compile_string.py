@@ -58,7 +58,6 @@ def smart_compile_string(
         pickled_section_parser_list = recursively_build_sections_list(
             unpickled_program
         )
-        print(pickled_section_parser_list)
 
     # If the pickle has been modified more recently than the underscore program
     # it represents, then it should be up to date, and can be used instead of

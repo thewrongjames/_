@@ -55,7 +55,6 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
         parser_methods_to_try_first = []
 
         for first_parser_name, second_parser_name, _ in parsers_to_try_first:
-            print(first_parser_name, second_parser_name)
             parser_methods_to_try_first.append(
                 (
                     PARSER_METHODS[first_parser_name],
@@ -65,7 +64,6 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
         index_in_specific_parsers = 0
 
     while True:
-        print('here')
         if self._peek() is None:
             break
 
@@ -96,7 +94,6 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                     )
                 )
             except (UnderscoreIncorrectParserError, UnderscoreSyntaxError):
-                print('Didn\'t use specific parse.')
                 self.position_in_program = starting_position
                 # If it failed to parse it, stop trying to parse specific
                 # parsers:
@@ -113,21 +110,21 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                     index_in_specific_parsers += 1
                 parsed_something = True
 
+        # If you aren't trying to parse something specific, just loop through
+        # them (in order (importantly)) and see what you can parse. This needs
+        # to be another if statement, as, it might have realised it can't parse
+        # what it wants to just above, and if this isn't run, then it will see
+        # that it couldn't parse anything and raise a could not consume error.
         if not trying_specific_parsers:
-         # If you aren't trying to parse something specific, just loop through
-         # them (in order (importantly)) and see what you can parse. This needs
-         # to be another if statement, as, it might have realised it can't parse
-         # what it wants to just above, and if this isn't run, then it will see
-         # that it couldn't parse anything and raise a could not consume error.
+            # starting_position needs to be updated though as some of the
+            # specific parsers may have worked, and may have moved it forwards.
+            starting_position=self.position_in_program
             for parser in valid_parsers:
-                print(parser)
                 try:
                     sections.append(parser())
                 except UnderscoreIncorrectParserError:
-                    print('- failed')
                     self.position_in_program = starting_position
                 else:
-                    print('- parsed')
                     parsed_something = True
                     break
 
