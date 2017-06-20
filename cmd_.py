@@ -1,15 +1,14 @@
 import sys
-from _ import smart_compile_file
+from ._ import smart_compile_file, terminal
 
+# This is a command line interface for underscore.
 
-if len(sys.argv) >= 2:
+if len(sys.argv) <= 1:
     # sys.argv[0] is the script name.
-    if sys.argv[1] == 'terminal':
-        # Run the terminal.
-        from _ import terminal
-        terminal()
-    else:
-        # Attempt to run the file passed to script...
-        compiled = smart_compile_file(sys.argv[1])
-        # Display the memory to the user.
-        print(compiled.run())
+    # Run the terminal.
+    terminal()
+else:
+    # If there are any arguments passed, attempt to compile_file the first one.
+    compiled = smart_compile_file(sys.argv[1])
+    # Display the memory to the user.
+    print(compiled.run())
