@@ -29,6 +29,12 @@ def smart_compile_string(
             raise ValueError('invalide pickle_bytes_string')
 
         def recursively_build_sections_list(node):
+            """
+            Constructs a list of tuples for each section in the node passed.
+            Each tuple contains three items, the first being the parser it used,
+            the next being the sub-parser, if applicable, and the third
+            contains this list for the sections inside it, is applicable.
+            """
             try:
                 sections = node.sections
             except AttributeError:
@@ -52,6 +58,7 @@ def smart_compile_string(
         pickled_section_parser_list = recursively_build_sections_list(
             unpickled_program
         )
+        print(pickled_section_parser_list)
 
     # If the pickle has been modified more recently than the underscore program
     # it represents, then it should be up to date, and can be used instead of

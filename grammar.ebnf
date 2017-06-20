@@ -7,7 +7,7 @@ statement = reference, ' = ', expression with semicolon ;
 reference = (single name | template instantiation | function call), { ' . ', (
             single name | template instantiation | function call) } ;
 reference = (single name | template instantiation | function call), { ' [ ', (
-            single name | template instantiation | function call), ' ] ' } ;
+            expression without semicolon), ' ] ' } ;
 single name = letter, { letter | digit | '_'} ;
 letter = ? any upper or lower case letter ? ;
 digit = ? any digit ? ;

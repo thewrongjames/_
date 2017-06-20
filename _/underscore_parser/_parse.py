@@ -35,7 +35,6 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
     trying_specific_parsers = bool(parsers_to_try_first)
 
     if trying_specific_parsers:
-
         PARSER_METHODS = {
             '_parse_statement': self._parse_statement,
             '_parse_expression': self._parse_expression,
@@ -54,7 +53,9 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
             None: None
         }
         parser_methods_to_try_first = []
+
         for first_parser_name, second_parser_name, _ in parsers_to_try_first:
+            print(first_parser_name, second_parser_name)
             parser_methods_to_try_first.append(
                 (
                     PARSER_METHODS[first_parser_name],
@@ -64,6 +65,7 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
         index_in_specific_parsers = 0
 
     while True:
+        print('here')
         if self._peek() is None:
             break
 
@@ -94,6 +96,7 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
                     )
                 )
             except (UnderscoreIncorrectParserError, UnderscoreSyntaxError):
+                print('Didn\'t use specific parse.')
                 self.position_in_program = starting_position
                 # If it failed to parse it, stop trying to parse specific
                 # parsers:
@@ -117,6 +120,7 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
          # what it wants to just above, and if this isn't run, then it will see
          # that it couldn't parse anything and raise a could not consume error.
             for parser in valid_parsers:
+                print(parser)
                 try:
                     sections.append(parser())
                 except UnderscoreIncorrectParserError:

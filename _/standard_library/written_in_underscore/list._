@@ -1,6 +1,6 @@
 List = template() {
     length = 0;
-
+    #
     append = function(item) {
         container.set(container.length, item);
         container.length = container.length + 1;
@@ -15,5 +15,5 @@ List = template() {
         container.delete(container.length - 1);
         container.length = container.length - 1;
         return (value);
-    };
+    };#
 };
