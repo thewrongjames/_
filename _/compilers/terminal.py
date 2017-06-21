@@ -1,6 +1,11 @@
 from .compile_ import compile_
 
 
+def _get_formatted_error(error):
+    return str(repr(error)).replace('(', ': ').replace('\'', '').\
+        replace(',)', '').replace('"', '')
+
+
 def terminal():
     """
     A limited terminal for running line by line underscore. (Memory is retained
@@ -10,21 +15,37 @@ def terminal():
     compiled = compile_('42;')
     # compiled is just a ProgramNode, so...
     memory = compiled.memory
+    exit = False
 
-    print('Underscore (ctrl+c to exit):')
+    print('\nUnderscore (ctrl+c to exit):')
 
     while True:
-        # The users will ctrl+c to get out.
-        try:
-            line = input('_> ')
-        except KeyboardInterrupt:
-            print()
-            break;
+        section = ''
+
+        # Get the whole section (only run once the press enter on an empty
+        # line).
+        while True:
+            prompt = '_> ' if len(section) == 0 else '__ '
+
+            try:
+                line = input(prompt)
+            except KeyboardInterrupt:
+                # The users will ctrl+c to get out.
+                print()
+                exit = True
+                break
+            else:
+                section += line
+            if len(line) == 0 or (section == line and line[-1] == ';'):
+                break
+
+        if exit:
+            break
 
         try:
-            compiled = compile_(line)
+            compiled = compile_(section)
         except Exception as error:
-            print(repr(error))
+            print(_get_formatted_error(error))
             continue
 
         # Such that memory is retained...
@@ -46,7 +67,7 @@ def terminal():
                     running_underscore_standard_library=False
                 )
             except Exception as error:
-                print(repr(error))
+                print(get_formatted_error(error))
                 continue
             else:
                 if pre_run_result is not None:
