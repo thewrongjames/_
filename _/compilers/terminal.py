@@ -67,7 +67,7 @@ def terminal():
                     running_underscore_standard_library=False
                 )
             except Exception as error:
-                print(get_formatted_error(error))
+                print(_get_formatted_error(error))
                 continue
             else:
                 if pre_run_result is not None:
