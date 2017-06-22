@@ -46,9 +46,11 @@ def parse_sections(self, stop_parsing_section_at=[], parsers_to_try_first=[]):
             '_parse_and_or_or': self._parse_and_or_or,
             '_parse_not': self._parse_not,
             '_parse_comparison': self._parse_comparison,
-            '_parse_addition_or_subtraction': \
-                self._parse_addition_or_subtraction,
-            '_parse_term': self._parse_term,
+            '_parse_addition': self._parse_addition,
+            '_parse_subtraction': self._parse_subtraction,
+            '_parse_multiplication': self._parse_multiplication,
+            '_parse_division': self._parse_division,
+            '_parse_power': self._parse_power,
             '_parse_reference': self._parse_reference,
             None: None
         }

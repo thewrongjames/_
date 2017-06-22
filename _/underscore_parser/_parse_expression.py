@@ -119,7 +119,6 @@ def parse_expression(
             item_to_pass=next_parsers_to_try_first
         )
     if self._peek() != ';' and has_semi_colon:
-        print(expression)
         raise UnderscoreSyntaxError(
             "expected ';', got {}".format(
                 self._peek() if self._peek() is not None else 'end of file',

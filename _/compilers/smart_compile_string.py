@@ -60,6 +60,12 @@ def smart_compile_string(
             unpickled_program
         )
 
+    if (
+            unpickled_program.memory_limit != memory_limit or
+            unpickled_program.time_limit != time_limit
+    ):
+        force_pickle_update = True
+
     # If the pickle has been modified more recently than the underscore program
     # it represents, then it should be up to date, and can be used instead of
     # compiling the program.
