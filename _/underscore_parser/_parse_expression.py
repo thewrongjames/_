@@ -1,5 +1,78 @@
 from ..exceptions import UnderscoreSyntaxError, UnderscoreIncorrectParserError
+from ..nodes import AdditionNode, SubtractionNode, MultiplicationNode, \
+    DivisionNode, PowerNode
 from ._whitespace import surrounding_whitespace_removed
+
+
+def _get_item_parsers_to_exclude(self, parser_to_get_for):
+    """
+    Each of the parsers within an expression can parse anything beneath it in
+    self.EXPRESSION_PARSERS as its first item, and, anything from it (inclusive)
+    down as its second item.
+
+    The exceptions are parse_power, which may
+    parse_object_or_contained_expression for each of its items, and
+    parse_object_or_contained_expression itself, which does not have a first or
+    second item.
+
+    This function takes the UnderscoreParser method, and returns the parsers it
+    must exclude from parse_expression for its first item and its second item,
+    in that order.
+    """
+
+    first_item_parsers_to_exclude = []
+    second_item_parsers_to_exclude = []
+
+    finished_seconds = False
+
+    for parser in self.EXPRESSION_PARSERS:
+        if parser == parser_to_get_for:
+            first_item_parsers_to_exclude.append(parser)
+            break
+
+        first_item_parsers_to_exclude.append(parser)
+        second_item_parsers_to_exclude.append(parser)
+
+    if parser_to_get_for == self._parse_power:
+        # For the power parsing (see above).
+        first_item_parsers_to_exclude = self.EXPRESSION_PARSERS[:-1].copy()
+        second_item_parsers_to_exclude = self.EXPRESSION_PARSERS[:-1].copy()
+
+    return first_item_parsers_to_exclude, second_item_parsers_to_exclude
+
+
+@surrounding_whitespace_removed
+def parse_typical_sub_expression(self, symbol):
+    """
+    The parsing for most of the self.EXPRESSION_PARSERS is very similar, as such,
+    they may all be a wrapper for this function, that just tells this function
+    what symbol they use.
+    """
+
+    parser_and_node_of_symbol = {
+        '+': (self._parse_addition, AdditionNode),
+        '-': (self._parse_subtraction, SubtractionNode),
+        '*': (self._parse_multiplication, MultiplicationNode),
+        '/': (self._parse_division, DivisionNode),
+        '^': (self._parse_power, PowerNode),
+    }
+
+    parser, node = parser_and_node_of_symbol[symbol]
+
+    first_item_parsers_to_exclude, second_item_parsers_to_exclude = \
+        _get_item_parsers_to_exclude(self, parser)
+
+    first_item = self._parse_expression(
+            has_semi_colon=False,
+            parsers_to_not_allow=first_item_parsers_to_exclude
+        )
+    self._try_consume(symbol, needed_for_this=True)
+    second_item = self._parse_expression(
+            has_semi_colon=False,
+            parsers_to_not_allow=second_item_parsers_to_exclude,
+        )
+
+    return node(first_item, second_item)
 
 
 @surrounding_whitespace_removed
@@ -8,7 +81,7 @@ def parse_expression(
         has_semi_colon=True,
         parsers_to_not_allow=[],
         second_parser=None,
-        next_parsers_to_try_first=[]
+        next_parsers_to_try_first=[],
 ):
     """
     Parses an expression (see grammar for details). An expression consists
@@ -18,22 +91,13 @@ def parse_expression(
     expression.
     """
 
-    # Assign the parsers that may make up the expression.
-    valid_parsers = [
-        self._parse_and_or_or,
-        self._parse_not,
-        self._parse_comparison,
-        self._parse_addition_or_subtraction,
-        self._parse_term,
-    ]
-
     # Remove any parsers not to be included...
+
     try:
-        for parser_to_remove in parsers_to_not_allow:
-            try:
-                valid_parsers.remove(parser_to_remove)
-            except ValueError:
-                continue
+        parsers_to_use = []
+        for parser in self.EXPRESSION_PARSERS:
+            if parser not in parsers_to_not_allow:
+                parsers_to_use.append(parser)
     except TypeError:
         raise TypeError('parser_to_not_allow must be iterable.')
 
@@ -50,12 +114,12 @@ def parse_expression(
     # If that doesn't work:
     if not parsed_already:
         expression = self._try_parsers(
-            valid_parsers,
+            parsers_to_use,
             'expression',
             item_to_pass=next_parsers_to_try_first
         )
-
     if self._peek() != ';' and has_semi_colon:
+        print(expression)
         raise UnderscoreSyntaxError(
             "expected ';', got {}".format(
                 self._peek() if self._peek() is not None else 'end of file',

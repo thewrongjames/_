@@ -1,0 +1,7 @@
+template_instance = template() {
+    index = 0;#
+    while(true){
+        set(index, 'This should be fifty-six bytes.');
+        index = index + 1;
+    };#
+}();

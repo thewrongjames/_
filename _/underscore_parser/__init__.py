@@ -32,6 +32,17 @@ class UnderscoreParser:
     def __init__(self, program):
         self.program = program
         self.position_in_program = 0
+        self.EXPRESSION_PARSERS = [
+            self._parse_and_or_or,
+            self._parse_not,
+            self._parse_comparison,
+            self._parse_addition,
+            self._parse_subtraction,
+            self._parse_multiplication,
+            self._parse_division,
+            self._parse_power,
+            self._parse_object_or_contained_expression,
+        ]
 
     def _peek(self, look_ahead_distance=1):
         if self.position_in_program < len(self.program):
@@ -46,7 +57,8 @@ class UnderscoreParser:
     from ._parse import parse, parse_sections as _parse_sections
     from ._parse_statement import parse_statement as _parse_statement
     from ._parse_single_name import parse_single_name as _parse_single_name
-    from ._parse_expression import parse_expression as _parse_expression
+    from ._parse_expression import parse_expression as _parse_expression, \
+        parse_typical_sub_expression as _parse_typical_sub_expression
     from ._parse_objects import parse_object as _parse_object, \
         parse_digits as _parse_digits, parse_integer as _parse_integer, \
         parse_float as _parse_float, parse_boolean as _parse_boolean, \
@@ -59,12 +71,12 @@ class UnderscoreParser:
     from ._functions_and_templates import parse_function_or_template as \
         _parse_function_or_template, parse_passable_names as \
         _parse_passable_names
-    from ._maths import parse_addition_or_subtraction as \
-        _parse_addition_or_subtraction, parse_bracketed_expression as \
-        _parse_bracketed_expression, parse_term as _parse_term, parse_power as \
-        _parse_power, parse_object_or_contained_expression as \
-        _parse_object_or_contained_expression, \
-        parse_multiplication_or_division as _parse_multiplication_or_division
+    from ._maths import parse_addition as _parse_addition, parse_subtraction \
+        as _parse_subtraction, parse_bracketed_expression as \
+        _parse_bracketed_expression, parse_power as _parse_power, \
+        parse_object_or_contained_expression as \
+        _parse_object_or_contained_expression, parse_multiplication as \
+        _parse_multiplication, parse_division as _parse_division
     from ._boolean_logic import parse_comparison as _parse_comparison, \
         parse_and_or_or as _parse_and_or_or, parse_not as _parse_not
     from ._controls import parse_control as _parse_control, parse_if as \
