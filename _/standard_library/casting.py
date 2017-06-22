@@ -1,4 +1,5 @@
-from ..exceptions import UnderscoreTypeError, UnderscoreValueError
+from ..exceptions import UnderscoreTypeError, UnderscoreValueError, \
+    UnderscoreIncorrectNumberOfArgumentsError
 from .constants import BASIC_TYPES
 
 

@@ -61,8 +61,10 @@ def smart_compile_string(
         )
 
     if (
-            unpickled_program.memory_limit != memory_limit or
-            unpickled_program.time_limit != time_limit
+            pickle_bytes_string is not None and (
+                unpickled_program.memory_limit != memory_limit or
+                unpickled_program.time_limit != time_limit
+            )
     ):
         force_pickle_update = True
 
