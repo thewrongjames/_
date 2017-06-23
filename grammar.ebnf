@@ -1,8 +1,8 @@
 (* any of the spaces in the following definition may be replaced by any number
    of spaces (including zero), and will still be valid *)
 underscore program = sections ;
-sections = statement | expression with semicolon | control | comment | return |
-         break | continue ;
+sections = { statement | expression with semicolon | control | comment | return |
+         break | continue } ;
 statement = reference, ' = ', expression with semicolon ;
 reference = (single name | template instantiation | function call), { ' . ', (
             single name | template instantiation | function call) } ;

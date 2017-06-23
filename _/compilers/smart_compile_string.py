@@ -13,10 +13,6 @@ def smart_compile_string(
     time_limit=None,
     running_underscore_standard_library=False,
 ):
-    """
-    This takes a program string, a bytes string of a pickled program node, the
-    last modified times of each, and a
-    """
     pickled_section_parser_list = []
 
     if pickle_bytes_string is not None:
