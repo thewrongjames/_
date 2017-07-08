@@ -1,8 +1,8 @@
 (* any of the spaces in the following definition may be replaced by any number
    of spaces (including zero), and will still be valid *)
 underscore program = sections ;
-sections = { statement | expression with semicolon | control | comment | return |
-         break | continue } ;
+sections = { statement | expression with semicolon | control | comment | return
+           | break | continue } ;
 statement = reference, ' = ', expression with semicolon ;
 reference = (single name | template instantiation | function call), { ( ' . ', (
             single name | template instantiation | function call) ) | ( ' [ ', (
@@ -14,25 +14,12 @@ template instantiation = ( template | single name ), passable expressions ;
 template = ' template ', passable names, ' { ', sections, ' } ' ;
 passable names = ' ( ', [ single name, { ' , ', single name } ], ' ) ' ;
 passable expressions = ' ( ', [ expression, { ' , ', expression } ], ' ) ' ;
-expression = and or or | not | comparison | addition | subtraction | term ;
-and or or = and | or ;
-and = expression without and or or, ' AND ', expression ;
-expression without and or or = not | comparison | addition | subtraction |
-                               term ;
-or = expression without and or or, ' OR ', expression ;
-(* a NOT operator will not cross other boolean expressions unless they are in
-   brackets *)
-not = ' NOT ' expression without and or or ;
-comparison = expression without boolean expression or comparison,
-             ( ' == ' | ' <= ' | ' < ' | ' >= ' | ' > ' | ' != ' ),
-             expression without boolean expression or comparison ;
-expression without boolean expression or comparison = addition | subtraction |
-                                                      term ;
-addition = term, ' + ', expression without boolean expression or comparison ;
-term = multiplication | division | power | object or contained expression ;
-multiplication = object or contained expression, ' * ', term ;
-object or contained expression = ( ' ( ', expression, ' ) ' )
-                                 | object ;
+expression = not | ( object_or_bracketed_expression, opperator,
+             object_or_bracketed_expression ) ;
+not = ' NOT ' object_or_bracketed_expression ;
+object or contained expression = ( ' ( ', expression, ' ) ' ) | object ;
+opperator = ' AND ' | ' OR ' | ' == ' | ' <= ' | ' < ' | ' >= ' | ' > ' |
+            ' != ' | ' + ' | ' - ' | ' * ' | ' / ' | ' ^ ' ;
 object = integer | float | boolean | string | none | template | function |
          reference ;
 integer = [ ' + ' | ' - ' ], digit, { digit } ;
@@ -42,12 +29,6 @@ string = ? any characters contained in single or triple single or double quotes
          ? ;
 none = ' none ' ;
 function = ' function ', passable names, ' { ', sections, ' } ' ;
-division = object or contained expression, ' * ', term without multiplication ;
-term without multiplication = division | power |
-                              object or contained expression ;
-power = object or contained expression, ' ^ ', object_or_contained_expression ;
-subtraction = term, ' - ', subtraction or term ;
-subtraction or term = subtraction | term ;
 function call = ( function | single name ), passable expressions ;
 expression with semicolon = expression, ' ; ' ;
 control = ( if | while ), ' ; ' ;
@@ -56,4 +37,5 @@ if = ' if ( ', expression, ' ) { ', sections, ' } ', [ ' else { ', sections,
 while = ' while ( ', expression, ' ) { ', sections, ' } ' ;
 comment = ' #', ? any characters other than # ?, '# ' ;
 break = ' break ; ' ;
+return = ' return ( ', expression, ' ) ; ' ;
 continue = ' continue ; ' ;
