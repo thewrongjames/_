@@ -80,36 +80,11 @@ class TestMaths(unittest.TestCase):
         with self.assertRaises(_.exceptions.UnderscoreTypeError):
             compiled.run()
 
-    def test_addition_subtraction_order(self):
-        """
-        This test and the test below it were created due to a mistake in the
-        parser design that meant that addition and multiplication could be
-        parsed after subtraction and division respectively.
-        """
-        compiled = _.compile_(
-            '''
-            number_value = 0-1+2;
-            boolean_value = 0-1+2 == -1+2;
-            '''
-        )
-        memory = compiled.run()
-        self.assertEqual(memory['number_value'], 1)
-        self.assertTrue(memory['boolean_value'])
-
-    def test_multiplication_and_division_order(self):
-        compiled = _.compile_(
-            '''
-            value = 1/2*2;
-            '''
-        )
-        memory = compiled.run()
-        self.assertEqual(memory['value'], 1)
-
     def test_chaining_maths(self):
         compiled = _.compile_(
             '''
-            value_one = 6+34-34;
-            value_two = 3-8/2+5;
+            value_one = 6+(34-34);
+            value_two = (3-(8/2))+5;
             '''
         )
         memory = compiled.run()
