@@ -19,7 +19,7 @@ class _Caster:
         return str(self)
 
     def __str__(self):
-        return self.TYPE + '_caster'
+        return '<built_in: {}_caster>'.format(self.TYPE)
 
     def __call__(self, memory_from_call_location, expressions, character):
         if len(expressions) != 1:

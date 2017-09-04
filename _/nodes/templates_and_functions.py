@@ -37,7 +37,9 @@ class TemplateOrFunction:
         self.kwargs = kwargs
 
     def __str__(self):
-        return 'function' if self.is_function else 'template'
+        return '<built_in: {}>'.format(
+            'function' if self.is_function else 'template'
+        )
 
     def __repr__(self):
         return str(self)
@@ -115,7 +117,7 @@ class TemplateOrFunction:
                     **self.kwargs
                 )
             except UnderscoreReturnError as return_error:
-                if not is_function:
+                if not self.is_function:
                     raise
                 return return_error.expression_to_return.run(
                     internal_memory,
