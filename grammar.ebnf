@@ -14,9 +14,9 @@ template instantiation = ( template | single name ), passable expressions ;
 template = ' template ', passable names, ' { ', sections, ' } ' ;
 passable names = ' ( ', [ single name, { ' , ', single name } ], ' ) ' ;
 passable expressions = ' ( ', [ expression, { ' , ', expression } ], ' ) ' ;
-expression = not | ( object_or_bracketed_expression, [ opperator,
-             object_or_bracketed_expression ] ) ;
-not = ' NOT ' object_or_bracketed_expression ;
+expression = not | ( object or contained expression, [ opperator,
+             object or contained expression ] ) ;
+not = ' NOT ' object or contained expression ;
 object or contained expression = ( ' ( ', expression, ' ) ' ) | object ;
 opperator = ' AND ' | ' OR ' | ' == ' | ' <= ' | ' < ' | ' >= ' | ' > ' |
             ' != ' | ' + ' | ' - ' | ' * ' | ' / ' | ' ^ ' ;

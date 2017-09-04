@@ -3,7 +3,10 @@ from _ import smart_compile_file, terminal
 
 # This is a command line interface for underscore.
 
+print(0)
+
 if len(sys.argv) <= 1:
+    print(1)
     # sys.argv[0] is the script name.
     # Run the terminal.
     terminal()

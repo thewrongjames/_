@@ -5,13 +5,10 @@ from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
-def parse_reference(self, next_parsers_to_try_first):
+def parse_reference(self):
     starting_position = self.position_in_program
-    components = [
-        self._parse_single_name_or_instantiation_or_call(
-            next_parsers_to_try_first
-        )
-    ]
+    components = [self._parse_single_name_or_instantiation_or_call()]
+
     while True:
         if self._peek() == '.':
             self.position_in_program += 1
@@ -19,41 +16,35 @@ def parse_reference(self, next_parsers_to_try_first):
             # The error for that will be raised by the ReferenceNode at
             # runtime.
             components.append(
-                self._parse_single_name_or_instantiation_or_call(
-                    next_parsers_to_try_first
-                )
+                self._parse_single_name_or_instantiation_or_call()
             )
         elif self._peek() == '[':
             self.position_in_program += 1
-            components.append(
-                self._parse_expression(has_semi_colon=False)
-            )
+            components.append(self._parse_expression(has_semi_colon=False))
             self._try_consume(']', needed=True)
         else:
             break
     return ReferenceNode(components, starting_position)
 
 
-def parse_single_name_or_instantiation_or_call(self, next_parsers_to_try_first):
+def parse_single_name_or_instantiation_or_call(self):
     starting_position = self.position_in_program
     try:
-        return self._parse_instantiation_or_call(next_parsers_to_try_first)
+        return self._parse_instantiation_or_call()
     except UnderscoreIncorrectParserError:
         self.position_in_program = starting_position
         return self._parse_single_name()
 
 
 @surrounding_whitespace_removed
-def parse_instantiation_or_call(self, next_parsers_to_try_first):
+def parse_instantiation_or_call(self):
     """
     This will return either a reference node, a template, or a function. These
     will be fed to a ReferenceNode which will work out what to do with them.
     """
     starting_position = self.position_in_program
     try:
-        instantiation_or_call = self._parse_function_or_template(
-            next_parsers_to_try_first
-        )
+        instantiation_or_call = self._parse_function_or_template()
     except UnderscoreIncorrectParserError:
         self.position_in_program = starting_position
         instantiation_or_call = ReferenceNode(

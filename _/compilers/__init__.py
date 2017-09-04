@@ -1,5 +1,3 @@
-from .smart_compile_file import smart_compile_file
-from .smart_compile_string import smart_compile_string
 from .terminal import terminal
 from .compile_ import compile_
 

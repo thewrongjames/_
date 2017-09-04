@@ -4,8 +4,8 @@ from ._whitespace import surrounding_whitespace_removed
 
 
 @surrounding_whitespace_removed
-def parse_statement(self, **kwargs):
-    reference = self._parse_reference(next_parsers_to_try_first=[])
+def parse_statement(self):
+    reference = self._parse_reference()
 
     if self._peek() != '=':
         # You would think that you might want to raise an incorrect parser error
@@ -26,5 +26,5 @@ def parse_statement(self, **kwargs):
             self.position_in_program
         )
 
-    expression = self._parse_expression(**kwargs)
+    expression = self._parse_expression()
     return StatementNode(reference, expression)

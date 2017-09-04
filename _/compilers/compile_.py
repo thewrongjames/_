@@ -13,6 +13,7 @@ def compile_(
     """
     program = str(program)
     parser = UnderscoreParser(program)
+    print(3)
     compiled = parser.parse(
         memory_limit=memory_limit,
         time_limit=time_limit,
