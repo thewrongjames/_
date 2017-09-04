@@ -4,12 +4,9 @@ from .limited import limited
 
 
 class StatementNode(UnderscoreNode):
-    FIRST_PARSER = '_parse_statement'
-
     def __init__(self, reference, expression):
         self.reference = reference
         self.expression = expression
-        self.SECOND_PARSER = expression.SECOND_PARSER
         # Take of the last item such that running it gives you the memory
         # location you want to put the thing in.
         self.last_name = self.reference.components.pop(-1)

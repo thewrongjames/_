@@ -8,7 +8,7 @@ List = template() {
 
     pop = function(index) {
         value = container.get(index);
-        while (index < container.length - 1) {
+        while (index < (container.length - 1)) {
             container.set(index, container.get(index + 1));
             index = index + 1;
         };

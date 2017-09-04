@@ -6,9 +6,6 @@ from .limited import limited
 
 
 class IfNode(UnderscoreNode):
-    FIRST_PARSER = '_parse_control'
-    SECOND_PARSER = '_parse_if'
-
     def __init__(self, expression, if_sections, else_sections):
         self.expression = expression
         self.if_sections = if_sections
@@ -57,9 +54,6 @@ class IfNode(UnderscoreNode):
 
 
 class WhileNode(UnderscoreNode):
-    FIRST_PARSER = '_parse_control'
-    SECOND_PARSER = '_parse_while'
-
     def __init__(self, expression, sections):
         self.expression = expression
         self.sections = sections
@@ -111,8 +105,6 @@ class WhileNode(UnderscoreNode):
 
 
 class BreakNode(UnderscoreNode):
-    FIRST_PARSER = '_parse_break_or_continue'
-
     def __init__(self, position_in_program):
         self.position_in_program = position_in_program
 
@@ -125,8 +117,6 @@ class BreakNode(UnderscoreNode):
 
 
 class ContinueNode(UnderscoreNode):
-    FIRST_PARSER = '_parse_break_or_continue'
-
     def __init__(self, position_in_program):
         self.position_in_program = position_in_program
 

@@ -43,7 +43,7 @@ class TestBooleanExpressions(unittest.TestCase):
     def test_complex_expressions(self):
         compiled = _.compile_(
             '''
-            value = (6 < 3) OR ((-5 < 2) AND (NOT true OR 1 == 1));
+            value = (6 < 3) OR ((-5 < 2) AND ((NOT true) OR (1 == 1)));
             '''
         )
         memory = compiled.run()

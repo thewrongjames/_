@@ -16,7 +16,7 @@ def try_consume(
             self.position_in_program = starting_position
             if needed:
                 raise UnderscoreSyntaxError(
-                    'expected {}, got {}'.format(
+                    'expected \'{}\', got {}'.format(
                         string_to_consume,
                         string_read if self._peek() is not None else \
                             'end of file'

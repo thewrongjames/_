@@ -28,15 +28,19 @@ class UnderscoreParser:
         'get',
         'delete'
     ]
-    SECTIONS_END_CHARACTER == '}'
+    SECTIONS_END_CHARACTER = '}'
     NOT_SYMBOL = 'NOT'
+    # The order below is important, as this is the order that
+    # UnderscoreParser._parse_expression will check the symbols, hence '<=' and
+    # '>=' must be before '<' and '>' respectively, to prevent the former pair
+    # being mistaken for the later.
     OPERATOR_SYMBOLS = [
         'AND',
         'OR',
         '==',
         '<=',
-        '<',
         '>=',
+        '<',
         '>',
         '!=',
         '+',

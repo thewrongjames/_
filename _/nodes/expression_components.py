@@ -19,7 +19,7 @@ class OperatorNode(UnderscoreNode):
             'preposition': 'and'
         },
         '==': {
-            'method': '__eq__',
+            'python_method_name': '__eq__',
             'magic_method_name': '__equal',
             'verb': 'check if',
             'preposition': 'is equal to'
@@ -87,26 +87,25 @@ class OperatorNode(UnderscoreNode):
     }
 
     def __init__(self, first_item, second_item, symbol):
-        self.first_term = first_term
-        self.second_term = second_term
+        self.first_item = first_item
+        self.second_item = second_item
         self.symbol = symbol
 
     def __str__(self):
-        return str(self.first_term) + self.symbol + str(self.second_term)
+        return str(self.first_item) + self.symbol + str(self.second_item)
 
     @limited
     def run(self, memory, *args, **kwargs):
         # This could be cleaned up by making everything templates. Somehow.
-        first_value = self.first_term.run(memory, *args, **kwargs)
-        second_value = self.second_term.run(memory, *args, **kwargs)
-
+        first_value = self.first_item.run(memory, *args, **kwargs)
+        second_value = self.second_item.run(memory, *args, **kwargs)
         try:
             return getattr(
                 first_value,
                 self.SYMBOL_DATA[self.symbol]['python_method_name']
             )(second_value)
-        except TypeError, AttributeError:
-            return self.try_magic_methods(first_value, second_value)
+        except (TypeError, AttributeError):
+            return self._try_magic_methods(first_value, second_value)
 
     def _try_magic_methods(self, first_value, second_value):
         verb = self.SYMBOL_DATA[self.symbol]['verb']
@@ -116,9 +115,9 @@ class OperatorNode(UnderscoreNode):
         could_not_perform_operation_error = UnderscoreTypeError(
             'could not {} {} {} {}, as the operation is not defined'.format(
                 verb,
-                self.first_term,
+                self.first_item,
                 preposition,
-                self.second_term
+                self.second_item
             )
         )
         if (
@@ -146,9 +145,7 @@ class OperatorNode(UnderscoreNode):
                 raise could_not_perform_operation_error
 
 
-class NotNode(BooleanLogicNode):
-    SECOND_PARSER = '_parse_not'
-
+class NotNode(UnderscoreNode):
     def __init__(self, item):
         self.item = item
 

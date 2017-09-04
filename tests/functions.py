@@ -14,7 +14,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['value'], 5)
 
     def test_not_at_end_return(self):
-        compiled = _.smart_compile_file(
+        compiled = _.compile_file(
             os.path.dirname(__file__) +
             '/file_tests/functions/test_not_at_end_return._'
         )
@@ -42,7 +42,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['instance']({}, []), 'bar')
 
     def test_method_like_behaviour(self):
-        compiled = _.smart_compile_file(
+        compiled = _.compile_file(
             os.path.dirname(__file__) +
             '/file_tests/functions/test_method_like_behaviour._'
         )
@@ -104,7 +104,7 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(memory['value'], 120)
 
     def test_expressions_resolve_in_correct_scope(self):
-        compiled = _.smart_compile_file(
+        compiled = _.compile_file(
             os.path.dirname(__file__) +
             '/file_tests/functions/test_expressions_resolve_in_correct_scope._'
         )

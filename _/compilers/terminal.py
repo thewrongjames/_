@@ -12,8 +12,6 @@ def terminal():
     accross lines).
     """
 
-    print(2)
-
     compiled = compile_('42;')
     # compiled is just a ProgramNode, so...
     memory = compiled.memory

@@ -1,4 +1,4 @@
-from ..Nodes import NotNode
+from ..nodes import NotNode
 from ._whitespace import surrounding_whitespace_removed
 
 

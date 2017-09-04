@@ -60,7 +60,7 @@ class TestTemplates(unittest.TestCase):
         self.assertEqual(memory['external_value'], 8)
 
     def test_nested_template_access(self):
-        compiled = _.smart_compile_file(
+        compiled = _.compile_file(
             os.path.dirname(__file__) +
             '/file_tests/templates/test_nested_template_access._'
         )
@@ -136,7 +136,7 @@ class TestTemplates(unittest.TestCase):
         self.assertNotIn('value', memory['instance'])
 
     def test_key_value_template(self):
-        compiled = _.smart_compile_file(
+        compiled = _.compile_file(
             os.path.dirname(__file__) +
             '/file_tests/templates/test_key_value_template._'
         )

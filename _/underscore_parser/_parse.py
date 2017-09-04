@@ -31,12 +31,11 @@ def parse_sections(self):
         self._parse_break_or_continue
     ]
 
-    print(4)
     while True:
         if self._peek() is None:
             break
 
-        if self._peek(len(item)) == self.SECTIONS_END_CHARACTER:
+        if self._peek() == self.SECTIONS_END_CHARACTER:
             break
 
         starting_position = self.position_in_program

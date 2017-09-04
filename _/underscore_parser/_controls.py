@@ -33,7 +33,7 @@ def parse_if(self):
 
     self._try_consume('{', needed=True)
     self._consume_whitespace()
-    if_sections = self._parse_sections(['}'])
+    if_sections = self._parse_sections()
     self._try_consume('}', needed=True)
 
     self._consume_whitespace()
@@ -45,7 +45,7 @@ def parse_if(self):
         self._consume_whitespace()
         self._try_consume('{', needed=True)
         self._consume_whitespace()
-        else_sections = self._parse_sections(['}'])
+        else_sections = self._parse_sections()
         self._try_consume('}', needed=True)
 
     return IfNode(expression, if_sections, else_sections)
@@ -59,7 +59,7 @@ def parse_while(self):
 
     self._try_consume('{', needed=True)
     self._consume_whitespace()
-    sections = self._parse_sections(['}'])
+    sections = self._parse_sections()
     self._try_consume('}', needed=True)
 
     return WhileNode(expression, sections)

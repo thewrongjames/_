@@ -16,7 +16,7 @@ class TestLimitations(unittest.TestCase):
         self.assertTrue(total_time < 4)
 
     def test_memory_limit(self):
-        compiled = _.smart_compile_file(
+        compiled = _.compile_file(
             os.path.dirname(__file__) +
                 '/file_tests/limitations/test_memory_limit._',
             memory_limit=300
