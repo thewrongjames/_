@@ -29,7 +29,7 @@ def terminal():
 
             try:
                 line = input(prompt)
-            except KeyboardInterrupt:
+            except (KeyboardInterrupt, EOFError):
                 # The users will ctrl+c to get out.
                 print()
                 exit = True
