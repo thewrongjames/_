@@ -115,6 +115,8 @@ class TemplateOrFunction:
                     **self.kwargs
                 )
             except UnderscoreReturnError as return_error:
+                if not is_function:
+                    raise
                 return return_error.expression_to_return.run(
                     internal_memory,
                     time_limit=self.time_limit,
