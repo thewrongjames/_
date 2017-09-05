@@ -36,13 +36,12 @@ class TemplateOrFunction:
         self.args = args
         self.kwargs = kwargs
 
-    def __str__(self):
+    def __getitem__(self, key):
+        if key != '__display':
+            return NotImplemented
         return '<built_in: {}>'.format(
             'function' if self.is_function else 'template'
         )
-
-    def __repr__(self):
-        return str(self)
 
     def __call__(self, memory_from_call_location, expressions, *args, **kwargs):
         if len(expressions) != len(self.names):
@@ -105,6 +104,7 @@ class TemplateOrFunction:
                 *self.args,
                 **self.kwargs
             )
+
         for section in self.sections:
             try:
                 section.run(
@@ -128,10 +128,23 @@ class TemplateOrFunction:
                     *self.args,
                     **self.kwargs
                 )
+
         if self.is_function:
             # If it is a function that has not already returned
             # something, it needs to return none.
             return
+
+        # Work out how to display the template instance...
+        display_string = '{'
+        for key, value in internal_memory.items():
+            if not isinstance(key, str):
+                # If the key isn't a normal name, it will be an underscore
+                # value, and hence be a template.
+                key = key['__display']
+            display_string += str(key)
+        display_string += '}'
+        internal_memory['__display'] = lambda: display_string
+
         return internal_memory
 
 

@@ -20,10 +20,9 @@ not = ' NOT ' object or contained expression ;
 object or contained expression = ( ' ( ', expression, ' ) ' ) | object ;
 opperator = ' AND ' | ' OR ' | ' == ' | ' <= ' | ' < ' | ' >= ' | ' > ' |
             ' != ' | ' + ' | ' - ' | ' * ' | ' / ' | ' ^ ' ;
-object = integer | float | boolean | string | none | template | function |
+object = number | boolean | string | none | template | function |
          reference ;
-integer = [ ' + ' | ' - ' ], digit, { digit } ;
-float = [ ' + ' | ' - ' ], digit, { digit }, ' . ', digit, { digit } ;
+number = [ ' + ' | ' - ' ], digit, { digit }, [ ' . ', digit, { digit } ] ;
 boolean = ' true ' | ' false ' ;
 string = ? any characters contained in single or triple single or double quotes
          ? ;

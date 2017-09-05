@@ -76,4 +76,4 @@ def terminal():
                     section_results.append(run_result)
 
         for section_result in section_results:
-            print(section_result);
+            print(section_result['__display']());
